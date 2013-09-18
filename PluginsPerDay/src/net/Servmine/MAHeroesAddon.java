@@ -1,61 +1,48 @@
 package net.Servmine;
 
-import java.util.logging.Logger;
+import mc.alk.arena.BattleArena;
+import mc.alk.arena.util.Log;
 
-import com.garbagemule.MobArena.MobArena;
-import com.garbagemule.MobArena.framework.ArenaMaster;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginDescriptionFile;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public final class MAHeroesAddon extends JavaPlugin {
-	public void setupMobArenaListener(MAaddon maListener)
-	{
-	    Plugin maPlugin = (MobArena) Bukkit.getServer().getPluginManager().getPlugin("MobArena");
-	    
-	    if (maPlugin == null)
-	        return;
+public class MAHeroesAddon extends JavaPlugin{
 
+	@Override
+	public void onEnable(){
+/// Registers this plugin with BattleArena
+/// this: our plugin
+/// "Paintball": The name of our competition
+/// "pb": the name of our command alias ( who really wants to type in the entire word paintball?)
+/// PaintballArena.class: which arena should this competition use
+/// Register a Paintball
+		BattleArena.registerCompetition(this, "MAHeroesAddon", "pb", MAHeroesAddon.class);
+
+/// create our default config if it doesn't exist
+		saveDefaultConfig();
+
+/// Load our config options
+		loadConfig();
+
+		Log.info("[" + getName()+ "] v" + getDescription().getVersion()+ " enabled!");
 	}
-	
-    private static Logger log = Logger.getLogger("Minecraft");
-    private static PluginDescriptionFile info;
-    public static ArenaMaster am;
-    private static boolean foundMA = false;
-    
-    public void onEnable()
-    {
-        info = getDescription();
 
-        printToConsole("v" + info.getVersion() + " Wlaczono pomyslnie! Autorzy: " + info.getAuthors(), false);
-    }
-	
+	@Override
+	public void onDisable(){
+		Log.info("[" + getName()+ "] v" + getDescription().getVersion()+ " stopping!");
+	}
 
+	@Override
+	public void reloadConfig(){
+		super.reloadConfig();
+		loadConfig();
+	}
 
-    public static void printToConsole(String msg, boolean warn)
-    {
-        if(warn)
-            log.warning("[" + info.getName() + "] " + msg);
-        else
-            log.info("[" + info.getName() + "] " + msg);
-    }
-    public static void printToPlayer(Player p, String msg, boolean warn)
-    {
-        String color = "";
-        if(warn)
-            color += ChatColor.RED + "";
-        else
-            color += ChatColor.AQUA + "";
-        color += "[MAHeroesAddon]";
-        p.sendMessage(color + ChatColor.WHITE + msg);
-    }
-		
-    public static boolean foundMA()
-    {
-        return foundMA;
-    }
- 
+	public void loadConfig(){
+/// Allow the damage to be set through the config.yml, if it exists and has the section: 'damage: <value>'
+/// Like 'damage: 15'
+		FileConfiguration config = getConfig();
+		MAHeroesAddon.damage = config.getInt("damage", 20);
+	}
+
 }
