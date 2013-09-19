@@ -1,4 +1,4 @@
-package Test.Test;
+package net.Servmine;
 
 public class Test {
   public static void main(String[] args) {
