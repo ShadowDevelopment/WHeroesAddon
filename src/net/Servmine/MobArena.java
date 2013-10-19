@@ -5,7 +5,6 @@ import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
-import org.bukkit.entity.Skeleton;
 import org.bukkit.entity.Tameable;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
@@ -17,14 +16,11 @@ import org.bukkit.plugin.Plugin;
 
 import com.garbagemule.MobArena.MobArenaHandler;
 import com.herocraftonline.heroes.Heroes;
-import com.herocraftonline.heroes.api.events.HeroKillCharacterEvent;
 import com.herocraftonline.heroes.characters.CharacterManager;
-import com.herocraftonline.heroes.characters.CharacterTemplate;
 import com.herocraftonline.heroes.characters.Hero;
-import com.herocraftonline.heroes.characters.Monster;
-import com.herocraftonline.heroes.characters.classes.HeroClass;
+import com.herocraftonline.heroes.characters.classes.HeroClass.ExperienceType;
+import com.herocraftonline.heroes.characters.effects.Effect;
 import com.herocraftonline.heroes.characters.effects.common.CombustEffect;
-import com.herocraftonline.heroes.characters.effects.common.SummonEffect;
 import com.herocraftonline.heroes.util.Properties;
 import com.herocraftonline.heroes.util.Util;
      
@@ -51,150 +47,106 @@ public final class MobArena implements Listener {
     {
       this.plugin = plugin;
     }
-      
-    private Player getAttacker(EntityDamageEvent event) {
-        if (event == null) {
-          return null;
-        }
-        if ((event instanceof EntityDamageByEntityEvent)) {
-          Entity damager = ((EntityDamageByEntityEvent)event).getDamager();
-          if ((damager instanceof Player))
-            return (Player)damager;
-          if ((damager instanceof Projectile)) {
-            Projectile projectile = (Projectile)damager;
-            if ((projectile.getShooter() instanceof Player))
-              return (Player)projectile.getShooter();
-            if ((projectile.getShooter() instanceof Skeleton)) {
-              CharacterTemplate character = this.plugin.getCharacterManager().getCharacter(projectile.getShooter());
-              if (character.hasEffect("Summon")) {
-                SummonEffect sEffect = (SummonEffect)character.getEffect("Summon");
-                return sEffect.getSummoner().getPlayer();
-              }
+
+	private Player getAttacker(EntityDamageEvent event) {
+        if (event instanceof EntityDamageByEntityEvent) {
+            Entity damager = ((EntityDamageByEntityEvent) event).getDamager();
+            if (damager instanceof Player) {
+                return (Player) damager;
+            } else if (damager instanceof Projectile) {
+                Projectile projectile = (Projectile) damager;
+                if (projectile.getShooter() instanceof Player) {
+                    return (Player) projectile.getShooter();
+                }
+            } else if (damager instanceof LivingEntity) {
+                if (damager instanceof Tameable) {
+                    Tameable tamed = (Tameable) damager;
+                    if (tamed.isTamed() && tamed.getOwner() instanceof Player)
+                        return (Player) tamed.getOwner();
+                }
             }
-          } else if ((damager instanceof LivingEntity)) {
-            if ((damager instanceof Tameable)) {
-              Tameable tamed = (Tameable)damager;
-              if ((tamed.isTamed()) && ((tamed.getOwner() instanceof Player))) {
-                return (Player)tamed.getOwner();
-              }
-            }
-            CharacterTemplate character = this.plugin.getCharacterManager().getCharacter((LivingEntity)damager);
-            if (character.hasEffect("Summon")) {
-              SummonEffect sEffect = (SummonEffect)character.getEffect("Summon");
-              return sEffect.getSummoner().getPlayer();
-            }
-          }
-        } else if ((event.getCause() == EntityDamageEvent.DamageCause.FIRE_TICK) && ((event.getEntity() instanceof LivingEntity))) {
-          CharacterTemplate character = this.plugin.getCharacterManager().getCharacter((LivingEntity)event.getEntity());
-          if (character.hasEffect("Combust")) {
-            return ((CombustEffect)character.getEffect("Combust")).getApplier();
-          }
         }
         return null;
-      }
+    }
 
     private void awardKillExp(Hero attacker, LivingEntity defender) {
-      Properties prop = Heroes.properties;
+        Properties prop = Heroes.properties;
 
-      double addedExp = 0.0D;
-      HeroClass.ExperienceType experienceType = null;
+        double addedExp = 0;
+        ExperienceType experienceType = null;
 
-      if ((attacker.getSummons().contains(defender)) || (attacker.getPlayer().equals(defender))) {
-        return;
-      }
-        
-      if (maHandler != null && maHandler.isPlayerInArena(player)) {
-        return;
-      }
+        // If this entity is on the summon map, don't award XP!
+        if (attacker.getSummons().contains(defender) || attacker.getPlayer().equals(defender))
+            return;
 
-      if ((defender instanceof Player))
-      {
-        Util.deaths.put(((Player)defender).getName(), defender.getLocation());
-        addedExp = prop.playerKillingExp;
-        int aLevel = attacker.getTieredLevel(false);
-        int dLevel = this.plugin.getCharacterManager().getHero((Player)defender).getTieredLevel(false);
-        addedExp *= findExpAdjustment(aLevel, dLevel);
-        experienceType = HeroClass.ExperienceType.PVP;
-      } else if (((defender instanceof LivingEntity)) && (!(defender instanceof Player))) {
-        Monster monster = this.plugin.getCharacterManager().getMonster(defender);
-        addedExp = monster.getExperience();
+        if (defender instanceof Player) {
+            // Don't award XP for Players killing themselves
+            Util.deaths.put(((Player) defender).getName(), defender.getLocation());
+            addedExp = prop.playerKillingExp;
+            experienceType = ExperienceType.PVP;
+        } else if (defender instanceof LivingEntity && !(defender instanceof Player)) {
 
-        if ((addedExp == -1.0D) && (!prop.creatureKillingExp.containsKey(defender.getType())))
-          return;
-        if (addedExp == -1.0D) {
-          addedExp = ((Double)prop.creatureKillingExp.get(defender.getType())).doubleValue();
+            // Get the dying entity's CreatureType
+            if (defender.getType() != null) {
+                // If EXP hasn't been assigned for this Entity then we stop here.
+                if (!prop.creatureKillingExp.containsKey(defender.getType()))
+                    return;
+
+                addedExp = prop.creatureKillingExp.get(defender.getType());
+                experienceType = ExperienceType.KILLING;
+
+                // Check if the kill was near a spawner
+                if (prop.noSpawnCamp && Util.isNearSpawner(defender, 10))
+                    addedExp *= 0.5;
+            }
         }
-        experienceType = HeroClass.ExperienceType.KILLING;
-      }
 
-      if ((experienceType != null) && (addedExp > 0.0D))
-        if (attacker.hasParty())
-          attacker.getParty().gainExp(addedExp, experienceType, defender.getLocation());
-        else if (attacker.canGain(experienceType))
-          attacker.gainExp(addedExp, experienceType, defender.getLocation());
-    }
-    
-    
-    
-    @EventHandler(priority=EventPriority.HIGHEST)
-    public void onEntityDeath(EntityDeathEvent event)
-    {
-      LivingEntity defender = event.getEntity();
-
-      Player attacker = getAttacker(defender.getLastDamageCause());
-      CharacterManager characterManager = this.plugin.getCharacterManager();
-      CharacterTemplate character = characterManager.getCharacter(defender);
-      event.setDroppedExp(0);
-
-      if (attacker != null) {
-        HeroKillCharacterEvent hkc = new HeroKillCharacterEvent(character, characterManager.getHero(attacker));
-        Bukkit.getPluginManager().callEvent(hkc);
-      }
-      if ((attacker != null) && (!attacker.equals(defender)) && ((defender instanceof LivingEntity))) {
-        Hero hero = characterManager.getHero(attacker);
-        awardKillExp(hero, defender);
-      }
-      Hero heroDefender;
-      if ((defender instanceof Player)) {
-        Player player = (Player)defender;
-        heroDefender = (Hero)character;
-        Util.deaths.put(player.getName(), event.getEntity().getLocation());
-        heroDefender.cancelDelayedSkill();
-      }
-      else
-      {
-        this.plugin.getCharacterManager().removeMonster(character.getEntity());
-      }
-
-      character.clearEffects();
-    }
-    
-    
-    
-    private double findExpAdjustment(int aLevel, int dLevel) {
-        int diff = aLevel - dLevel;
-        if (Math.abs(diff) <= Heroes.properties.pvpExpRange)
-          return 1.0D;
-        if (diff >= Heroes.properties.pvpMaxExpRange)
-          return 0.0D;
-        if (diff <= -Heroes.properties.pvpMaxExpRange)
-          return 2.0D;
-        if (diff > 0)
-          return 1.0D - (diff - Heroes.properties.pvpExpRange) / Heroes.properties.pvpMaxExpRange;
-        if (diff < 0) {
-          return 1.0D + (Math.abs(diff) - Heroes.properties.pvpExpRange) / Heroes.properties.pvpMaxExpRange;
+        if (experienceType != null && addedExp > 0) {
+            if (attacker.hasParty())
+                attacker.getParty().gainExp(addedExp, experienceType, defender.getLocation());
+            else if (attacker.canGain(experienceType))
+                attacker.gainExp(addedExp, experienceType, defender.getLocation());
         }
-        return 1.0D;
-      }
-    
-    public static enum CombatReason
-    {
-      DAMAGED_BY_MOB, 
-      DAMAGED_BY_PLAYER, 
-      ATTACKED_MOB, 
-      ATTACKED_PLAYER, 
-      BENEFIT_DEFENDER, 
-      BENEFIT_ATTACKER, 
-      CUSTOM;
+    }
+
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onEntityDeath(EntityDeathEvent event) {
+        LivingEntity defender = event.getEntity();
+        //If this is a disabled world ignore it
+
+        Player attacker = getAttacker(defender.getLastDamageCause());
+        CharacterManager heroManager = plugin.getCharacterManager();
+
+        event.setDroppedExp(0);
+
+        if (defender instanceof Player && maHandler != null && maHandler.isPlayerInArena(player))  {
+            Player player = (Player) defender;
+            Hero heroDefender = heroManager.getHero(player);
+            Util.deaths.put(player.getName(), event.getEntity().getLocation());
+            heroDefender.cancelDelayedSkill();
+            // check to see if this death was caused by FireTick
+            if (attacker == null && heroDefender.hasEffect("Combust")) {
+                attacker = ((CombustEffect) heroDefender.getEffect("Combust")).getApplier();
+            }
+            
+            double multiplier = Heroes.properties.expLoss;
+            if (attacker != null) {
+                multiplier = Heroes.properties.pvpExpLossMultiplier;
+            }
+            
+            heroDefender.loseExpFromDeath(multiplier, attacker != null);
+
+            // Remove any nonpersistent effects
+            for (Effect effect : heroDefender.getEffects()) {
+                if (!effect.isPersistent()) {
+                    heroDefender.removeEffect(effect);
+                }
+            }
+            
+            if (attacker != null && !attacker.equals(defender)) {
+                Hero hero = heroManager.getHero(attacker);
+                awardKillExp(hero, defender);
+            }
+        }
     }
 }
