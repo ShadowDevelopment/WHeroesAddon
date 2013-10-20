@@ -1,5 +1,6 @@
 package net.Servmine;
 
+import net.Servmine.WHeroesAddon;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -24,11 +25,11 @@ import com.herocraftonline.heroes.characters.effects.common.CombustEffect;
 import com.herocraftonline.heroes.util.Properties;
 import com.herocraftonline.heroes.util.Util;
      
-public final class MobArena implements Listener {
-	public MobArena(WHeroesAddon plugin) {
+public final class MobArenaListener implements Listener {
+	public MobArenaListener(WHeroesAddon plugin) {
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
     }
-     
+    
     public static MobArenaHandler maHandler;
     public Player player;
 	private Heroes plugin;
@@ -41,9 +42,9 @@ public final class MobArena implements Listener {
             return;
 
         maHandler = new MobArenaHandler();
-    } 
+    }
  
-    public MobArena(Heroes plugin)
+    public MobArenaListener(Heroes plugin)
     {
       this.plugin = plugin;
     }
