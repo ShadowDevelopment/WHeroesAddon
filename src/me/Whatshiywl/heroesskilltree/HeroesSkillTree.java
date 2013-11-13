@@ -5,6 +5,7 @@ import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.classes.HeroClass;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -13,6 +14,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
 import me.Whatshiywl.heroesskilltree.EventListener;
 import me.Whatshiywl.heroesskilltree.commands.SkillAdminCommand;
 import me.Whatshiywl.heroesskilltree.commands.SkillDownCommand;
@@ -20,6 +22,7 @@ import me.Whatshiywl.heroesskilltree.commands.SkillInfoCommand;
 import me.Whatshiywl.heroesskilltree.commands.SkillListCommand;
 import me.Whatshiywl.heroesskilltree.commands.SkillLockedCommand;
 import me.Whatshiywl.heroesskilltree.commands.SkillUpCommand;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
@@ -238,7 +241,6 @@ public class HeroesSkillTree extends JavaPlugin {
          boolean hasStrongParents = strongParents != null && !strongParents.isEmpty();
          List weakParents = this.getWeakParentSkills(hero, skill);
          boolean hasWeakParents = weakParents != null && !weakParents.isEmpty();
-         skill.getName() + ": " + skillLevel + "," + hasStrongParents + ":" + hasWeakParents;
          return skillLevel && (hasStrongParents || hasWeakParents);
       } else {
          return true;
