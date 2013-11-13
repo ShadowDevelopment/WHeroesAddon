@@ -25,6 +25,7 @@ import org.bukkit.inventory.ItemStack;
 public class EventListener implements Listener {
 
    private static HeroesSkillTree plugin;
+   
 
    public EventListener(HeroesSkillTree instance) {
       plugin = instance;
