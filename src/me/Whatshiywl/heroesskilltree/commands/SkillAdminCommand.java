@@ -1,7 +1,11 @@
 package me.Whatshiywl.heroesskilltree.commands;
 
 import com.herocraftonline.heroes.characters.Hero;
+
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
+import me.Whatshiywl.heroesskilltree.language.LangList;
+import me.Whatshiywl.heroesskilltree.language.LangSender;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -11,7 +15,7 @@ public class SkillAdminCommand {
 
    public static void skillAdmin(HeroesSkillTree hst, CommandSender sender, String[] args) {
       if(args.length < 1) {
-         sender.sendMessage(ChatColor.RED + "Not enough arguments: /skilladmin <command> (amount) [sender]");
+         LangSender.tell(sender, LangList.COMMAND_ADMIN_NOT_ENOUGH_ARGUMENTS);
       } else {
          Hero hero;
          if(args[0].equalsIgnoreCase("clear")) {

@@ -22,6 +22,9 @@ import me.Whatshiywl.heroesskilltree.commands.SkillInfoCommand;
 import me.Whatshiywl.heroesskilltree.commands.SkillListCommand;
 import me.Whatshiywl.heroesskilltree.commands.SkillLockedCommand;
 import me.Whatshiywl.heroesskilltree.commands.SkillUpCommand;
+import me.Whatshiywl.heroesskilltree.language.LangSender;
+import me.Whatshiywl.heroesskilltree.language.UtilTest;
+import me.Whatshiywl.heroesskilltree.language.LangList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -51,16 +54,17 @@ public class HeroesSkillTree extends JavaPlugin {
 
    public void onDisable() {
       this.saveAll();
-      logger.info("[HeroesSkillTree] Has been disabled!");
+      logger.info("[HeroesSkillTree] Has Been Disabled!");
    }
 
    public void onEnable() {
-      String message = "[HeroesSkillTree] Version A1.6 By wiedzmin137 has been enabled!";
+      String message = "[HeroesSkillTree] Version 1.5.2-Beta Has Been Enabled!";
       logger.info(message);
       PluginManager pm = this.getServer().getPluginManager();
       this.getConfig().options().copyDefaults(true);
       this.saveConfig();
       this.loadConfig();
+      this.loadLanguageFile();
       pm.registerEvents(this.HEventListener, this);
       Player[] var6;
       int var5 = (var6 = Bukkit.getServer().getOnlinePlayers()).length;
@@ -455,4 +459,29 @@ public class HeroesSkillTree extends JavaPlugin {
    public int getPointsPerLevel() {
       return this.pointsPerLevel;
    }
+   
+   private void loadLanguageFile() {
+	   // Create if missing
+	   File file = new File(getDataFolder(), "lang.yml");
+	   try {
+	       if (file.createNewFile()) {
+	           LangSender.info("lang.yml created.");
+	           YamlConfiguration yaml = LangList.toYaml();
+	           yaml.save(file);
+	           return;
+	       }
+	   } catch (Exception e) {
+	       e.printStackTrace();
+	   }
+
+	   // Otherwise, load the announcements from the file
+	   try {
+	       YamlConfiguration yaml = new YamlConfiguration();
+	       yaml.load(file);
+	       UtilTest.addMissingRemoveObsolete(file, LangList.toYaml(), yaml);
+	       LangList.load(yaml);
+	   } catch (Exception e) {
+	       e.printStackTrace();
+	   }
+   	}
 }

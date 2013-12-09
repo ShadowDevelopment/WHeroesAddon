@@ -148,6 +148,9 @@ public class EventListener implements Listener {
          event.getHero().hasEffect(event.getSkill().getName());
          event.setCancelled(true);
       } else {
+         int health = (int)(SkillConfigManager.getUseSetting(hero, skill, "hst-health", 0.0D, false) * (double)(plugin.getSkillLevel(hero, skill) - 1));
+         health = health > 0?health:0;
+         event.setHealthCost(event.getHealthCost() + health);
          int mana = (int)(SkillConfigManager.getUseSetting(hero, skill, "hst-mana", 0.0D, false) * (double)(plugin.getSkillLevel(hero, skill) - 1));
          mana = mana > 0?mana:0;
          event.setManaCost(event.getManaCost() + mana);
