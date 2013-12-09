@@ -55,7 +55,7 @@ public class HeroesSkillTree extends JavaPlugin {
    }
 
    public void onEnable() {
-      String message = "[HeroesSkillTree] Version B1.0 By wiedzmin137 has been rnabled!";
+      String message = "[HeroesSkillTree] Version A1.6 By wiedzmin137 has been enabled!";
       logger.info(message);
       PluginManager pm = this.getServer().getPluginManager();
       this.getConfig().options().copyDefaults(true);
