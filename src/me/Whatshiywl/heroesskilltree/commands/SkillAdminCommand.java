@@ -20,7 +20,7 @@ public class SkillAdminCommand {
          Hero hero;
          if(args[0].equalsIgnoreCase("clear")) {
             if(!sender.hasPermission("skilladmin.clear")) {
-               sender.sendMessage(ChatColor.RED + "You don\'t have enough permissions!");
+            	LangSender.tell(sender, LangList.PERMISSION_DENIED);
             } else {
                if(args.length == 2) {
                   if(Bukkit.getPlayer(args[1]) == null) {
@@ -32,7 +32,7 @@ public class SkillAdminCommand {
                   hst.setPlayerPoints(hero, 0);
                } else {
                   if(!(sender instanceof Player)) {
-                     sender.sendMessage(ChatColor.RED + "You must be in game to use this command");
+                	 LangSender.tell(sender, LangList.YOU_NOT_IN_GAME);
                      return;
                   }
 
@@ -44,7 +44,7 @@ public class SkillAdminCommand {
             }
          } else if(args[0].equalsIgnoreCase("reset")) {
             if(!sender.hasPermission("skilladmin.reset")) {
-               sender.sendMessage(ChatColor.RED + "You don\'t have enough permissions!");
+            	LangSender.tell(sender, LangList.PERMISSION_DENIED);
             } else {
                if(args.length == 2) {
                   if(Bukkit.getPlayer(args[1]) != null) {

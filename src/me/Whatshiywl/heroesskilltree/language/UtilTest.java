@@ -52,30 +52,3 @@ public class UtilTest {
         }
     }
 }
-
-
-
-//private void loadLanguageFile() {
-//    // Create if missing
-//    File file = new File(getDataFolder(), "lang.yml");
-//    try {
-//        if (file.createNewFile()) {
-//            LangSender.info("lang.yml created.");
-//            YamlConfiguration yaml = LangList.toYaml();
-//            yaml.save(file);
-//            return;
-//        }
-//    } catch (Exception e) {
-//        e.printStackTrace();
-//    }
-//
-//    // Otherwise, load the announcements from the file
-//    try {
-//        YamlConfiguration yaml = new YamlConfiguration();
-//        yaml.load(file);
-//        UtilTest.addMissingRemoveObsolete(file, LangList.toYaml(), yaml);
-//        LangList.load(yaml);
-//    } catch (Exception e) {
-//        e.printStackTrace();
-//    }
-//}

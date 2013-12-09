@@ -8,7 +8,9 @@ public enum LangList {
     CONSOLE_ENABLING("[HeroesSkillTree] Version B1.0 By wiedzmin137 has been enabled!"),
     CONSOLE_DISABLING("[HeroesSkillTree] Version B1.0 By wiedzmin137 has been disabled!"),
     COMMAND_SKILLPOINTS("[SkillTree] You currently have %1%!"),
-    COMMAND_ADMIN_NOT_ENOUGH_ARGUMENTS("Not enough arguments: /skilladmin <command> (amount) [sender]");
+    COMMAND_ADMIN_NOT_ENOUGH_ARGUMENTS("Not enough arguments: /skilladmin <command> (amount) [sender]"),
+    PERMISSION_DENIED("You don\'t have enough permissions"),
+    YOU_NOT_IN_GAME("You are not in game!");
 
     private String value;
 
