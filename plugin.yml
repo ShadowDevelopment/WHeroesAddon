@@ -1,7 +1,7 @@
 name: HeroesSkillTree
 main: me.Whatshiywl.heroesskilltree.HeroesSkillTree
-version: 1.5.2-Beta
-authors: [Whatshiywl]
+version: A1.6
+authors: [Wiedzmin137, Whatshiywl]
 description: Brings skill trees to the Heroes plugin.
 depend: [Heroes]
 commands:
