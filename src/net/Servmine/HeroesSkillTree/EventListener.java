@@ -1,4 +1,4 @@
-package me.Whatshiywl.heroesskilltree;
+package net.Servmine.HeroesSkillTree;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.events.ClassChangeEvent;
@@ -9,8 +9,11 @@ import com.herocraftonline.heroes.characters.classes.HeroClass;
 import com.herocraftonline.heroes.characters.effects.Effect;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
+
 import java.util.Iterator;
-import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
+
+import net.Servmine.HeroesSkillTree.HeroesSkillTree;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;

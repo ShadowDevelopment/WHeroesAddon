@@ -1,4 +1,4 @@
-package me.Whatshiywl.heroesskilltree.language;
+package net.Servmine.HeroesSkillTree.language;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -26,7 +26,7 @@ public class UtilTest {
     private static void process(Plugin plugin, String resource, ConfigurationSection section, boolean addOnlyIfEmpty, boolean removeObsolete) {
         try {
             YamlConfiguration defaults = new YamlConfiguration();
-            defaults.load(plugin.getResource("res/" + resource));
+            defaults.load(plugin.getResource(resource));
 
             process(defaults, section, addOnlyIfEmpty, removeObsolete);
             plugin.saveConfig();

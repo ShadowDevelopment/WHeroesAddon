@@ -1,4 +1,4 @@
-package me.Whatshiywl.heroesskilltree.language;
+package net.Servmine.HeroesSkillTree.language;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package me.Whatshiywl.heroesskilltree;
+package net.Servmine.HeroesSkillTree;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.characters.Hero;
@@ -15,16 +15,16 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import me.Whatshiywl.heroesskilltree.EventListener;
-import me.Whatshiywl.heroesskilltree.commands.SkillAdminCommand;
-import me.Whatshiywl.heroesskilltree.commands.SkillDownCommand;
-import me.Whatshiywl.heroesskilltree.commands.SkillInfoCommand;
-import me.Whatshiywl.heroesskilltree.commands.SkillListCommand;
-import me.Whatshiywl.heroesskilltree.commands.SkillLockedCommand;
-import me.Whatshiywl.heroesskilltree.commands.SkillUpCommand;
-import me.Whatshiywl.heroesskilltree.language.LangSender;
-import me.Whatshiywl.heroesskilltree.language.UtilTest;
-import me.Whatshiywl.heroesskilltree.language.LangList;
+import net.Servmine.HeroesSkillTree.EventListener;
+import net.Servmine.HeroesSkillTree.commands.SkillAdminCommand;
+import net.Servmine.HeroesSkillTree.commands.SkillDownCommand;
+import net.Servmine.HeroesSkillTree.commands.SkillInfoCommand;
+import net.Servmine.HeroesSkillTree.commands.SkillListCommand;
+import net.Servmine.HeroesSkillTree.commands.SkillLockedCommand;
+import net.Servmine.HeroesSkillTree.commands.SkillUpCommand;
+import net.Servmine.HeroesSkillTree.language.LangList;
+import net.Servmine.HeroesSkillTree.language.LangSender;
+import net.Servmine.HeroesSkillTree.language.UtilTest;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -58,14 +58,13 @@ public class HeroesSkillTree extends JavaPlugin {
    }
 
    public void onEnable() {
-      String message = "[HeroesSkillTree] Version 1.5.2-Beta Has Been Enabled!";
-      logger.info(message);
       PluginManager pm = this.getServer().getPluginManager();
       this.getConfig().options().copyDefaults(true);
       this.saveConfig();
       this.loadConfig();
       this.loadLanguageFile();
       pm.registerEvents(this.HEventListener, this);
+      LangSender.info("CONSOLE_ENABLING");
       Player[] var6;
       int var5 = (var6 = Bukkit.getServer().getOnlinePlayers()).length;
 

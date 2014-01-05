@@ -1,4 +1,4 @@
-package me.Whatshiywl.heroesskilltree.language;
+package net.Servmine.HeroesSkillTree.language;
 
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.ConfigurationSection;
