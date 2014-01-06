@@ -1,10 +1,9 @@
-package net.Servmine.HeroesSkillTree.commands;
+package me.Whatshiywl.heroesskilltree.commands;
 
 import com.herocraftonline.heroes.characters.Hero;
 
-import net.Servmine.HeroesSkillTree.HeroesSkillTree;
-import net.Servmine.HeroesSkillTree.language.LangList;
-import net.Servmine.HeroesSkillTree.language.LangSender;
+import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
+import me.Whatshiywl.heroesskilltree.language.Lang;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -15,12 +14,12 @@ public class SkillAdminCommand {
 
    public static void skillAdmin(HeroesSkillTree hst, CommandSender sender, String[] args) {
       if(args.length < 1) {
-         LangSender.tell(sender, LangList.COMMAND_ADMIN_NOT_ENOUGH_ARGUMENTS);
+         sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_ADMIN_NOT_ENOUGH_ARGUMENTS);
       } else {
          Hero hero;
          if(args[0].equalsIgnoreCase("clear")) {
             if(!sender.hasPermission("skilladmin.clear")) {
-            	LangSender.tell(sender, LangList.PERMISSION_DENIED);
+            	sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_PERMISSION_DENIED);
             } else {
                if(args.length == 2) {
                   if(Bukkit.getPlayer(args[1]) == null) {
@@ -32,7 +31,7 @@ public class SkillAdminCommand {
                   hst.setPlayerPoints(hero, 0);
                } else {
                   if(!(sender instanceof Player)) {
-                	 LangSender.tell(sender, LangList.YOU_NOT_IN_GAME);
+                	 sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_IN_CONSOLE_DENIED);
                      return;
                   }
 
@@ -44,7 +43,7 @@ public class SkillAdminCommand {
             }
          } else if(args[0].equalsIgnoreCase("reset")) {
             if(!sender.hasPermission("skilladmin.reset")) {
-            	LangSender.tell(sender, LangList.PERMISSION_DENIED);
+            	sender.sendMessage(Lang.ERROR_PERMISSION_DENIED.toString());
             } else {
                if(args.length == 2) {
                   if(Bukkit.getPlayer(args[1]) != null) {

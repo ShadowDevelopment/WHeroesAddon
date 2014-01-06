@@ -11,7 +11,7 @@
 			<attribute name="maven.pomderived" value="true"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Marek/Documents/Eclipse/HeroesSkillTree/lib/Heroes.jar">
+	<classpathentry kind="lib" path="C:/Users/Marek/Documents/Eclipse/Lib/Heroes 1.7.2.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="file:/C:/Users/Marek/Documents/Eclipse/Heroes-javadoc.jar"/>
 		</attributes>

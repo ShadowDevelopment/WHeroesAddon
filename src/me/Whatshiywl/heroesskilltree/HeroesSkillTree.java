@@ -1,4 +1,4 @@
-package net.Servmine.HeroesSkillTree;
+package me.Whatshiywl.heroesskilltree;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.characters.Hero;
@@ -8,6 +8,7 @@ import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -15,18 +16,17 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import net.Servmine.HeroesSkillTree.EventListener;
-import net.Servmine.HeroesSkillTree.commands.SkillAdminCommand;
-import net.Servmine.HeroesSkillTree.commands.SkillDownCommand;
-import net.Servmine.HeroesSkillTree.commands.SkillInfoCommand;
-import net.Servmine.HeroesSkillTree.commands.SkillListCommand;
-import net.Servmine.HeroesSkillTree.commands.SkillLockedCommand;
-import net.Servmine.HeroesSkillTree.commands.SkillUpCommand;
-import net.Servmine.HeroesSkillTree.language.LangList;
-import net.Servmine.HeroesSkillTree.language.LangSender;
-import net.Servmine.HeroesSkillTree.language.UtilTest;
+import me.Whatshiywl.heroesskilltree.EventListener;
+import me.Whatshiywl.heroesskilltree.commands.SkillAdminCommand;
+import me.Whatshiywl.heroesskilltree.commands.SkillDownCommand;
+import me.Whatshiywl.heroesskilltree.commands.SkillInfoCommand;
+import me.Whatshiywl.heroesskilltree.commands.SkillListCommand;
+import me.Whatshiywl.heroesskilltree.commands.SkillLockedCommand;
+import me.Whatshiywl.heroesskilltree.commands.SkillUpCommand;
+import me.Whatshiywl.heroesskilltree.language.Lang;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Server;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -46,25 +46,24 @@ public class HeroesSkillTree extends JavaPlugin {
    public static Heroes heroes = (Heroes)Bukkit.getServer().getPluginManager().getPlugin("Heroes");
    public List SkillStrongParents = new ArrayList();
    public List SkillWeakParents = new ArrayList();
+   public static YamlConfiguration LANG;
+   public static File LANG_FILE;
+   public static Logger LOG;
    private HashMap playerSkills = new HashMap();
    private HashMap playerClasses = new HashMap();
    private int pointsPerLevel = 1;
    private HashMap hConfigs = new HashMap();
-
-
-   public void onDisable() {
-      this.saveAll();
-      logger.info("[HeroesSkillTree] Has Been Disabled!");
-   }
+   
 
    public void onEnable() {
       PluginManager pm = this.getServer().getPluginManager();
       this.getConfig().options().copyDefaults(true);
       this.saveConfig();
       this.loadConfig();
-      this.loadLanguageFile();
+      loadLang();
+      LOG = getServer().getLogger();
       pm.registerEvents(this.HEventListener, this);
-      LangSender.info("CONSOLE_ENABLING");
+      getLogger().info(Lang.CONSOLE_ENABLING.toString());
       Player[] var6;
       int var5 = (var6 = Bukkit.getServer().getOnlinePlayers()).length;
 
@@ -73,10 +72,22 @@ public class HeroesSkillTree extends JavaPlugin {
          Hero hero = heroes.getCharacterManager().getHero(player);
          this.recalcPlayerPoints(hero, hero.getHeroClass());
       }
-
    }
+   
+   public void onDisable() {
+	      this.saveAll();
+	      getLogger().info(Lang.CONSOLE_DISABLING.toString());
+	      
+	      LANG = null;
+	      LANG_FILE = null;
+	   }
 
    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+      Hero hero = heroes.getCharacterManager().getHero((Player)sender);
+      //TODO There is 2 lines, I think there are possibilities to speed up that.
+      Integer points = new Integer(this.getPlayerPoints(hero));
+      String skillPoints = Integer.toString(points); 
+	   
       if(commandLabel.equalsIgnoreCase("skillup")) {
          SkillUpCommand.skillUp(this, sender, args);
          return true;
@@ -88,14 +99,13 @@ public class HeroesSkillTree extends JavaPlugin {
          return true;
       } else if(commandLabel.equalsIgnoreCase("skillpoints")) {
          if(!(sender instanceof Player)) {
-            sender.sendMessage(ChatColor.RED + "You must be in game to use this command");
+        	 sender.sendMessage(Lang.ERROR_IN_CONSOLE_DENIED.toString());
             return true;
          } else {
-            Hero hero = heroes.getCharacterManager().getHero((Player)sender);
             if(sender.hasPermission("skilltree.points")) {
-               sender.sendMessage(ChatColor.GOLD + "[HST] " + ChatColor.AQUA + "You currently have " + this.getPlayerPoints(hero) + " SkillPoints.");
+               sender.sendMessage(Lang.TITLE.toString() + Lang.INFO_SKILLPOINTS.toString().replace("%points", skillPoints));
             } else {
-               sender.sendMessage(ChatColor.RED + "You don\'t have enough permissions!");
+               sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_PERMISSION_DENIED);
             }
 
             return true;
@@ -105,13 +115,14 @@ public class HeroesSkillTree extends JavaPlugin {
          return true;
       } else if(!commandLabel.equalsIgnoreCase("slist") && !commandLabel.equalsIgnoreCase("sl")) {
          if(!commandLabel.equalsIgnoreCase("unlocks") && !commandLabel.equalsIgnoreCase("un")) {
-            sender.sendMessage(ChatColor.GOLD + "HeroesSkillTree Help Page:");
-            sender.sendMessage(ChatColor.GRAY + "/skillup <skill> [amount] (level up a skill)");
-            sender.sendMessage(ChatColor.GRAY + "/skilldown <skill> [amount] (de-levels a skill)");
-            sender.sendMessage(ChatColor.GRAY + "/slist (lists all unlocked skills)");
-            sender.sendMessage(ChatColor.GRAY + "/unlocks (lists all adjacent unlockable skills)");
-            sender.sendMessage(ChatColor.GRAY + "/skillinfo <skill> (all info on a skill)");
-            sender.sendMessage(ChatColor.GRAY + "/skilladmin <command> (amount) [player]");
+        	sender.sendMessage(Lang.INFO_SKILLPOINTS.toString().replace("%points", skillPoints));
+        	sender.sendMessage(Lang.HELP_1.toString());
+        	sender.sendMessage(Lang.HELP_2.toString());
+        	sender.sendMessage(Lang.HELP_3.toString());
+        	sender.sendMessage(Lang.HELP_4.toString());
+        	sender.sendMessage(Lang.HELP_5.toString());
+        	sender.sendMessage(Lang.HELP_6.toString());
+        	sender.sendMessage(Lang.HELP_7.toString());
             return true;
          } else {
             SkillLockedCommand.skillList(this, sender, args);
@@ -138,7 +149,7 @@ public class HeroesSkillTree extends JavaPlugin {
 
       File playerFile = new File(playerFolder, name + ".yml");
       if(playerFolder.exists() && !playerFolder.delete()) {
-         logger.log(Level.SEVERE, "[HeroesSkillTree] failed to delete " + name + ".yml");
+         logger.log(Level.SEVERE, Lang.SERVRE_FAILED_DELETE.toString());
       } else {
          try {
             playerFile.createNewFile();
@@ -308,7 +319,7 @@ public class HeroesSkillTree extends JavaPlugin {
          try {
             playerConfigFile.createNewFile();
          } catch (IOException var9) {
-            logger.severe("[HeroesSkillTree] failed to create new " + name + ".yml");
+            logger.severe(Lang.SERVRE_FAILED_CREATE.toString().replace("%name", name));
             return;
          }
       }
@@ -454,33 +465,54 @@ public class HeroesSkillTree extends JavaPlugin {
       }
 
    }
+   
+   public YamlConfiguration getLang() {
+	   return LANG;
+   }
+   
+   public File getLangFile() {
+	   return LANG_FILE;
+   }
 
    public int getPointsPerLevel() {
       return this.pointsPerLevel;
    }
-   
-   private void loadLanguageFile() {
-	   // Create if missing
-	   File file = new File(getDataFolder(), "lang.yml");
-	   try {
-	       if (file.createNewFile()) {
-	           LangSender.info("lang.yml created.");
-	           YamlConfiguration yaml = LangList.toYaml();
-	           yaml.save(file);
-	           return;
-	       }
-	   } catch (Exception e) {
-	       e.printStackTrace();
-	   }
 
-	   // Otherwise, load the announcements from the file
-	   try {
-	       YamlConfiguration yaml = new YamlConfiguration();
-	       yaml.load(file);
-	       UtilTest.addMissingRemoveObsolete(file, LangList.toYaml(), yaml);
-	       LangList.load(yaml);
-	   } catch (Exception e) {
-	       e.printStackTrace();
-	   }
-   	}
+	public void loadLang() {
+		File lang = new File(getDataFolder(), "lang.yml");
+		if (!lang.exists()) {
+			try {
+				getDataFolder().mkdir();
+				lang.createNewFile();
+				InputStream defConfigStream = this.getResource("lang.yml");
+				if (defConfigStream != null) {
+					YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
+					defConfig.save(lang);
+					Lang.setFile(defConfig);
+					return;
+				}
+			} catch(IOException e) {
+				e.printStackTrace(); // So they notice
+				LOG.severe("[PluginName] Couldn't create language file.");
+				LOG.severe("[PluginName] This is a fatal error. Now disabling");
+				this.setEnabled(false); // Without it loaded, we can't send them messages
+			}
+		}
+		YamlConfiguration conf = YamlConfiguration.loadConfiguration(lang);
+		for(Lang item:Lang.values()) {
+			if (conf.getString(item.getPath()) == null) {
+				conf.set(item.getPath(), item.getDefault());
+			}
+		}
+		Lang.setFile(conf);
+		this.LANG = conf;
+		this.LANG_FILE = lang;
+		try {
+			conf.save(getLangFile());
+		} catch(IOException e) {
+			LOG.log(Level.WARNING, "PluginName: Failed to save lang.yml.");
+			LOG.log(Level.WARNING, "PluginName: Report this stack trace to <your name>.");
+			e.printStackTrace();
+		}
+	}
 }

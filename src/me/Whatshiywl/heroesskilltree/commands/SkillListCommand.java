@@ -1,4 +1,4 @@
-package net.Servmine.HeroesSkillTree.commands;
+package me.Whatshiywl.heroesskilltree.commands;
 
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.skill.Skill;
@@ -8,7 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import net.Servmine.HeroesSkillTree.HeroesSkillTree;
+import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
