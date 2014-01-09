@@ -6,7 +6,6 @@ import com.herocraftonline.heroes.characters.skill.Skill;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
@@ -23,36 +22,31 @@ public class SkillLockedCommand {
       } else {
          Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
          int j = 0;
-         HashMap skills = new HashMap();
-         ArrayList alphabeticalSkills = new ArrayList();
+         HashMap<String, Skill> skills = new HashMap();
+         ArrayList<String> alphabeticalSkills = new ArrayList();
          String name;
-         if(hero.getHeroClass() != null) {
-            Iterator t = hero.getHeroClass().getSkillNames().iterator();
-
-            while(t.hasNext()) {
-               String k = (String)t.next();
-               Skill i = HeroesSkillTree.heroes.getSkillManager().getSkill(k);
-               if(i != null && shouldListSkill(hst, hero, i)) {
-                  name = ChatColor.GREEN + k + ChatColor.GRAY;
-                  String s;
-                  Iterator var12;
-                  if(hst.getStrongParentSkills(hero, i) != null) {
-                     for(var12 = hst.getStrongParentSkills(hero, i).iterator(); var12.hasNext(); name = name + ", s:" + s) {
-                        s = (String)var12.next();
-                     }
-                  }
-
-                  if(hst.getWeakParentSkills(hero, i) != null) {
-                     for(var12 = hst.getWeakParentSkills(hero, i).iterator(); var12.hasNext(); name = name + ", w:" + s) {
-                        s = (String)var12.next();
-                     }
-                  }
-
-                  skills.put(k, i);
-                  alphabeticalSkills.add(name);
+         if (hero.getHeroClass() != null) {
+             for (String skillName : hero.getHeroClass().getSkillNames())
+             {
+               Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(skillName);
+               if ((skill != null) && (shouldListSkill(hst, hero, skill)))
+               {
+                 String message = ChatColor.GREEN + skillName + ChatColor.GRAY;
+                 if (hst.getStrongParentSkills(hero, skill) != null) {
+                   for (String s : hst.getStrongParentSkills(hero, skill)) {
+                     message = message + ", s:" + s;
+                   }
+                 }
+                 if (hst.getWeakParentSkills(hero, skill) != null) {
+                   for (String s : hst.getWeakParentSkills(hero, skill)) {
+                     message = message + ", w:" + s;
+                   }
+                 }
+                 skills.put(skillName, skill);
+                 alphabeticalSkills.add(message);
                }
-            }
-         }
+             }
+           }
 
          Collections.sort(alphabeticalSkills);
          int var14 = 0;
@@ -80,49 +74,40 @@ public class SkillLockedCommand {
       }
    }
 
-   private static boolean shouldListSkill(HeroesSkillTree hst, Hero hero, Skill skill) {
-      if(skill == null) {
-         return false;
-      } else if(!hst.isLocked(hero, skill)) {
-         return false;
-      } else if(hero.hasAccessToSkill(skill) && hero.canUseSkill(skill)) {
-         List strongParents = hst.getStrongParentSkills(hero, skill);
-         boolean hasStrongParents = strongParents != null && !strongParents.isEmpty();
-         List weakParents = hst.getWeakParentSkills(hero, skill);
-         boolean hasWeakParents = weakParents != null && !weakParents.isEmpty();
-         if(!hasStrongParents && !hasWeakParents) {
-            return false;
-         } else {
-            String name;
-            Iterator var8;
-            if(hasStrongParents) {
-               var8 = hst.getStrongParentSkills(hero, skill).iterator();
-
-               while(var8.hasNext()) {
-                  name = (String)var8.next();
-                  if(hst.isLocked(hero, HeroesSkillTree.heroes.getSkillManager().getSkill(name))) {
-                     return false;
-                  }
-               }
-            }
-
-            if(!hasWeakParents) {
-               return true;
-            } else {
-               var8 = hst.getWeakParentSkills(hero, skill).iterator();
-
-               while(var8.hasNext()) {
-                  name = (String)var8.next();
-                  if(!hst.isLocked(hero, HeroesSkillTree.heroes.getSkillManager().getSkill(name))) {
-                     return true;
-                  }
-               }
-
-               return false;
-            }
+   private static boolean shouldListSkill(HeroesSkillTree hst, Hero hero, Skill skill)
+   {
+     if (skill == null) {
+       return false;
+     }
+     if (!hst.isLocked(hero, skill)) {
+       return false;
+     }
+     if ((!hero.hasAccessToSkill(skill)) || (!hero.canUseSkill(skill))) {
+       return false;
+     }
+     List<String> strongParents = hst.getStrongParentSkills(hero, skill);
+     boolean hasStrongParents = (strongParents != null) && (!strongParents.isEmpty());
+     List<String> weakParents = hst.getWeakParentSkills(hero, skill);
+     boolean hasWeakParents = (weakParents != null) && (!weakParents.isEmpty());
+     if ((!hasStrongParents) && (!hasWeakParents)) {
+       return false;
+     }
+     if (hasStrongParents) {
+       for (String name : hst.getStrongParentSkills(hero, skill)) {
+         if (hst.isLocked(hero, HeroesSkillTree.heroes.getSkillManager().getSkill(name))) {
+           return false;
          }
-      } else {
-         return false;
-      }
+       }
+     }
+     if (hasWeakParents)
+     {
+       for (String name : hst.getWeakParentSkills(hero, skill)) {
+         if (!hst.isLocked(hero, HeroesSkillTree.heroes.getSkillManager().getSkill(name))) {
+           return true;
+         }
+       }
+       return false;
+     }
+     return true;
    }
-}
+ }

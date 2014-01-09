@@ -3,7 +3,7 @@ package me.Whatshiywl.heroesskilltree.commands;
 import com.herocraftonline.heroes.characters.Hero;
 
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
-import me.Whatshiywl.heroesskilltree.language.Lang;
+import me.Whatshiywl.heroesskilltree.Lang;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;

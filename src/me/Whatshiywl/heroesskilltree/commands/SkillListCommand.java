@@ -6,7 +6,6 @@ import com.herocraftonline.heroes.characters.skill.Skill;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.Iterator;
 
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
 
@@ -22,20 +21,19 @@ public class SkillListCommand {
       } else {
          Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
          int j = 0;
-         HashMap skills = new HashMap();
-         ArrayList alphabeticalSkills = new ArrayList();
-         if(hero.getHeroClass() != null) {
-            Iterator t = hero.getHeroClass().getSkillNames().iterator();
-
-            while(t.hasNext()) {
-               String k = (String)t.next();
-               Skill i = HeroesSkillTree.heroes.getSkillManager().getSkill(k);
-               if(!hst.isLocked(hero, i) && hero.canUseSkill(i)) {
-                  skills.put(k, i);
-                  alphabeticalSkills.add(k);
+         HashMap<String, Skill> skills = new HashMap();
+         ArrayList<String> alphabeticalSkills = new ArrayList();
+         if (hero.getHeroClass() != null) {
+             for (String skillName : hero.getHeroClass().getSkillNames())
+             {
+               Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(skillName);
+               if ((!hst.isLocked(hero, skill)) && (hero.canUseSkill(skill)))
+               {
+                 skills.put(skillName, skill);
+                 alphabeticalSkills.add(skillName);
                }
-            }
-         }
+             }
+           }
 
          Collections.sort(alphabeticalSkills);
          int var14 = 0;

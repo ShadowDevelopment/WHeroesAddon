@@ -58,7 +58,7 @@ public class EventListener implements Listener {
       plugin.recalcPlayerPoints(hero, hero.getHeroClass());
       Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
          public void run() {
-            Iterator var2 = hero.getEffects().iterator();
+            Iterator<?> var2 = hero.getEffects().iterator();
 
             while(var2.hasNext()) {
                Effect effect = (Effect)var2.next();
@@ -83,7 +83,7 @@ public class EventListener implements Listener {
          hero.getPlayer().sendMessage(ChatColor.GOLD + "[HST] " + ChatColor.AQUA + "SkillPoints: " + plugin.getPlayerPoints(hero));
          Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
             public void run() {
-               Iterator var2 = hero.getEffects().iterator();
+               Iterator<?> var2 = hero.getEffects().iterator();
 
                while(var2.hasNext()) {
                   Effect effect = (Effect)var2.next();
@@ -106,7 +106,7 @@ public class EventListener implements Listener {
       Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
          public void run() {
             boolean reset = false;
-            Iterator var3;
+            Iterator<?> var3;
             if(event.getTo().isDefault()) {
                reset = true;
                var3 = HeroesSkillTree.heroes.getClassManager().getClasses().iterator();
