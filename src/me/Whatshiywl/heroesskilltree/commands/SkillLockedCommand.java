@@ -22,8 +22,8 @@ public class SkillLockedCommand {
       } else {
          Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
          int j = 0;
-         HashMap<String, Skill> skills = new HashMap();
-         ArrayList<String> alphabeticalSkills = new ArrayList();
+         HashMap<String, Skill> skills = new HashMap<String, Skill>();
+         ArrayList<String> alphabeticalSkills = new ArrayList<String>();
          String name;
          if (hero.getHeroClass() != null) {
              for (String skillName : hero.getHeroClass().getSkillNames())
@@ -66,7 +66,7 @@ public class SkillLockedCommand {
          sender.sendMessage(ChatColor.GOLD + "[HST] Unlockable skills list page " + var15 + "/" + Math.round((double)alphabeticalSkills.size() / 10.0D));
 
          for(int var16 = var14; j < 10 && var16 < alphabeticalSkills.size() && j <= 9; ++var16) {
-            name = (String)alphabeticalSkills.get(var16);
+            name = alphabeticalSkills.get(var16);
             sender.sendMessage(name);
             ++j;
          }

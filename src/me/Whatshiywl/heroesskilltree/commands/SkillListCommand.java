@@ -21,8 +21,8 @@ public class SkillListCommand {
       } else {
          Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
          int j = 0;
-         HashMap<String, Skill> skills = new HashMap();
-         ArrayList<String> alphabeticalSkills = new ArrayList();
+         HashMap<String, Skill> skills = new HashMap<String, Skill>();
+         ArrayList<String> alphabeticalSkills = new ArrayList<String>();
          if (hero.getHeroClass() != null) {
              for (String skillName : hero.getHeroClass().getSkillNames())
              {
@@ -53,13 +53,13 @@ public class SkillListCommand {
          sender.sendMessage(ChatColor.GOLD + "[HST] Unlocked skills list page " + var15 + "/" + Math.round((double)alphabeticalSkills.size() / 10.0D));
 
          for(int var16 = var14; j < 10 && var16 < alphabeticalSkills.size() && j <= 9; ++var16) {
-            String name = (String)alphabeticalSkills.get(var16);
-            int maxlevel = hst.getSkillMaxLevel(hero, (Skill)skills.get(name));
+            String name = alphabeticalSkills.get(var16);
+            int maxlevel = hst.getSkillMaxLevel(hero, skills.get(name));
             if(maxlevel >= 0) {
-               int level = hst.getSkillLevel(hero, (Skill)skills.get(name));
-               sender.sendMessage(ChatColor.GREEN + name + " (" + level + "/" + maxlevel + "): " + ChatColor.GRAY + ((Skill)skills.get(name)).getDescription(hero));
+               int level = hst.getSkillLevel(hero, skills.get(name));
+               sender.sendMessage(ChatColor.GREEN + name + " (" + level + "/" + maxlevel + "): " + ChatColor.GRAY + skills.get(name).getDescription(hero));
             } else {
-               sender.sendMessage(ChatColor.GREEN + name + ": " + ChatColor.GRAY + ((Skill)skills.get(name)).getDescription(hero));
+               sender.sendMessage(ChatColor.GREEN + name + ": " + ChatColor.GRAY + skills.get(name).getDescription(hero));
             }
 
             ++j;
