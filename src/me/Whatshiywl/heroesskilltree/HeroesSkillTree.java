@@ -404,13 +404,11 @@ public class HeroesSkillTree extends JavaPlugin {
 
       try {
          playerConfig.load(playerFile);
-         Iterator message1 = this.playerClasses.get(s).keySet().iterator();
+         Iterator namePlayer = this.playerClasses.get(s).keySet().iterator();
 
-         while(message1.hasNext()) {
-            String name = (String)message1.next();
-            playerConfig.set(name + ".points", this.playerClasses.get(s).get(name));
+         while(namePlayer.hasNext()) {
+            String name = (String)namePlayer.next();
             if(this.playerSkills.containsKey(s) && this.playerSkills.get(s).containsKey(name)) {
-               Iterator var8 = ((HashMap)this.playerSkills.get(s).get(name)).keySet().iterator();
 
                if (playerConfig.getConfigurationSection(s + ".skills") != null) {
                    for (String st : playerConfig.getConfigurationSection(s + ".skills").getKeys(false)) {
@@ -477,10 +475,10 @@ public class HeroesSkillTree extends JavaPlugin {
 					return;
 				}
 			} catch(IOException e) {
-				e.printStackTrace(); // So they notice
-				LOG.severe("[PluginName] Couldn't create language file.");
-				LOG.severe("[PluginName] This is a fatal error. Now disabling");
-				this.setEnabled(false); // Without it loaded, we can't send them messages
+				e.printStackTrace();
+				LOG.severe("[HeroesSkillTree] Couldn't create language file.");
+				LOG.severe("[HeroesSkillTree] This is a fatal error. Now disabling");
+				this.setEnabled(false);
 			}
 		}
 		YamlConfiguration conf = YamlConfiguration.loadConfiguration(lang);
@@ -495,8 +493,8 @@ public class HeroesSkillTree extends JavaPlugin {
 		try {
 			conf.save(getLangFile());
 		} catch(IOException e) {
-			LOG.log(Level.WARNING, "PluginName: Failed to save lang.yml.");
-			LOG.log(Level.WARNING, "PluginName: Report this stack trace to <your name>.");
+			LOG.log(Level.WARNING, "HeroesSkillTree: Failed to save lang.yml.");
+			LOG.log(Level.WARNING, "HeroesSkillTree: Report this stack trace to Wiedzmin137.");
 			e.printStackTrace();
 		}
 	}
