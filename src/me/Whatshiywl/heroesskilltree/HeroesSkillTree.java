@@ -42,7 +42,7 @@ public class HeroesSkillTree extends JavaPlugin {
    public final EventListener HEventListener = new EventListener(this);
    public HeroesSkillTree plugin;
    public static Heroes heroes = (Heroes)Bukkit.getServer().getPluginManager().getPlugin("Heroes");
-   //TODO Take carry about those HashMaps and ArrayLists
+   //TODO Take carry about those HashMaps and ArrayLists, i really don't know HOW and IF it works
    public List<Skill> SkillStrongParents = new ArrayList<Skill>();
    public List<Skill> SkillWeakParents = new ArrayList<Skill>();
    public static YamlConfiguration LANG;
