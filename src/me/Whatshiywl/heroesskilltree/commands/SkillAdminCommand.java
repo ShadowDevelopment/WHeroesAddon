@@ -3,10 +3,9 @@ package me.Whatshiywl.heroesskilltree.commands;
 import com.herocraftonline.heroes.characters.Hero;
 
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
-import me.Whatshiywl.heroesskilltree.Lang;
+import me.Wiedzmin137.wheroesaddon.Lang;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -23,7 +22,7 @@ public class SkillAdminCommand {
             } else {
                if(args.length == 2) {
                   if(Bukkit.getPlayer(args[1]) == null) {
-                     sender.sendMessage(ChatColor.RED + "Sorry, " + args[1] + " is not online.");
+                     sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_PLAYER_OFFLINE.toString().replace("%player%", args[1]));
                      return;
                   }
 
@@ -39,84 +38,84 @@ public class SkillAdminCommand {
                   hst.setPlayerPoints(hero, 0);
                }
 
-               sender.sendMessage(ChatColor.GOLD + "[HST] " + ChatColor.AQUA + "You have reset " + args[1] + "\'s SkillPoints.");
+               sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_RESET_SUCCESS.toString().replace("%player%", args[1]));
             }
          } else if(args[0].equalsIgnoreCase("reset")) {
             if(!sender.hasPermission("skilladmin.reset")) {
-            	sender.sendMessage(Lang.ERROR_PERMISSION_DENIED.toString());
+            	sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_PERMISSION_DENIED);
             } else {
                if(args.length == 2) {
                   if(Bukkit.getPlayer(args[1]) != null) {
                      hst.resetPlayer(Bukkit.getPlayer(args[1]));
-                     sender.sendMessage(ChatColor.GOLD + "[HST] " + ChatColor.AQUA + "You have reset " + args[1]);
+                     sender.sendMessage(Lang.TITLE.toString() +  Lang.ADMIN_RESET_SUCCESS.toString().replace("%player%", args[1]));
                   } else {
-                     sender.sendMessage(ChatColor.RED + "Sorry, " + args[1] + " is not online.");
+                     sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_PLAYER_OFFLINE.toString().replace("%player", args[1]));
                   }
                } else {
                   if(!(sender instanceof Player)) {
-                     sender.sendMessage(ChatColor.RED + "You must be in game to use this command");
+                     sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_IN_CONSOLE_DENIED.toString().replace("%player%", args[1]));
                      return;
                   }
 
                   hst.resetPlayer((Player)sender);
-                  sender.sendMessage(ChatColor.GOLD + "[HST] " + ChatColor.AQUA + "You have reset yourself.");
+                  sender.sendMessage(Lang.TITLE.toString() + Lang.SELF_RESET_SUCCESS);
                }
 
             }
          } else if(args.length < 2) {
-            sender.sendMessage(ChatColor.RED + "/skilladmin (set/give/remove/clear/reset)");
+            sender.sendMessage(Lang.WRONG_CMD_USAGE.toString());
          } else if(args[0].equalsIgnoreCase("set")) {
             if(!sender.hasPermission("skilladmin.set")) {
-               sender.sendMessage(ChatColor.RED + "You don\'t have enough permissions!");
+               sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_PERMISSION_DENIED);
             } else {
                if(args.length > 2) {
                   if(Bukkit.getPlayer(args[2]) != null) {
                      hero = HeroesSkillTree.heroes.getCharacterManager().getHero(Bukkit.getPlayer(args[2]));
                      hst.setPlayerPoints(hero, Integer.parseInt(args[1]));
-                     sender.sendMessage(ChatColor.GOLD + "[HST] " + ChatColor.AQUA + "You have set " + args[2] + "\'s SkillPoints to " + Integer.parseInt(args[1]) + ".");
+                     sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_SKILLPOINTS_ADD_SUCCESS.toString().replace("%player%", args[2]).replace("%points%", args[1]));
                   } else {
-                     sender.sendMessage(ChatColor.RED + "Sorry, " + args[2] + " is not online.");
+                     sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_PLAYER_OFFLINE.toString().replace("%player%", args[2]));
                   }
                } else {
                   if(!(sender instanceof Player)) {
-                     sender.sendMessage(ChatColor.RED + "You must be in game to use this command");
+                     sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_IN_CONSOLE_DENIED);
                      return;
                   }
 
                   hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
                   hst.setPlayerPoints(hero, Integer.parseInt(args[1]));
-                  sender.sendMessage(ChatColor.GOLD + "[HST] " + ChatColor.AQUA + "You have set your SkillPoints to " + Integer.parseInt(args[1]) + ".");
+                  sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_SKILLPOINTS_ADD_SUCCESS.toString().replace("%player%", "your").replace("%points%", args[1]));
                }
 
             }
          } else if(args[0].equalsIgnoreCase("give")) {
             if(!sender.hasPermission("skilladmin.give")) {
-               sender.sendMessage(ChatColor.RED + "You don\'t have enough permissions!");
+               sender.sendMessage(Lang.ERROR_PERMISSION_DENIED.toString());
             } else {
                if(args.length > 2) {
                   if(Bukkit.getPlayer(args[2]) != null) {
                      hero = HeroesSkillTree.heroes.getCharacterManager().getHero(Bukkit.getPlayer(args[2]));
                      hst.setPlayerPoints(hero, hst.getPlayerPoints(hero) + Integer.parseInt(args[1]));
-                     sender.sendMessage(ChatColor.GOLD + "[HST] " + ChatColor.AQUA + "You have given " + Integer.parseInt(args[1]) + " SkillPoint(s) to " + args[2] + ".");
+                     sender.sendMessage(Lang.TITLE.toString()+ Lang.ADMIN_SKILLPOINTS_ADD_SUCCESS.toString().replace("%player%", args[2]) + Integer.parseInt(args[1]) + ".");
                   } else {
-                     sender.sendMessage(ChatColor.RED + "Sorry, " + args[2] + " is not online.");
+                     sender.sendMessage(Lang.ERROR_PLAYER_OFFLINE.toString().replace("%player%", args[1]));
                   }
                } else {
                   if(!(sender instanceof Player)) {
-                     sender.sendMessage(ChatColor.RED + "You must be in game to use this command");
+                     sender.sendMessage(Lang.ERROR_IN_CONSOLE_DENIED.toString());
                      return;
                   }
 
                   hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
                   hst.setPlayerPoints(hero, hst.getPlayerPoints(hero) + Integer.parseInt(args[1]));
-                  sender.sendMessage(ChatColor.GOLD + "[HST] " + ChatColor.AQUA + "You have removed " + Integer.parseInt(args[1]) + " SkillPoint(s) to yourself.");
+                  sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_SKILLPOINTS_REMOVE_SUCCESS.toString().replace("%player%", "your").replace("%skillpoints%", args[1]));
                }
 
             }
          } else {
             if(args[0].equalsIgnoreCase("remove")) {
                if(sender.hasPermission("skilladmin.remove")) {
-                  sender.sendMessage(ChatColor.RED + "You don\'t have enough permissions!");
+                  sender.sendMessage(Lang.ERROR_PERMISSION_DENIED.toString());
                   return;
                }
 
@@ -124,19 +123,19 @@ public class SkillAdminCommand {
                   if(Bukkit.getPlayer(args[2]) != null) {
                      hero = HeroesSkillTree.heroes.getCharacterManager().getHero(Bukkit.getPlayer(args[2]));
                      hst.setPlayerPoints(hero, hst.getPlayerPoints(hero) - Integer.parseInt(args[1]));
-                     sender.sendMessage(ChatColor.GOLD + "[HST] " + ChatColor.AQUA + "You have removed " + Integer.parseInt(args[1]) + " SkillPoint(s) from " + args[2] + ".");
+                     sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_SKILLPOINTS_REMOVE_SUCCESS.toString().replace("%player%", args[2]).replace("%skillpoints%", args[1]));
                   } else {
-                     sender.sendMessage(ChatColor.RED + "Sorry, " + args[2] + " is not online.");
+                     sender.sendMessage(Lang.ERROR_PLAYER_OFFLINE.toString().replace("%player%", args[1]));
                   }
                } else {
                   if(!(sender instanceof Player)) {
-                     sender.sendMessage(ChatColor.RED + "You must be in game to use this command");
+                     sender.sendMessage(Lang.ERROR_IN_CONSOLE_DENIED.toString());
                      return;
                   }
 
                   hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
                   hst.setPlayerPoints(hero, hst.getPlayerPoints(hero) - Integer.parseInt(args[1]));
-                  sender.sendMessage(ChatColor.GOLD + "[HST] " + ChatColor.AQUA + "You have removed " + Integer.parseInt(args[1]) + " SkillPoint(s) from yourself.");
+                  sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_SKILLPOINTS_REMOVE_SUCCESS.toString().replace("%player%", "yourself").replace("%skillpoints%", args[1]));
                }
             }
 
