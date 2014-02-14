@@ -5,6 +5,7 @@ import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.classes.HeroClass;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
+import com.herocraftonline.heroes.util.Messaging;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,12 +30,14 @@ import me.desht.scrollingmenusign.SMSHandler;
 import me.desht.scrollingmenusign.ScrollingMenuSign;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -137,7 +140,6 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
 	}*/
    Plugin p = pm.getPlugin("ScrollingMenuSign");
        if (p instanceof ScrollingMenuSign && p.isEnabled()) {
-    	   ScrollingMenuSign sms = (ScrollingMenuSign) p;
     	   IGUI = new ItemGUI((ScrollingMenuSign) p);
     	   Logger.info("[WHeroesAddon] ScrollingMenuSign integration is enabled; menus created");
     	   // you're good to use its methods now
@@ -155,9 +157,11 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
          return true;
       } else if(commandLabel.equalsIgnoreCase("skillgui")) {
          PluginManager pm = getServer().getPluginManager();
+         HeroClass heroclass = hero.getHeroClass();
+         
     	 Plugin p = pm.getPlugin("ScrollingMenuSign");
     	 ItemGUI ex = new ItemGUI((ScrollingMenuSign) p);
-    	 //ex.createSkillTree(sender);
+    	 ex.createSkillTree(sender, heroclass, heroes);
          return true;
       } else if(commandLabel.equalsIgnoreCase("skilldown")) {
          SkillDownCommand.skillDown(this, sender, args);
@@ -234,8 +238,8 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
       return this.playerClasses.get(hero.getPlayer().getName()) != null && this.playerClasses
     		  .get(hero.getPlayer().getName())
     		  .get(hero.getHeroClass().getName()) != null?((Integer)this.playerClasses
-    				  .get(hero.getPlayer().getName())
-    				  .get(hero.getHeroClass().getName())).intValue():0;
+    		  .get(hero.getPlayer().getName())
+    		  .get(hero.getHeroClass().getName())).intValue():0;
    }
 
    @SuppressWarnings({ "rawtypes", "unchecked" })

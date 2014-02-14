@@ -122,7 +122,7 @@ public class EventListener implements org.bukkit.event.Listener
     }, 1L);
   }
   
-  @EventHandler(priority=EventPriority.HIGHEST)
+  @EventHandler(priority=EventPriority.MONITOR)
   public void onPlayerUseSkill(SkillUseEvent event) {
     Hero hero = event.getHero();
     Skill skill = event.getSkill();
