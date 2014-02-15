@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SkillAdminCommand {
-
+   //TODO check language support - need testers!
    public static void skillAdmin(HeroesSkillTree hst, CommandSender sender, String[] args) {
       if(args.length < 1) {
          sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_ADMIN_NOT_ENOUGH_ARGUMENTS);

@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SkillInfoCommand {
-
+   //TODO create lanugage support
    public static void skillInfo(HeroesSkillTree hst, CommandSender sender, String[] args) {
       if(!sender.hasPermission("skilltree.info")) {
          sender.sendMessage(ChatColor.RED + "You don\'t have enough permissions!");

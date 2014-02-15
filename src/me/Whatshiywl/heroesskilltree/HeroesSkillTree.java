@@ -52,7 +52,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    public final EventListener HEventListener = new EventListener(this);
    public HeroesSkillTree plugin;
    public static Heroes heroes = (Heroes)Bukkit.getServer().getPluginManager().getPlugin("Heroes");
-   //TODO Take carry about those HashMaps and ArrayLists, i really don't know if it works on THIS code
+   //TODO Take carry about those HashMaps and ArrayLists, they're bugged (saving or loading or both)
    public List<Skill> SkillStrongParents = new ArrayList<Skill>();
    public List<Skill> SkillWeakParents = new ArrayList<Skill>();
    public static YamlConfiguration LANG;
@@ -67,8 +67,6 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
       PluginManager pm = getServer().getPluginManager();
       pm.registerEvents(this.HEventListener, this);
 	  Logger = getServer().getLogger();
-	  
-      setupSMS(pm);
       
       getConfig().options().copyDefaults(true);
       saveConfig();
@@ -80,12 +78,8 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
         Hero hero = heroes.getCharacterManager().getHero(player);
         recalcPlayerPoints(hero, hero.getHeroClass());
       }
-      //ViewManager managerView = ScrollingMenuSign.getInstance().getViewManager();
-
-      //if (!managerView.checkForView("SkillTree")) {
-      //	  SMSInventoryView view = managerView.addInventoryViewToMenu("SkillTree", SkillTree, Bukkit.getConsoleSender());
-      //	  
-      //}	
+      
+      setupSMS(pm);
       
       if (IGUI != null) {
     	  IGUI.setAutosave(true);
@@ -113,32 +107,10 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    }
    
    private void setupSMS(PluginManager pm) {
-   /*    try {
-    	   Plugin p = pm.getPlugin("ScrollingMenuSign");
-    	   if (p != null && p instanceof ScrollingMenuSign) {
-            	   IGUI = new ItemGUI((ScrollingMenuSign) p);
-            	   Logger.info("[WHeroesAddon] ScrollingMenuSign integration is enabled; menus created");
-    	   } else {
-    		   Logger.info("[WHeroesAddon] ScrollingMenuSign integration is not enabled");
-    	   }
-       } catch (NoClassDefFoundError e) {
-    	   Logger.info("[WHeroesAddon] ScrollingMenuSign plugin not detected (NoClassDefFoundError caught).");
-   }*/
-   /*if (smsHandler == null) {
-	   Plugin p = pm.getPlugin("ScrollingMenuSign");
-	    if (p != null && p instanceof ScrollingMenuSign) {
-	      IGUI = new ItemGUI((ScrollingMenuSign) p);
-	      Logger.info("[WHeroesAddon] ScrollingMenuSign integration is enabled; menus created");
-	    } else {
-	      Logger.info("ScrollingMenuSign integration is not enabled");
-	    }
-	  }
-	}*/
    Plugin p = pm.getPlugin("ScrollingMenuSign");
        if (p instanceof ScrollingMenuSign && p.isEnabled()) {
     	   IGUI = new ItemGUI((ScrollingMenuSign) p);
-    	   Logger.info("[WHeroesAddon] ScrollingMenuSign integration is enabled; menus created");
-    	   // you're good to use its methods now
+    	   Logger.info(Lang.CONSOLE_SMS_ENABLED.toString());
        } else {
     	   // plugin not available
        }
@@ -171,7 +143,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
             return true;
          } else {
             if(sender.hasPermission("skilltree.points")) {
-               sender.sendMessage(Lang.TITLE.toString() + Lang.INFO_SKILLPOINTS.toString().replace("%points", skillPoints));
+               sender.sendMessage(Lang.TITLE.toString() + Lang.INFO_SKILLPOINTS.toString().replace("%points%", skillPoints));
             } else {
                sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_PERMISSION_DENIED);
             }
@@ -191,7 +163,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
         	sender.sendMessage(Lang.HELP_6.toString());
         	sender.sendMessage(Lang.HELP_7.toString());
         	if(sender instanceof Player) {
-            	sender.sendMessage(Lang.INFO_SKILLPOINTS.toString().replace("%points", skillPoints));
+            	sender.sendMessage(Lang.INFO_SKILLPOINTS.toString().replace("%points%", skillPoints));
         	}
             return true;
          } else {
@@ -418,7 +390,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
        }
        catch (IOException ex)
        {
-    	 Logger.severe(Lang.SERVRE_FAILED_CREATE.toString().replace("%name", name));;
+    	 Logger.severe(Lang.SERVRE_FAILED_CREATE.toString().replace("%name%", name));;
          return;
        }
      }

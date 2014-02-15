@@ -132,6 +132,12 @@ public class EventListener implements org.bukkit.event.Listener
       event.setCancelled(true);
       return;
     }
+    //TODO test "hst-damage" feature
+    int damage = (int)(SkillConfigManager.getUseSetting(hero, skill, "hst-damage", 0.0D, false) * (
+      plugin.getSkillLevel(hero, skill) - 1));
+    int firstDamage = (int)(SkillConfigManager.getUseSetting(hero, skill, "damage", 0.0D, false));
+    damage = damage > 0 ? damage : 0;
+    event.getHero().setSkillSetting(skill, "hst-damage", firstDamage + damage);
     
     int health = (int)(SkillConfigManager.getUseSetting(hero, skill, "hst-health", 0.0D, false) * (
       plugin.getSkillLevel(hero, skill) - 1));

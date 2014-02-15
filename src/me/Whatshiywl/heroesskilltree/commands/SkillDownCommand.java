@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class SkillDownCommand {
-
+   //TODO create lanugage support
    public static void skillDown(HeroesSkillTree hst, CommandSender sender, String[] args) {
       if(!sender.hasPermission("skilltree.down")) {
          sender.sendMessage(ChatColor.RED + "You don\'t have enough permissions!");
