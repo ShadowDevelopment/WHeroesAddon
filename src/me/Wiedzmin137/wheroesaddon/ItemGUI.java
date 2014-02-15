@@ -84,35 +84,10 @@ public class ItemGUI implements Listener {
             if (skill.getIdentifiers().length == 0) {
               Heroes.log(Level.SEVERE, "Skill " + sn + " has no valid identifiers and can not be used on the menu!  Please contact the author to fix the skill.");
             }
-            else {
-              //String indicator;
-              //if (is != null) {
-              //ItemStack indicator = new ItemStack(Material.NETHER_STAR);
-              
-              //String finalIndicator = getItemStack(SkillConfigManager.getSetting(hc, skill, indicator));
-              
-              //}	
-            	
-              //indicator1 = SkillConfigManager.getSetting(hc, skill, "indicator", false);
-              
-              
-              
-              
-              //if ((SkillConfigManager.getSetting(hc, skill, finalIndicator) = ) {
-              //	  String indicator = SkillConfigManager.getUseSetting(name, skill, "indicator", 0.0D, false);
-              //} else {
-            	  
-              //String finalIndicator1 = "nether_star";
-              //ItemStack finalIndicator2 = new ItemStack(Material.NETHER_STAR);
-              //String finalIndicator3 = getItemStack(finalIndicator2);
-              //}
-              
-              String finalIndicator = (String)SkillConfigManager.getSetting(hc, skill, "hst-indicator");
-              //if (finalIndicator != null) {
-              //	  finalIndicator = "nether_star";
-              //}
+            else { 
+              String indicator = (String)SkillConfigManager.getSetting(hc, skill, "hst-indicator");
     
-              SMSMenuItem skillsClass = new SMSMenuItem(menu, ChatColor.DARK_GREEN.toString() + ChatColor.BOLD + skill.getName(), "/" + skill.getIdentifiers()[0], "", finalIndicator, new String[] { ChatColor.YELLOW + "Click for use!" });
+              SMSMenuItem skillsClass = new SMSMenuItem(menu, ChatColor.DARK_GREEN.toString() + ChatColor.BOLD + skill.getName(), "/" + skill.getIdentifiers()[0], "", indicator, new String[] { ChatColor.YELLOW + "Click for use!" });
               menu.addItem(skillsClass);
             }
           }
