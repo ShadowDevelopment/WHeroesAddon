@@ -26,11 +26,9 @@ public class SkillLockedCommand {
          ArrayList<String> alphabeticalSkills = new ArrayList<String>();
          String name;
          if (hero.getHeroClass() != null) {
-             for (String skillName : hero.getHeroClass().getSkillNames())
-             {
+             for (String skillName : hero.getHeroClass().getSkillNames()) {
                Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(skillName);
-               if ((skill != null) && (shouldListSkill(hst, hero, skill)))
-               {
+               if ((skill != null) && (shouldListSkill(hst, hero, skill))) {
                  String message = ChatColor.GREEN + skillName + ChatColor.GRAY;
                  if (hst.getStrongParentSkills(hero, skill) != null) {
                    for (String s : hst.getStrongParentSkills(hero, skill)) {

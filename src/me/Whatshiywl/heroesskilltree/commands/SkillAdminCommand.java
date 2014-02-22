@@ -25,7 +25,6 @@ public class SkillAdminCommand {
                      sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_PLAYER_OFFLINE.toString().replace("%player%", args[1]));
                      return;
                   }
-
                   hero = HeroesSkillTree.heroes.getCharacterManager().getHero(Bukkit.getPlayer(args[1]));
                   hst.setPlayerPoints(hero, 0);
                } else {
@@ -33,11 +32,9 @@ public class SkillAdminCommand {
                 	 sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_IN_CONSOLE_DENIED);
                      return;
                   }
-
                   hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
                   hst.setPlayerPoints(hero, 0);
                }
-
                sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_RESET_SUCCESS.toString().replace("%player%", args[1]));
             }
          } else if(args[0].equalsIgnoreCase("reset")) {
@@ -56,11 +53,9 @@ public class SkillAdminCommand {
                      sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_IN_CONSOLE_DENIED.toString().replace("%player%", args[1]));
                      return;
                   }
-
                   hst.resetPlayer((Player)sender);
                   sender.sendMessage(Lang.TITLE.toString() + Lang.SELF_RESET_SUCCESS);
                }
-
             }
          } else if(args.length < 2) {
             sender.sendMessage(Lang.WRONG_CMD_USAGE.toString());
@@ -81,7 +76,6 @@ public class SkillAdminCommand {
                      sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_IN_CONSOLE_DENIED);
                      return;
                   }
-
                   hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
                   hst.setPlayerPoints(hero, Integer.parseInt(args[1]));
                   sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_SKILLPOINTS_ADD_SUCCESS.toString().replace("%player%", "your").replace("%points%", args[1]));
@@ -105,7 +99,6 @@ public class SkillAdminCommand {
                      sender.sendMessage(Lang.ERROR_IN_CONSOLE_DENIED.toString());
                      return;
                   }
-
                   hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
                   hst.setPlayerPoints(hero, hst.getPlayerPoints(hero) + Integer.parseInt(args[1]));
                   sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_SKILLPOINTS_REMOVE_SUCCESS.toString().replace("%player%", "your").replace("%skillpoints%", args[1]));
@@ -118,7 +111,6 @@ public class SkillAdminCommand {
                   sender.sendMessage(Lang.ERROR_PERMISSION_DENIED.toString());
                   return;
                }
-
                if(args.length > 2) {
                   if(Bukkit.getPlayer(args[2]) != null) {
                      hero = HeroesSkillTree.heroes.getCharacterManager().getHero(Bukkit.getPlayer(args[2]));
@@ -132,13 +124,11 @@ public class SkillAdminCommand {
                      sender.sendMessage(Lang.ERROR_IN_CONSOLE_DENIED.toString());
                      return;
                   }
-
                   hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
                   hst.setPlayerPoints(hero, hst.getPlayerPoints(hero) - Integer.parseInt(args[1]));
                   sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_SKILLPOINTS_REMOVE_SUCCESS.toString().replace("%player%", "yourself").replace("%skillpoints%", args[1]));
                }
             }
-
          }
       }
    }

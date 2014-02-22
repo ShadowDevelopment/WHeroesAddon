@@ -2,7 +2,6 @@ package me.Wiedzmin137.wheroesaddon;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
@@ -12,11 +11,7 @@ import me.desht.scrollingmenusign.SMSMenu;
 import me.desht.scrollingmenusign.SMSMenuItem;
 import me.desht.scrollingmenusign.ScrollingMenuSign;
 import me.desht.scrollingmenusign.views.SMSInventoryView;
-import me.desht.scrollingmenusign.views.SMSView;
-import me.desht.scrollingmenusign.views.ViewManager;
-
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -48,7 +43,7 @@ public class ItemGUI implements Listener {
     }
 
     public void createSkillTree(CommandSender sender, HeroClass hc, Heroes plugin) {
-    	//TODO cleanup, add some things and change some names
+    	//TODO cleanup. Some things and change some names
         String name = hc.getName();
         SMSMenu menu = null;
         
@@ -64,6 +59,7 @@ public class ItemGUI implements Listener {
         if (menu == null) {
           menu = smsHandler.createMenu(name + " menu", Lang.TITLE_ITEM_GUI.toString().replace("%class%", name), name);
         }
+        
         menu.removeAllItems();
         
         menu.setAutosave(false);
@@ -79,15 +75,15 @@ public class ItemGUI implements Listener {
             else { 
                 //TODO add next line on lore - (new String[] { lore });
                 //TODO add level of skills - by quantity of items
-                //TODO get a statistic from .getSettings() and take them to lore
+                //TODO get statistics from .getSettings() and take them to the lore
             	//TODO add language support
             	
               String indicator = (String)SkillConfigManager.getSetting(hc, skill, "hst-indicator");
-              SMSMenuItem skillsClass = new SMSMenuItem(menu,
-            		  Lang.GUI_TITLE_SKILL.toString().replace("%skill%", skill.getName()),
-            		  "/" + skill.getIdentifiers()[0], "",
-            		  indicator,
-            		  new String[] { Lang.GUI_LORE.toString() });
+              SMSMenuItem skillsClass = new SMSMenuItem(menu, /*manu*/
+            		  Lang.GUI_TITLE_SKILL.toString().replace("%skill%", skill.getName()), /*label*/
+            		  "/" + skill.getIdentifiers()[0], "", /*command, message*/
+            		  indicator, /*iconMaterialName*/
+            		  new String[] { Lang.GUI_LORE.toString() }); /*lore*/
               menu.addItem(skillsClass);
             }
           }

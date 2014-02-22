@@ -43,7 +43,6 @@ public class SkillInfoCommand {
             if(sender.hasPermission("skilltree.points")) {
                sender.sendMessage(ChatColor.GOLD + "[HST] " + ChatColor.AQUA + "You currently have " + hst.getPlayerPoints(hero) + " SkillPoints.");
             }
-
          }
       }
    }

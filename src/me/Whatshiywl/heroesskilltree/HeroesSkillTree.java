@@ -73,8 +73,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
       loadConfig();
       loadLang();
       
-      for (Player player : Bukkit.getServer().getOnlinePlayers())
-      {
+      for (Player player : Bukkit.getServer().getOnlinePlayers()) {
         Hero hero = heroes.getCharacterManager().getHero(player);
         recalcPlayerPoints(hero, hero.getHeroClass());
       }
@@ -119,7 +118,6 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
       Hero hero = heroes.getCharacterManager().getHero((Player)sender);
       String skillPoints = String.valueOf(this.getPlayerPoints(hero));
-	   
       if(commandLabel.equalsIgnoreCase("skillup")) {
          SkillUpCommand.skillUp(this, sender, args);
          return true;
@@ -147,7 +145,6 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
             } else {
                sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_PERMISSION_DENIED);
             }
-
             return true;
          }
       } else if(commandLabel.equalsIgnoreCase("skilladmin")) {
@@ -190,8 +187,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
        playerFolder.mkdir();
      }
      File playerFile = new File(playerFolder, name + ".yml");
-     if ((playerFolder.exists()) && (!playerFolder.delete()))
-     {
+     if ((playerFolder.exists()) && (!playerFolder.delete())) {
        Logger.severe(Lang.SERVRE_FAILED_DELETE.toString().replace("%name%", name));
        return;
      }
@@ -211,43 +207,36 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    }
 
    @SuppressWarnings({ "rawtypes", "unchecked" })
-   public void recalcPlayerPoints(Hero hero, HeroClass hClass)   {
+   public void recalcPlayerPoints(Hero hero, HeroClass hClass) {
 	    String name = hero.getPlayer().getName();
 	    String className = hClass.getName();
 	    int points = hero.getLevel(hClass) * getPointsPerLevel();
 	    if (this.playerClasses.get(name) == null) {
 	      this.playerClasses.put(name, new HashMap<String, Integer>());
 	    }
-	    if (hero.getPlayer().hasPermission("skilltree.override.usepoints"))
-	    {
+	    if (hero.getPlayer().hasPermission("skilltree.override.usepoints")) {
 	      this.playerClasses.get(name).put(className, Integer.valueOf(points));
 	      return;
 	    }
-	    if (this.playerClasses.get(name).get(className) == null)
-	    {
+	    if (this.playerClasses.get(name).get(className) == null) {
 	      this.playerClasses.get(name).put(className, Integer.valueOf(0));
 	      return;
 	    }
-	    if (this.playerSkills.get(name) == null)
-	    {
+	    if (this.playerSkills.get(name) == null) {
 	      this.playerSkills.put(name, new HashMap<String, HashMap<String, Integer>>());
 	      return;
 	    }
-	    if (this.playerSkills.get(name).get(className) == null)
-	    {
+	    if (this.playerSkills.get(name).get(className) == null) {
 	      this.playerSkills.get(name).put(className, new HashMap());
 	      return;
 	    }
-	    for (Skill skill : heroes.getSkillManager().getSkills())
-	    {
+	    for (Skill skill : heroes.getSkillManager().getSkills()) {
 	      String skillName = skill.getName();
-	      if (((HashMap)this.playerSkills.get(name).get(className)).get(skillName) != null)
-	      {
+	      if (((HashMap)this.playerSkills.get(name).get(className)).get(skillName) != null) {
 	        points -= ((Integer)((HashMap)this.playerSkills.get(name)
 	        		.get(className))
 	        		.get(skillName)).intValue();
-	        if (points < 0)
-	        {
+	        if (points < 0) {
 	          Logger.warning("[HeroesSkillTree] " + name + "'s skills are at a too high level!");
 	          points = 0;
 	        }
@@ -321,7 +310,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    public List<String> getParentSkills(Hero hero, Skill skill, String weakOrStrong) {
       FileConfiguration hCConfig = this.getHeroesClassConfig(hero.getHeroClass());
       return hCConfig.getConfigurationSection("permitted-skills." + skill.getName() + ".parents") 
-    		  == null?null:hCConfig
+    		  == null ? null : hCConfig
     				  .getConfigurationSection("permitted-skills." + skill.getName() + ".parents")
     				  .getStringList(weakOrStrong);
    }
@@ -343,8 +332,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
       return hero.hasAccessToSkill(skill)?this.getSkillLevel(hero, skill) >= this.getSkillMaxLevel(hero, skill):false;
    }
 
-   public boolean canUnlock(Hero hero, Skill skill)
-   {
+   public boolean canUnlock(Hero hero, Skill skill) {
      if ((!hero.hasAccessToSkill(skill)) || (!hero.canUseSkill(skill))) {
        return false;
      }
@@ -362,8 +350,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
          }
        }
      }
-     if (hasWeakParents)
-     {
+     if (hasWeakParents) {
        for (String name : getWeakParentSkills(hero, skill)) {
          if (isMastered(hero, heroes.getSkillManager().getSkill(name))) {
            return true;
@@ -375,8 +362,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    }
 
 
-   public void loadPlayerConfig(String name)
-   {
+   public void loadPlayerConfig(String name) {
      FileConfiguration playerConfig = new YamlConfiguration();
      File playerFolder = new File(getDataFolder(), "data");
      if (!playerFolder.exists()) {
@@ -384,24 +370,20 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
      }
      File playerConfigFile = new File(playerFolder, name + ".yml");
      if (!playerConfigFile.exists()) {
-       try
-       {
+       try {
          playerConfigFile.createNewFile();
        }
-       catch (IOException ex)
-       {
+       catch (IOException ex) {
     	 Logger.severe(Lang.SERVRE_FAILED_CREATE.toString().replace("%name%", name));;
          return;
        }
      }
-     try
-     {
+     try {
        playerConfig.load(playerConfigFile);
        if (!this.playerClasses.containsKey(name)) {
          this.playerClasses.put(name, new HashMap<String, Integer>());
        }
-       for (String s : playerConfig.getKeys(false))
-       {
+       for (String s : playerConfig.getKeys(false)) {
          this.playerClasses.get(name).put(s, Integer.valueOf(playerConfig.getInt(s + ".points", 0)));
          if (!this.playerSkills.containsKey(s)) {
            this.playerSkills.put(name, new HashMap<String, HashMap<String, Integer>>());
@@ -417,8 +399,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
          }
        }
      }
-     catch (Exception e)
-     {
+     catch (Exception e) {
     	 Logger.severe("[HeroesSkillTree] failed to load " + name + ".yml");
      }
    }
@@ -428,15 +409,12 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
          return this.hConfigs.get(hClass.getName());
       }
       File classFolder = new File(heroes.getDataFolder(), "classes");
-      for (File f : classFolder.listFiles())
-      {
+      for (File f : classFolder.listFiles()) {
         FileConfiguration config = new YamlConfiguration();
-        try
-        {
+        try {
           config.load(f);
           String currentClassName = config.getString("name");
-          if (currentClassName.equalsIgnoreCase(hClass.getName()))
-          {
+          if (currentClassName.equalsIgnoreCase(hClass.getName())) {
             this.hConfigs.put(hClass.getName(), config);
             return config;
           }
@@ -449,8 +427,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
       return null;
     }
 
-   private void saveAll()
-   {
+   private void saveAll() {
      for (String s : this.playerClasses.keySet()) {
        savePlayerConfig(s);
      }
@@ -581,6 +558,5 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
 		   Logger.warning("HeroesSkillTree: Report this stack trace to Wiedzmin137.");
 		   e.printStackTrace();
 	   }
-   }
-
+   	}
 }

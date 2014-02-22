@@ -5,6 +5,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
 * An enum for requesting strings from the language file.
+* @author Gomeow
+* @author Wiedzmin137
+* @author Bednar12
 */
 public enum Lang {
     TITLE("titleName", "&1[&bSkillTree&1]&r:"),
