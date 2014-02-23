@@ -14,6 +14,7 @@ public enum Lang {
     TITLE_ITEM_GUI("itemGUITitle", "&1[&9 SkillTree of %class% &1]&r"),
     GUI_INVAILD_SKILLS("GUIInvaildSkills", "Skill %skill% has no valid identifiers and can not be used on the menu! Please contact the author to fix the skill."),
     GUI_LORE("GUILore", "&eClick for use!"),
+    GUI_LORE_LEVEL("GUILoreLevel", "&fSLevel: %level%"),
     GUI_TITLE_SKILL("GUITitleSkill", "&2&l[&r&a%skill%&2&l]"),
     CONSOLE_ENABLED("consoleEnabled", "[WHeroesAddon] Version B1.6 By wiedzmin137 and Bednar12 has been enabled!"),
     CONSOLE_DISABLED("consoleDisabled", "[WHeroesAddon] Version B1.6 By wiedzmin137 and Bednar12 has been disabled!"),

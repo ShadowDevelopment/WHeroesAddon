@@ -116,19 +116,31 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    }
    
    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	  //TODO fix strange ClassCastException (it's occur even if it shouldn't) casted in console (Spigot)
       Hero hero = heroes.getCharacterManager().getHero((Player)sender);
       String skillPoints = String.valueOf(this.getPlayerPoints(hero));
+      
       if(commandLabel.equalsIgnoreCase("skillup")) {
          SkillUpCommand.skillUp(this, sender, args);
          return true;
       } else if(commandLabel.equalsIgnoreCase("skillgui")) {
-         PluginManager pm = getServer().getPluginManager();
-         HeroClass heroclass = hero.getHeroClass();
-         
-    	 Plugin p = pm.getPlugin("ScrollingMenuSign");
-    	 ItemGUI ex = new ItemGUI((ScrollingMenuSign) p);
-    	 ex.createSkillTree(sender, heroclass, heroes);
-         return true;
+         if (sender instanceof Player) {
+        	 if (sender.hasPermission("skilltree.skillgui")) {
+                 PluginManager pm = getServer().getPluginManager();
+                 HeroClass heroclass = hero.getHeroClass();
+                 
+            	 Plugin p = pm.getPlugin("ScrollingMenuSign");
+            	 ItemGUI ex = new ItemGUI((ScrollingMenuSign) p);
+            	 ex.createSkillTree(sender, heroclass, heroes);
+        	 } else {
+            	 sender.sendMessage(Lang.ERROR_IN_CONSOLE_DENIED.toString());
+                 return true;
+        	 }
+             return true;
+         } else {
+        	 sender.sendMessage(Lang.ERROR_IN_CONSOLE_DENIED.toString());
+        	 return true;
+         }
       } else if(commandLabel.equalsIgnoreCase("skilldown")) {
          SkillDownCommand.skillDown(this, sender, args);
          return true;
@@ -374,7 +386,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
          playerConfigFile.createNewFile();
        }
        catch (IOException ex) {
-    	 Logger.severe(Lang.SERVRE_FAILED_CREATE.toString().replace("%name%", name));;
+    	 Logger.severe(Lang.SERVRE_FAILED_CREATE.toString().replace("%name%", name));
          return;
        }
      }
@@ -469,7 +481,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
          }
 
          playerConfig.save(playerFile);
-      } catch (Exception var10) {
+      } catch (Exception e) {
          message = "[HeroesSkillTree] failed to save " + s + ".yml";
          Logger.severe(message);
       }

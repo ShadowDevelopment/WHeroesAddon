@@ -1,3 +1,9 @@
 /bin
+
 /target
+
 /lib
+
+/.classpath
+/.project
+/.settings
