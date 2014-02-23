@@ -56,14 +56,14 @@ public class ItemGUI implements Listener {
         }
         
         try {
-          menu = smsHandler.getMenu(name + " menu");
+          menu = smsHandler.getMenu(name + " menuTree");
         } catch (SMSException e) {
         	//TODO fix not working TITLE_ITEM_GUI
-          menu = smsHandler.createMenu(name + " menu", Lang.TITLE_ITEM_GUI.toString().replace("%class%", name), name);
+          menu = smsHandler.createMenu(name + " menuTree", Lang.TITLE_ITEM_GUI.toString().replace("%class%", name), name);
         }
         if (menu == null) {
         	//TODO fix not working TITLE_ITEM_GUI
-          menu = smsHandler.createMenu(name + " menu", Lang.TITLE_ITEM_GUI.toString().replace("%class%", name), name);
+          menu = smsHandler.createMenu(name + " menuTree", Lang.TITLE_ITEM_GUI.toString().replace("%class%", name), name);
         }
         
         menu.removeAllItems();
@@ -74,7 +74,7 @@ public class ItemGUI implements Listener {
         menus.put(hc, menu);
         for (String sn : hc.getSkillNames()) {
           Skill skill = plugin.getSkillManager().getSkill(sn);
-          if ((skill instanceof ActiveSkill)) {
+          if (skill instanceof ActiveSkill) {
             if (skill.getIdentifiers().length == 0) {
               Logger.severe(Lang.GUI_INVAILD_SKILLS.toString().replace("%skill%", sn));
             }
@@ -116,7 +116,7 @@ public class ItemGUI implements Listener {
           //view.update(menu, me.desht.scrollingmenusign.enums.SMSMenuAction.REPAINT);
           view = (SMSInventoryView)smsHandler.getViewManager().getView(name);
         } catch (SMSException e) {
-          view = new SMSInventoryView(name + " view", menu);
+          view = new SMSInventoryView(name, menu);
           view.update(menu, me.desht.scrollingmenusign.enums.SMSMenuAction.REPAINT);
         }
         views.put(hc, view);
