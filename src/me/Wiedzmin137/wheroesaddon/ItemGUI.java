@@ -46,7 +46,6 @@ public class ItemGUI implements Listener {
 
     public void createSkillTree(CommandSender sender, HeroClass hc, Heroes plugin) {
     	//TODO cleanup. Some things and change some names
-    	//TODO fix not working TITLE_ITEM_GUI
     	//TODO get Hero knowing that CommandSender is player and have HeroClass
         String name = hc.getName();
         SMSMenu menu = null;
@@ -58,11 +57,9 @@ public class ItemGUI implements Listener {
         try {
           menu = smsHandler.getMenu(name + " menuTree");
         } catch (SMSException e) {
-        	//TODO fix not working TITLE_ITEM_GUI
           menu = smsHandler.createMenu(name + " menuTree", Lang.TITLE_ITEM_GUI.toString().replace("%class%", name), name);
         }
         if (menu == null) {
-        	//TODO fix not working TITLE_ITEM_GUI
           menu = smsHandler.createMenu(name + " menuTree", Lang.TITLE_ITEM_GUI.toString().replace("%class%", name), name);
         }
         
