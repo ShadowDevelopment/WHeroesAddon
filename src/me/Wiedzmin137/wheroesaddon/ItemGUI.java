@@ -11,7 +11,6 @@ import me.desht.scrollingmenusign.SMSMenu;
 import me.desht.scrollingmenusign.SMSMenuItem;
 import me.desht.scrollingmenusign.ScrollingMenuSign;
 import me.desht.scrollingmenusign.views.SMSInventoryView;
-import me.desht.scrollingmenusign.views.ViewManager;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -19,6 +18,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import com.herocraftonline.heroes.Heroes;
+import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.classes.HeroClass;
 import com.herocraftonline.heroes.characters.skill.ActiveSkill;
 import com.herocraftonline.heroes.characters.skill.Skill;
@@ -44,25 +44,22 @@ public class ItemGUI implements Listener {
     	}
     }
 
-    public void createSkillTree(CommandSender sender, HeroClass hc, Heroes plugin) {
+    public void createSkillTree(CommandSender sender, HeroClass hc, Heroes plugin, HeroesSkillTree hst) {
     	//TODO cleanup. Some things and change some names
-    	//TODO get Hero knowing that CommandSender is player and have HeroClass
         String name = hc.getName();
         SMSMenu menu = null;
- 
+        Hero commandSendingHero = heroes.getCharacterManager().getHero((Player) sender);
+
+        
         if (smsHandler == null) {
           return;
         }
         
         try {
-          menu = smsHandler.getMenu(name + " menuTree");
+          menu = smsHandler.getMenu(name + " SkillTree");
         } catch (SMSException e) {
-          menu = smsHandler.createMenu(name + " menuTree", Lang.TITLE_ITEM_GUI.toString().replace("%class%", name), name);
+          menu = smsHandler.createMenu(name + " SkillTree", Lang.TITLE_ITEM_GUI.toString().replace("%class%", name), name);
         }
-        if (menu == null) {
-          menu = smsHandler.createMenu(name + " menuTree", Lang.TITLE_ITEM_GUI.toString().replace("%class%", name), name);
-        }
-        
         menu.removeAllItems();
         
         menu.setAutosave(false);
@@ -74,22 +71,28 @@ public class ItemGUI implements Listener {
           if (skill instanceof ActiveSkill) {
             if (skill.getIdentifiers().length == 0) {
               Logger.severe(Lang.GUI_INVAILD_SKILLS.toString().replace("%skill%", sn));
-            }
-            else { 
-                //TODO add next line on lore - (new String[] { lore }); 
+            } else { 
                 //TODO add level of skills - by quantity of items
                 //TODO get statistics from .getSettings() and take them to the lore
-            	//TODO add language support
-              
-            	//int skillLevel = HeroesSkillTree.getSkillLevel(hero, skill);
+            	//TODO add full language support
+              int skillLevel = commandSendingHero.getSkillLevel(skill);
+              int skillMaxLevel = hst.getSkillMaxLevel(commandSendingHero, skill);
+              int manaA = (int)SkillConfigManager.getUseSetting(commandSendingHero, skill, "mana", 0.0D, false);
+              int manaB = SkillConfigManager.getSetting(hc, skill, "hst-mana", 1);
+              int manaC = hst.getSkillLevel(commandSendingHero, skill) - 1;
+              int manaCost = manaA;
               String indicator = (String)SkillConfigManager.getSetting(hc, skill, "hst-indicator");
+              
               SMSMenuItem skillsClass = new SMSMenuItem(menu, /*menu*/
             		  Lang.GUI_TITLE_SKILL.toString().replace("%skill%", skill.getName()), /*label*/
             		  "/" + skill.getIdentifiers()[0], "", /*command, message*/
             		  indicator, /*iconMaterialName*/
             		  new String[] { /*lore*/
-            	  		Lang.GUI_LORE.toString(), //Click for use!
-            	  		Lang.GUI_LORE_LEVEL.toString().replace("%level%", name /*TODO skill instead of (class)name*/) //SkillLevel: int
+            	  		Lang.GUI_LORE.toString(), //Click for use!: String
+            	  		Lang.GUI_LORE_LEVEL.toString() //SkillLevel: String
+            	  			.replace("%level%", String.valueOf(skillLevel)) //skillLevel: int
+            	  			.replace("%maxLevel%", String.valueOf(skillMaxLevel)), //maxLevel: int
+            	  	    Lang.GUI_LORE_MANA.toString().replace("%manaCost%", String.valueOf(manaCost))
             	  		//SkillDamage (if it's war spell): int
             	  		//SkillManaCost: int
             	  		//SkillReagentCost: int

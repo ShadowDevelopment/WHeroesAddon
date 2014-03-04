@@ -27,5 +27,7 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="C:/Users/Marek/Documents/Eclipse/Lib/Vault.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Marek/Documents/Eclipse/Spigot 1.7.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Marek/Documents/Eclipse/Lib/AuthMe.jar"/>
 	<classpathentry kind="output" path="target/classes"/>
 </classpath>

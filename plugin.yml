@@ -1,11 +1,11 @@
 name: WHeroesAddon
 main: me.Whatshiywl.heroesskilltree.HeroesSkillTree
-version: A0.1
-authors: [Wiedzmin137, Whatshiywl]
+version: A0.2
+authors: [Wiedzmin137, Whatshiywl, Bednar12]
 website: https://github.com/wiedzmin137/HeroesSkillTree
 description: Brings skill trees to the Heroes plugin.
 depend: [Heroes]
-softdepend: [ScrollingMenuSign]
+softdepend: [ScrollingMenuSign, AuthMe]
 commands:
   heroesskilltree:
     aliases: ['hst']
@@ -88,3 +88,6 @@ permissions:
   skilltree.points:
     description: Allows player to check his SkillPoints
     default: true
+  skilltree.skillgui:
+    description: Allows player to use his SkillTree GUI
+    default: op

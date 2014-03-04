@@ -5,6 +5,7 @@ import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.classes.HeroClass;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,35 +23,40 @@ import me.Whatshiywl.heroesskilltree.commands.SkillInfoCommand;
 import me.Whatshiywl.heroesskilltree.commands.SkillListCommand;
 import me.Whatshiywl.heroesskilltree.commands.SkillLockedCommand;
 import me.Whatshiywl.heroesskilltree.commands.SkillUpCommand;
+import me.Wiedzmin137.wheroesaddon.Hologram;
 import me.Wiedzmin137.wheroesaddon.ItemGUI;
 import me.Wiedzmin137.wheroesaddon.Lang;
 import me.desht.scrollingmenusign.SMSHandler;
 import me.desht.scrollingmenusign.ScrollingMenuSign;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class HeroesSkillTree extends JavaPlugin implements Listener {
 
    private static HeroesSkillTree instance;
    private HashMap<String, HashMap<String, HashMap<String, Integer>>> playerSkills = new LinkedHashMap<String, HashMap<String, HashMap<String, Integer>>>();
    private HashMap<String, HashMap<String, Integer>> playerClasses = new LinkedHashMap<String, HashMap<String, Integer>>();
-   private int pointsPerLevel = 1;
    private HashMap<String, FileConfiguration> hConfigs = new LinkedHashMap<String, FileConfiguration>();
    private ItemGUI IGUI;
+   
+   private int pointsPerLevel = 1;
+   private boolean holograms = true;
+   private int hologram_time = 2500;
 	
-   public final int VERSION = 0;
-   public final double SUBVERSION = 5.2D;
-   public final EventListener HEventListener = new EventListener(this);
    public HeroesSkillTree plugin;
+   public final EventListener HEventListener = new EventListener(this);
    public static Heroes heroes = (Heroes)Bukkit.getServer().getPluginManager().getPlugin("Heroes");
    //TODO Take carry about those HashMaps and ArrayLists, they're bugged (saving or loading or both)
    public List<Skill> SkillStrongParents = new ArrayList<Skill>();
@@ -59,6 +65,22 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    public static File LANG_FILE;
    public static Logger Logger;
    public static SMSHandler smsHandler;
+   
+   //TODO add support for "#" character in config.yml & lang.yml
+   //TODO cleanup some thing
+   //TODO (HARD) make API class instead of huge main class
+   //TODO try to make main class WHereosAddon in Wiedzmin137 package
+   //TODO add comments and documentation to all classes
+   
+   public void onDisable() {
+	      saveAll();
+	      LANG = null;
+	      LANG_FILE = null;
+       instance = null;
+	      HandlerList.unregisterAll(HEventListener);
+	      
+	      Logger.info(Lang.CONSOLE_DISABLED.toString());
+   }
   
    @Override
    public void onEnable() {
@@ -80,33 +102,15 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
       
       setupSMS(pm);
       
-      if (IGUI != null) {
-    	  IGUI.setAutosave(true);
-      }
+      if (IGUI != null) { IGUI.setAutosave(true); }
       
       Logger.info(Lang.CONSOLE_ENABLED.toString());
    }
    
-   public void onDisable() {
-	      this.saveAll();
-	      
-	      LANG = null;
-	      LANG_FILE = null;
-          instance = null;
-	      
-	      Logger.info(Lang.CONSOLE_DISABLED.toString());
-	   }
-   
-   private void setInstance(HeroesSkillTree HST) {
-       instance = HST;
-   }
-
-   public static HeroesSkillTree getInstance() {
-	   return instance;
-   }
+   private void setInstance(HeroesSkillTree HST) { instance = HST; }
    
    private void setupSMS(PluginManager pm) {
-   Plugin p = pm.getPlugin("ScrollingMenuSign");
+	   Plugin p = pm.getPlugin("ScrollingMenuSign");
        if (p instanceof ScrollingMenuSign && p.isEnabled()) {
     	   IGUI = new ItemGUI((ScrollingMenuSign) p);
     	   Logger.info(Lang.CONSOLE_SMS_ENABLED.toString());
@@ -117,6 +121,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    
    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
 	  //TODO fix strange ClassCastException (it's occur even if it shouldn't) casted in console (Spigot)
+	  //TODO clean up all commands
       Hero hero = heroes.getCharacterManager().getHero((Player)sender);
       String skillPoints = String.valueOf(this.getPlayerPoints(hero));
       
@@ -124,6 +129,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
          SkillUpCommand.skillUp(this, sender, args);
          return true;
       } else if(commandLabel.equalsIgnoreCase("skillgui")) {
+    	 //TODO clean up commands
          if (sender instanceof Player) {
         	 if (sender.hasPermission("skilltree.skillgui")) {
                  PluginManager pm = getServer().getPluginManager();
@@ -131,7 +137,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
                  
             	 Plugin p = pm.getPlugin("ScrollingMenuSign");
             	 ItemGUI ex = new ItemGUI((ScrollingMenuSign) p);
-            	 ex.createSkillTree(sender, heroclass, heroes);
+            	 ex.createSkillTree(sender, heroclass, heroes, this);
         	 } else {
             	 sender.sendMessage(Lang.ERROR_IN_CONSOLE_DENIED.toString());
                  return true;
@@ -192,8 +198,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
       this.resetPlayerConfig(name);
    } 
    
-   private void resetPlayerConfig(String name)
-   {
+   private void resetPlayerConfig(String name) {
      File playerFolder = new File(getDataFolder(), "data");
      if (!playerFolder.exists()) {
        playerFolder.mkdir();
@@ -218,6 +223,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
     		  .get(hero.getHeroClass().getName())).intValue():0;
    }
 
+   //FIXME I think it doesn't work properly, I used this SupressWarnings but problems are in code
    @SuppressWarnings({ "rawtypes", "unchecked" })
    public void recalcPlayerPoints(Hero hero, HeroClass hClass) {
 	    String name = hero.getPlayer().getName();
@@ -255,13 +261,12 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
 	      }
 	    }
 	    this.playerClasses.get(name).put(className, Integer.valueOf(points));
-	  }
+   }
 
    public void setPlayerPoints(Hero hero, int i) {
       if(this.playerClasses.get(hero.getPlayer().getName()) == null) {
          this.playerClasses.put(hero.getPlayer().getName(), new HashMap<String, Integer>());
       }
-
       this.playerClasses.get(hero.getPlayer().getName()).put(hero.getHeroClass().getName(), Integer.valueOf(i));
    }
 
@@ -269,10 +274,10 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
       if(this.playerClasses.get(hero.getPlayer().getName()) == null) {
          this.playerClasses.put(hero.getPlayer().getName(), new HashMap<String, Integer>());
       }
-
       this.playerClasses.get(hero.getPlayer().getName()).put(hClass.getName(), Integer.valueOf(i));
    }
 
+   //FIXME this probably not good like up
    @SuppressWarnings("rawtypes")
    public int getSkillLevel(Hero hero, Skill skill) {
       return this.playerSkills.get(hero.getPlayer().getName())
@@ -283,7 +288,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
     				  .get(hero.getPlayer().getName())
     				  .get(hero.getHeroClass().getName()))
     				  .get(skill.getName())
-    	      != null?((Integer)((HashMap)this.playerSkills
+    	      != null ? ((Integer)((HashMap)this.playerSkills
     	    		  .get(hero.getPlayer().getName())
     	    		  .get(hero.getHeroClass().getName()))
     	    		  .get(skill.getName())).intValue():0;
@@ -341,7 +346,8 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    }
 
    public boolean isMastered(Hero hero, Skill skill) {
-      return hero.hasAccessToSkill(skill)?this.getSkillLevel(hero, skill) >= this.getSkillMaxLevel(hero, skill):false;
+      return hero.hasAccessToSkill(skill)
+    		  ? this.getSkillLevel(hero, skill) >= this.getSkillMaxLevel(hero, skill) : false;
    }
 
    public boolean canUnlock(Hero hero, Skill skill) {
@@ -451,7 +457,6 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
       if(!playerDataFolder.exists()) {
          playerDataFolder.mkdir();
       }
-
       File playerFile = new File(this.getDataFolder() + "/data", s + ".yml");
       String message;
       if(!playerFile.exists()) {
@@ -463,29 +468,25 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
             return;
          }
       }
-
       try {
          playerConfig.load(playerFile);
          Iterator<String> namePlayer = this.playerClasses.get(s).keySet().iterator();
-
          while(namePlayer.hasNext()) {
             String name = namePlayer.next();
             if(this.playerSkills.containsKey(s) && this.playerSkills.get(s).containsKey(name)) {
-
                if (playerConfig.getConfigurationSection(s + ".skills") != null) {
                    for (String st : playerConfig.getConfigurationSection(s + ".skills").getKeys(false)) {
-                     ((HashMap<String, Integer>)this.playerSkills.get(name).get(s)).put(st, Integer.valueOf(playerConfig.getInt(s + ".skills." + st, 0)));
+                     ((HashMap<String, Integer>)this.playerSkills.get(name).get(s))
+                     .put(st, Integer.valueOf(playerConfig.getInt(s + ".skills." + st, 0)));
                    }
                }
             }
          }
-
          playerConfig.save(playerFile);
       } catch (Exception e) {
          message = "[HeroesSkillTree] failed to save " + s + ".yml";
          Logger.severe(message);
       }
-
    }
 
    private void loadConfig() {
@@ -494,24 +495,41 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
          try {
             configFile.createNewFile();
          } catch (IOException ioe) {
-        	 Logger.severe("[HeroesSkillTree] failed to create new config.yml");
+        	Logger.severe("[HeroesSkillTree] failed to create new config.yml");
             return;
          }
       }
-
       FileConfiguration config = new YamlConfiguration();
-
       try {
          config.load(configFile);
          this.pointsPerLevel = config.getInt("points-per-level", 1);
+         this.holograms = config.getBoolean("holograms");
+         this.hologram_time = config.getInt("hologram_time");
       } catch (Exception e) {
     	  Logger.severe("[HeroesSkillTree] failed to load config.yml");
       }
-
    }
-   public int getPointsPerLevel() {
-	   return this.pointsPerLevel;
-   }
+   
+   public int getPointsPerLevel() { return this.pointsPerLevel; } 
+   public boolean areHologramsEnabled() { return this.holograms; }
+   public int getHologramTime() { return this.hologram_time; }
+   public static HeroesSkillTree getInstance() { return instance; }
+   
+   public static void expMessage(Player p, Location loc, double gained, double needed, double current) {
+		  if(gained == 0) { return; }
+		  final Hologram holo = new Hologram(
+				  Lang.HOLOGRAM_MESSAGE_EXP_CURRENT.toString().replace("%gained%", String.valueOf(gained)),
+				  Lang.HOLOGRAM_MESSAGE_EXP_MAX.toString()
+				    .replace("%current%", String.valueOf(current))
+				  	.replace("%needed%", String.valueOf(needed)));
+		  holo.show(p, loc);
+		  Bukkit.getScheduler().scheduleSyncDelayedTask(instance, new BukkitRunnable() {
+			  @Override
+			  public void run() {
+				  holo.destroy();
+			  }
+		  }, instance.getHologramTime());
+	  }
 
    /**
    * Gets the lang.yml config.

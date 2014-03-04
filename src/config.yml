@@ -1,5 +1,7 @@
 #Sets how many SkillPoints the player will earn/lose per level.
 points-per-level: 1
+holograms: true
+hologram_time: 250
 
 #Sets the cost to unlock a skill (PLANNED)
 #cost-to-unlock: 0
