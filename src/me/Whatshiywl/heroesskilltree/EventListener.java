@@ -42,46 +42,30 @@ public class EventListener implements Listener {
     }
   }
   
-  @EventHandler
-  public void onPlayerRegister(fr.xephi.authme.events.LoginEvent e) {
-	  //TODO test is that works (it should return one of sendMessage in game after /login Password)
-	  Player player = e.getPlayer();
-      Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero(player);
-	  if (hero.getHeroClass().isDefault()) {
-		  player.sendMessage("Test fullyComplete!");
-		  //TODO change sendMessage to open GUI with choosing class
-	  } else {
-		  player.sendMessage("Test a little bit complete!");
-		  //else statement is only for test, I'll delete that, it's unnecessary
-	  }
-	  player.sendMessage("Test halfComplete!");
-  }
-  
   @EventHandler(priority=EventPriority.LOW)
   public void onEntityKill(EntityDeathEvent e) {
-	//TODO add support for experiance.yml (Heroes)
-	//TODO add neededExperiance (max expieriance)
-	if (e.getEntity().getKiller() instanceof Player) {
-	    
-	    if ((e.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent) 
-	    		&& (e.getEntity().getKiller() instanceof Player) 
-	    		&& (plugin.areHologramsEnabled())) {
-	      Player p = e.getEntity().getKiller();
-	      Hero killingHero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)e.getEntity().getKiller());
-	      HeroClass heroClass = killingHero.getHeroClass();
-	       
-		  //double total = killingHero.getExperience(heroClass);
-	      //double needed = killingHero.getMaxExperiance(level);
-		  //int level = killingHero.getLevel();
-		  double current = killingHero.currentXPToNextLevel(heroClass);
-		  
-	      p.playSound(p.getLocation(), Sound.LEVEL_UP, 1.0F, 1.0F);
-	      if (plugin.areHologramsEnabled()) {
-	    	  HeroesSkillTree.expMessage(p, e.getEntity().getLocation().subtract(0.0D, 0.5D, 0.0D), 1.0F/*getmobxp*/, 1.0F /*getneededxp*/, current/*getxp*/);
-	      }
-	   }
-	}
- }
+	  //TODO add support for experiance.yml (Heroes)
+	  //TODO add neededExperiance (max expieriance)
+	  if (e.getEntity().getKiller() instanceof Player) {		
+		  if ((e.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent) 
+				  && (e.getEntity().getKiller() instanceof Player) 
+				  && (plugin.areHologramsEnabled())) {
+			  Player p = e.getEntity().getKiller();
+			  Hero killingHero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)e.getEntity().getKiller());
+			  HeroClass heroClass = killingHero.getHeroClass();
+				
+			  //double total = killingHero.getExperience(heroClass);
+			  //double needed = killingHero.getMaxExperiance(level);
+			  //int level = killingHero.getLevel();
+			  double current = killingHero.currentXPToNextLevel(heroClass);
+			  
+			  p.playSound(p.getLocation(), Sound.LEVEL_UP, 1.0F, 1.0F);
+			  if (plugin.areHologramsEnabled()) {
+				  HeroesSkillTree.expMessage(p, e.getEntity().getLocation().subtract(0.0D, 0.5D, 0.0D), 1.0F/*getmobxp*/, 1.0F /*getneededxp*/, current/*getxp*/);
+			  }
+		  }
+	  }
+  }
   
   @EventHandler
   public void onPlayerJoin(org.bukkit.event.player.PlayerJoinEvent event) {

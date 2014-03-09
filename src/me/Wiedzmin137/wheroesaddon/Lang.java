@@ -17,6 +17,7 @@ public enum Lang {
     GUI_LORE_LEVEL("GUILoreLevel", "&f&oSkillLevel: %level%/%maxLevel%"),
     GUI_LORE_MANA("GUILoreMana", "&f&oMana: %manaCost%"),
     GUI_TITLE_SKILL("GUITitleSkill", "&2&l[&r&a%skill%&2&l]"),
+    GUI_TITLE_CHOOSE("GUITitleChoose", "&1== &bChoose your class! &1=="),
     HOLOGRAM_MESSAGE_EXP_CURRENT("deathMessageEXPCurrent", "&c+ %gained%XP"),
     HOLOGRAM_MESSAGE_EXP_MAX("deathMessageEXPMax", "&7[ %current%/%needed% ]"),
     CONSOLE_ENABLED("consoleEnabled", "[WHeroesAddon] Version B1.6 By wiedzmin137 and Bednar12 has been enabled!"),

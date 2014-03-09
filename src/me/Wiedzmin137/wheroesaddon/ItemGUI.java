@@ -1,7 +1,5 @@
 package me.Wiedzmin137.wheroesaddon;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
@@ -10,6 +8,7 @@ import me.desht.scrollingmenusign.SMSHandler;
 import me.desht.scrollingmenusign.SMSMenu;
 import me.desht.scrollingmenusign.SMSMenuItem;
 import me.desht.scrollingmenusign.ScrollingMenuSign;
+import me.desht.scrollingmenusign.enums.SMSMenuAction;
 import me.desht.scrollingmenusign.views.SMSInventoryView;
 
 import org.bukkit.Bukkit;
@@ -30,8 +29,6 @@ public class ItemGUI implements Listener {
     public static Logger Logger;
 
     public static SMSHandler smsHandler;
-    public static Map<HeroClass, SMSMenu> menus = new HashMap<HeroClass, SMSMenu>();
-    public static Map<HeroClass, SMSInventoryView> views = new HashMap<HeroClass, SMSInventoryView>();
     
     public ItemGUI(ScrollingMenuSign sms) {
     	smsHandler = sms.getHandler();
@@ -44,13 +41,12 @@ public class ItemGUI implements Listener {
     	}
     }
 
-    public void createSkillTree(CommandSender sender, HeroClass hc, Heroes plugin, HeroesSkillTree hst) {
+    public static void createSkillTree(CommandSender sender, HeroClass hc, Heroes plugin, HeroesSkillTree hst) {
     	//TODO cleanup. Some things and change some names
         String name = hc.getName();
         SMSMenu menu = null;
         Hero commandSendingHero = heroes.getCharacterManager().getHero((Player) sender);
 
-        
         if (smsHandler == null) {
           return;
         }
@@ -65,7 +61,6 @@ public class ItemGUI implements Listener {
         menu.setAutosave(false);
         menu.setAutosort(false);
         
-        menus.put(hc, menu);
         for (String sn : hc.getSkillNames()) {
           Skill skill = plugin.getSkillManager().getSkill(sn);
           if (skill instanceof ActiveSkill) {
@@ -78,8 +73,8 @@ public class ItemGUI implements Listener {
               int skillLevel = commandSendingHero.getSkillLevel(skill);
               int skillMaxLevel = hst.getSkillMaxLevel(commandSendingHero, skill);
               int manaA = (int)SkillConfigManager.getUseSetting(commandSendingHero, skill, "mana", 0.0D, false);
-              int manaB = SkillConfigManager.getSetting(hc, skill, "hst-mana", 1);
-              int manaC = hst.getSkillLevel(commandSendingHero, skill) - 1;
+              //int manaB = SkillConfigManager.getSetting(hc, skill, "hst-mana", 1);
+              //int manaC = hst.getSkillLevel(commandSendingHero, skill) - 1;
               int manaCost = manaA;
               String indicator = (String)SkillConfigManager.getSetting(hc, skill, "hst-indicator");
               
@@ -108,7 +103,7 @@ public class ItemGUI implements Listener {
 
         SMSInventoryView view = null;
         try {
-          //TODO fix a bug with creating new view any time ten use command /skillgui
+          //FIXME fix a bug with creating new view any time ten use command /skillgui
         	
           //ViewManager mgr = ScrollingMenuSign.getInstance().getViewManager();
           //view = (SMSInventoryView)mgr.getView(name);
@@ -117,11 +112,29 @@ public class ItemGUI implements Listener {
           view = (SMSInventoryView)smsHandler.getViewManager().getView(name);
         } catch (SMSException e) {
           view = new SMSInventoryView(name, menu);
-          view.update(menu, me.desht.scrollingmenusign.enums.SMSMenuAction.REPAINT);
+          view.update(menu, SMSMenuAction.REPAINT);
         }
-        views.put(hc, view);
         view.setAutosave(true);
 		
         view.toggleGUI((Player)sender);
+    }
+    
+    public static void createClassChoose(Player player) {
+        SMSMenu menuChoose = null;
+        
+        if (smsHandler == null) { return; }
+          
+        try { menuChoose = smsHandler.getMenu("ClassChoose"); } 
+        catch (SMSException e) { menuChoose = smsHandler.createMenu("ClassChoose", Lang.GUI_TITLE_CHOOSE.toString(), "wiedzmin137"); }
+
+        SMSInventoryView view = null;
+        //FIXME this same issue as you can see higher
+        try { view = (SMSInventoryView)smsHandler.getViewManager().getView("ClassChoose"); } 
+        catch (SMSException e) {
+          view = new SMSInventoryView("ClassChoose", menuChoose);
+          view.update(menuChoose, SMSMenuAction.REPAINT);
+        }
+		
+        view.toggleGUI(player);
     }
 }

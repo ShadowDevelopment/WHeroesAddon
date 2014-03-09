@@ -1,7 +1,12 @@
 #Sets how many SkillPoints the player will earn/lose per level.
 points-per-level: 1
+
+#Configs for holograms
 holograms: true
 hologram_time: 250
+
+#Is class choosing on login is enabled?
+useJoinChoose: false
 
 #Sets the cost to unlock a skill (PLANNED)
 #cost-to-unlock: 0
