@@ -51,7 +51,6 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    private HashMap<String, FileConfiguration> hConfigs = new LinkedHashMap<String, FileConfiguration>();
    private final EventListener HEventListener = new EventListener(this);
    private final WEventListener WEventListener = new WEventListener();
-   private static Logger Logger;
    private ItemGUI IGUI;
    
    private int pointsPerLevel = 1;
@@ -59,6 +58,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    private boolean holograms = true;
    private boolean useJoinChoose = false;
    
+   public static Logger Logger;
    public static YamlConfiguration LANG;
    public static File LANG_FILE;
    public static Heroes heroes = (Heroes)Bukkit.getServer().getPluginManager().getPlugin("Heroes");

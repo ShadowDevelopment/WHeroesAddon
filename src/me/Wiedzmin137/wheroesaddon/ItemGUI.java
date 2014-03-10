@@ -1,7 +1,5 @@
 package me.Wiedzmin137.wheroesaddon;
 
-import java.util.logging.Logger;
-
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
 import me.desht.scrollingmenusign.SMSException;
 import me.desht.scrollingmenusign.SMSHandler;
@@ -24,10 +22,6 @@ import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 
 public class ItemGUI implements Listener {
-
-	public static Heroes heroes = (Heroes)Bukkit.getServer().getPluginManager().getPlugin("Heroes");
-    public static Logger Logger;
-
     public static SMSHandler smsHandler;
     
     public ItemGUI(ScrollingMenuSign sms) {
@@ -45,7 +39,7 @@ public class ItemGUI implements Listener {
     	//TODO cleanup. Some things and change some names
         String name = hc.getName();
         SMSMenu menu = null;
-        Hero commandSendingHero = heroes.getCharacterManager().getHero((Player) sender);
+        Hero commandSendingHero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player) sender);
 
         if (smsHandler == null) {
           return;
@@ -65,7 +59,7 @@ public class ItemGUI implements Listener {
           Skill skill = plugin.getSkillManager().getSkill(sn);
           if (skill instanceof ActiveSkill) {
             if (skill.getIdentifiers().length == 0) {
-              Logger.severe(Lang.GUI_INVAILD_SKILLS.toString().replace("%skill%", sn));
+              HeroesSkillTree.Logger.severe(Lang.GUI_INVAILD_SKILLS.toString().replace("%skill%", sn));
             } else { 
                 //TODO add level of skills - by quantity of items
                 //TODO get statistics from .getSettings() and take them to the lore
@@ -103,16 +97,11 @@ public class ItemGUI implements Listener {
 
         SMSInventoryView view = null;
         try {
-          //FIXME fix a bug with creating new view any time ten use command /skillgui
-        	
-          //ViewManager mgr = ScrollingMenuSign.getInstance().getViewManager();
-          //view = (SMSInventoryView)mgr.getView(name);
-          //view = new SMSInventoryView(name + " view", menu);
-          //view.update(menu, me.desht.scrollingmenusign.enums.SMSMenuAction.REPAINT);
           view = (SMSInventoryView)smsHandler.getViewManager().getView(name);
         } catch (SMSException e) {
           view = new SMSInventoryView(name, menu);
           view.update(menu, SMSMenuAction.REPAINT);
+          smsHandler.getViewManager().registerView(view);
         }
         view.setAutosave(true);
 		
@@ -133,6 +122,7 @@ public class ItemGUI implements Listener {
         catch (SMSException e) {
           view = new SMSInventoryView("ClassChoose", menuChoose);
           view.update(menuChoose, SMSMenuAction.REPAINT);
+          smsHandler.getViewManager().registerView(view);
         }
 		
         view.toggleGUI(player);
