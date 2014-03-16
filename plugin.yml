@@ -34,7 +34,8 @@ commands:
   skillgui:
     alias: ['sg']
     description: Shows ItemGUI SkillTree
-  wybor:
+  choose:
+    alias: ['wybor']
     description: Choose class
 permissions:
   skilltree.*:

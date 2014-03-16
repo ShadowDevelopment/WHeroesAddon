@@ -174,7 +174,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
         	 sender.sendMessage(Lang.ERROR_IN_CONSOLE_DENIED.toString());
         	 return true;
          }
-      } else if(commandLabel.equalsIgnoreCase("wybor")) {
+      } else if(commandLabel.equalsIgnoreCase("choose")) {
           ItemGUI.createClassChoose((Player)sender);
           return true;
       } else if(commandLabel.equalsIgnoreCase("skilldown")) {
