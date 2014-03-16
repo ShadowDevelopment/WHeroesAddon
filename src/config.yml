@@ -2,11 +2,24 @@
 points-per-level: 1
 
 #Configs for holograms
-holograms: true
+holograms: false
 hologram_time: 250
 
-#Is class choosing on login is enabled?
-useJoinChoose: false
+#If is class choosing on login is enabled?
+useJoinChoose: true
+
+#If is class ManaPotion is enabled?
+useManaPotion: true
+
+# Mana potion data value
+potion-id: 0
+# Should players regain a flat amount of mana (false) or a random amount (true)
+regain-static: false
+# Flat mana regain amount (if regain-static is true)
+regain: 50
+# Range for random mana regain amount (if regain-static is false)
+regain-min: 1
+regain-max: 100
 
 #Sets the cost to unlock a skill (PLANNED)
 #cost-to-unlock: 0

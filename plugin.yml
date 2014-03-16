@@ -8,7 +8,7 @@ depend: [Heroes]
 softdepend: [ScrollingMenuSign, AuthMe]
 commands:
   heroesskilltree:
-    aliases: ['hst']
+    aliases: ['hst', 'skilltree', 'st', 'PKT']
     description: Shows HST's help menu
   skillup:
     aliases: ['sup']
@@ -34,6 +34,8 @@ commands:
   skillgui:
     alias: ['sg']
     description: Shows ItemGUI SkillTree
+  wybor:
+    description: Choose class
 permissions:
   skilltree.*:
     description: Gives all permissions
@@ -90,4 +92,4 @@ permissions:
     default: true
   skilltree.skillgui:
     description: Allows player to use his SkillTree GUI
-    default: op
+    default: true

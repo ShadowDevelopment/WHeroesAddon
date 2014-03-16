@@ -15,6 +15,7 @@ import org.bukkit.entity.Player;
 
 public class SkillListCommand {
    //TODO create lanugage support
+   //TODO rename var* things
    public static void skillList(HeroesSkillTree hst, CommandSender sender, String[] args) {
       if(!(sender instanceof Player)) {
          sender.sendMessage(ChatColor.RED + "You must be in game to use this command");

@@ -5,11 +5,9 @@ import me.desht.scrollingmenusign.SMSException;
 import me.desht.scrollingmenusign.SMSHandler;
 import me.desht.scrollingmenusign.SMSMenu;
 import me.desht.scrollingmenusign.SMSMenuItem;
-import me.desht.scrollingmenusign.ScrollingMenuSign;
 import me.desht.scrollingmenusign.enums.SMSMenuAction;
 import me.desht.scrollingmenusign.views.SMSInventoryView;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -23,18 +21,8 @@ import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 
 public class ItemGUI implements Listener {
     public static SMSHandler smsHandler;
-    
-    public ItemGUI(ScrollingMenuSign sms) {
-    	smsHandler = sms.getHandler();
-    	Bukkit.getPluginManager().registerEvents(this, HeroesSkillTree.getInstance());
-    }
 
-    public void setAutosave(boolean autosave) {
-    	for (SMSMenu menu : smsHandler.listMenus()) {
-    		menu.setAutosave(autosave);
-    	}
-    }
-
+    //FIXME this don't works, IDK why
     public static void createSkillTree(CommandSender sender, HeroClass hc, Heroes plugin, HeroesSkillTree hst) {
     	//TODO cleanup. Some things and change some names
         String name = hc.getName();
@@ -66,10 +54,10 @@ public class ItemGUI implements Listener {
             	//TODO add full language support
               int skillLevel = commandSendingHero.getSkillLevel(skill);
               int skillMaxLevel = hst.getSkillMaxLevel(commandSendingHero, skill);
-              int manaA = (int)SkillConfigManager.getUseSetting(commandSendingHero, skill, "mana", 0.0D, false);
+              //int manaA = (int)SkillConfigManager.getUseSetting(commandSendingHero, skill, "mana", 0.0D, false);
               //int manaB = SkillConfigManager.getSetting(hc, skill, "hst-mana", 1);
               //int manaC = hst.getSkillLevel(commandSendingHero, skill) - 1;
-              int manaCost = manaA;
+              //int manaCost = manaA;
               String indicator = (String)SkillConfigManager.getSetting(hc, skill, "hst-indicator");
               
               SMSMenuItem skillsClass = new SMSMenuItem(menu, /*menu*/
@@ -81,7 +69,7 @@ public class ItemGUI implements Listener {
             	  		Lang.GUI_LORE_LEVEL.toString() //SkillLevel: String
             	  			.replace("%level%", String.valueOf(skillLevel)) //skillLevel: int
             	  			.replace("%maxLevel%", String.valueOf(skillMaxLevel)), //maxLevel: int
-            	  	    Lang.GUI_LORE_MANA.toString().replace("%manaCost%", String.valueOf(manaCost))
+            	  	    //Lang.GUI_LORE_MANA.toString().replace("%manaCost%", String.valueOf(manaCost))
             	  		//SkillDamage (if it's war spell): int
             	  		//SkillManaCost: int
             	  		//SkillReagentCost: int

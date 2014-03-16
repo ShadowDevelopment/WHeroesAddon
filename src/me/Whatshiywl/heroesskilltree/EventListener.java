@@ -153,33 +153,32 @@ public class EventListener implements Listener {
     }
     //TODO test "hst-damage" feature
     //TODO repair them all (@gabizou have said they looks OK but they not good like he said)
-    int damage = (int)(SkillConfigManager.getUseSetting(hero, skill, "hst-damage", 0.0D, false) 
-    	* (plugin.getSkillLevel(hero, skill) - 1));
-    int firstDamage = (int)(SkillConfigManager.getUseSetting(hero, skill, "damage", 0.0D, false));
-    damage = damage > 0 ? damage : 0;
-    event.getHero().setSkillSetting(skill, "hst-damage", firstDamage + damage);
+    int damage = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-damage", 0.0D, false) 
+    	* plugin.getSkillLevel(hero, skill);
+    int firstDamage = (int)SkillConfigManager.getUseSetting(hero, skill, "damage", 0.0D, false);
+    damage = (damage > 0) ? damage : 0;
+    event.getHero().setSkillSetting(skill, "damage", firstDamage + damage);
     
-    int health = (int)(SkillConfigManager.getUseSetting(hero, skill, "hst-health", 0.0D, false) 
-    	* (plugin.getSkillLevel(hero, skill) - 1));
-    health = health > 0 ? health : 0;
+    int health = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-health", 0.0D, false) 
+    	* plugin.getSkillLevel(hero, skill);
+    health = (health > 0) ? health : 0;
     event.setHealthCost(event.getHealthCost() + health);
 
-    int mana = (int)(SkillConfigManager.getUseSetting(hero, skill, "hst-mana", 0.0D, false)
-    	* (plugin.getSkillLevel(hero, skill) - 1));
-    mana = mana > 0 ? mana : 0;
-    event.setManaCost(event.getManaCost() + mana);
-    
+    int mana = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-mana", 0.0D, false)
+    	* plugin.getSkillLevel(hero, skill);
+    mana = (mana > 0) ? mana : 0;
+    event.setManaCost(event.getManaCost() - mana);
 
-    int reagent = (int)(SkillConfigManager.getUseSetting(hero, skill, "hst-reagent", 0.0D, false) 
-    	* (plugin.getSkillLevel(hero, skill) - 1));
-    reagent = reagent > 0 ? reagent : 0;
+    int reagent = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-reagent", 0.0D, false) 
+    	* plugin.getSkillLevel(hero, skill);
+    reagent = (reagent > 0) ? reagent : 0;
     ItemStack is = event.getReagentCost();
-    if (is != null) { is.setAmount(event.getReagentCost().getAmount() + reagent); }
+    if (is != null) { is.setAmount(event.getReagentCost().getAmount() - reagent); }
     event.setReagentCost(is);
 
-    int stamina = (int)(SkillConfigManager.getUseSetting(hero, skill, "hst-stamina", 0.0D, false) 
-    	* plugin.getSkillLevel(hero, skill) - 1.0D);
-    stamina = stamina > 0 ? stamina : 0;
-    event.setStaminaCost(event.getStaminaCost() + stamina);
+    int stamina = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-stamina", 0.0D, false)
+    	* plugin.getSkillLevel(hero, skill);
+    stamina = (stamina > 0) ? stamina : 0;
+    event.setStaminaCost(event.getStaminaCost() - stamina);
   }
 }
