@@ -11,15 +11,15 @@ import org.bukkit.configuration.file.YamlConfiguration;
 */
 public enum Lang {
     TITLE("titleName", "&1[&bSkillTree&1]&r:"),
-    TITLE_ITEM_GUI("itemGUITitle", "&1[&9 SkillTree of %class% &1]&r"),
+    TITLE_ITEM_GUI("titleItemGUI", "&1[&9 %class% &1]&r"),
     GUI_INVAILD_SKILLS("GUIInvaildSkills", "Skill %skill% has no valid identifiers and can not be used on the menu! Please contact the author to fix the skill."),
     GUI_LORE("GUILore", "&eClick for use!"),
     GUI_LORE_LEVEL("GUILoreLevel", "&f&oSkillLevel: %level%/%maxLevel%"),
     GUI_LORE_MANA("GUILoreMana", "&f&oMana: %manaCost%"),
     GUI_TITLE_SKILL("GUITitleSkill", "&2&l[&r&a%skill%&2&l]"),
     GUI_TITLE_CHOOSE("GUITitleChoose", "&1== &bChoose your class! &1=="),
-    HOLOGRAM_MESSAGE_EXP_GAINED("deathMessageEXPCurrent", "&c+ %gained%XP"),
-    HOLOGRAM_MESSAGE_EXP_MINMAX("deathMessageEXPMax", "&7[ %current%/%needed% ]"),
+    HOLOGRAM_MESSAGE_EXP_GAINED("hologramMessageEXPCurrent", "&a&l+ &2&o%gained%XP"),
+    HOLOGRAM_MESSAGE_EXP_MAX("hologramMessageEXPMax", "&2[ &9%current%&1/&9%needed% &2]"),
     CONSOLE_ENABLED("consoleEnabled", "[WHeroesAddon] Version B1.6 By wiedzmin137 and Bednar12 has been enabled!"),
     CONSOLE_DISABLED("consoleDisabled", "[WHeroesAddon] Version B1.6 By wiedzmin137 and Bednar12 has been disabled!"),
     CONSOLE_SMS_ENABLED("consoleSMSEnabled", "[WHeroesAddon] ScrollingMenuSign integration is enabled; menus created"),
@@ -38,12 +38,12 @@ public enum Lang {
     HELP_5("HELP_5", "&9/unlocks &r- lists all adjacent unlockable skills"),
     HELP_6("HELP_6", "&9/skillinfo &r<skill> (all info on a skill)"),
     HELP_7("HELP_7", "&9/skilladmin &b<command> (amount) [player]"),
-    ADMIN_RESET_SUCCESS("ResetCommandSuccess", "&2You have reseted %player%'s skills"),
-    ERROR_PLAYER_OFFLINE("playerIsOffline", "&cSorry, player %player% is offline."),
+    ADMIN_RESET_SUCCESS("AdminResetSuccess", "&2You have reseted %player%'s skills"),
+    ERROR_PLAYER_OFFLINE("erroPlayerOffline", "&cSorry, player %player% is offline."),
     SELF_RESET_SUCCESS("selfResetSuccess", "&2You have reseted your character"),
-    WRONG_CMD_USAGE("wrongCommandUsage", "&cCorrect usage: /skilladmin (set/give/remove/clear/reset) <nick>"),
-    ADMIN_SKILLPOINTS_ADD_SUCCESS("adminSkillpointAddSuccess", "You have added %player% %skillpoints% skillpoint(s)."),
-    ADMIN_SKILLPOINTS_REMOVE_SUCCESS("adminSkillpointRemoveSuccess", "You have removed %skillpoints% skillpoint(s) from %player%.");
+    WRONG_CMD_USAGE("wrongCMDUsage", "&cCorrect usage: /skilladmin (set/give/remove/clear/reset) <nick>"),
+    ADMIN_SKILLPOINTS_ADD_SUCCESS("adminSkillPointsAddSuccess", "You have added %player% %skillpoints% skillpoint(s)."),
+    ADMIN_SKILLPOINTS_REMOVE_SUCCESS("adminSkillPointsRemoveSuccess" + "Test", "You have removed %skillpoints% skillpoint(s) from %player%.");
 
     private String path;
     private String def;

@@ -61,8 +61,8 @@ public class ItemGUI implements Listener {
             if (skill.getIdentifiers().length == 0) {
               HeroesSkillTree.Logger.severe(Lang.GUI_INVAILD_SKILLS.toString().replace("%skill%", sn));
             } else {
-                //TODO add level of skills - by quantity of items
-                //TODO get statistics from .getSettings() and take them to the lore
+             //TODO add level of skills - by quantity of items
+             //TODO get statistics from .getSettings() and take them to the lore
              //TODO add full language support
               int skillLevel = commandSendingHero.getSkillLevel(skill);
               int skillMaxLevel = hst.getSkillMaxLevel(commandSendingHero, skill);

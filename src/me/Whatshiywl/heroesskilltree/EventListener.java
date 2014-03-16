@@ -5,17 +5,21 @@ import com.herocraftonline.heroes.api.events.ClassChangeEvent;
 import com.herocraftonline.heroes.api.events.HeroChangeLevelEvent;
 import com.herocraftonline.heroes.api.events.SkillUseEvent;
 import com.herocraftonline.heroes.characters.Hero;
+import com.herocraftonline.heroes.characters.Monster;
 import com.herocraftonline.heroes.characters.classes.HeroClass;
 import com.herocraftonline.heroes.characters.effects.Effect;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
+import com.herocraftonline.heroes.util.Properties;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Sound;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.server.PluginEnableEvent;
@@ -44,8 +48,6 @@ public class EventListener implements Listener {
   
   @EventHandler(priority=EventPriority.LOW)
   public void onEntityKill(EntityDeathEvent e) {
-	  //TODO add support for experiance.yml (Heroes)
-	  //TODO add neededExperiance (max expieriance)
 	  if (e.getEntity().getKiller() instanceof Player) {		
 		  if ((e.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent) 
 				  && (e.getEntity().getKiller() instanceof Player) 
@@ -57,11 +59,16 @@ public class EventListener implements Listener {
 			  //double total = killingHero.getExperience(heroClass);
 			  //double needed = killingHero.getMaxExperiance(level);
 			  //int level = killingHero.getLevel();
+			  double addedExperiation = getKillExp(killingHero, e.getEntity()) * heroClass.getExpModifier();
 			  double current = killingHero.currentXPToNextLevel(heroClass);
+			  double exp = killingHero.getExperience(heroClass);
+			  int level = Properties.getLevel(exp);
+			  double maxExperiation = Properties.getTotalExp(level + 1) - Properties.getTotalExp(level);
 			  
 			  p.playSound(p.getLocation(), Sound.LEVEL_UP, 1.0F, 1.0F);
 			  if (plugin.areHologramsEnabled()) {
-				  HeroesSkillTree.expMessage(p, e.getEntity().getLocation().subtract(0.0D, 0.5D, 0.0D), 1.0F/*getmobxp*/, 1.0F /*getneededxp*/, current/*getxp*/);
+				  HeroesSkillTree.expMessage(p, e.getEntity().getLocation().subtract(0.0D, 0.5D, 0.0D), 
+						  addedExperiation, maxExperiation, current + addedExperiation);
 			  }
 		  }
 	  }
@@ -180,5 +187,68 @@ public class EventListener implements Listener {
     	* plugin.getSkillLevel(hero, skill);
     stamina = (stamina > 0) ? stamina : 0;
     event.setStaminaCost(event.getStaminaCost() - stamina);
+  }
+  
+  private double getKillExp(Hero attacker, LivingEntity defender) {
+      Properties prop = Heroes.properties;
+      HeroClass.ExperienceType experienceType = null;
+      if (!attacker.isOwnedSummon(defender) && !attacker.getPlayer().equals(defender)) {
+         double addedExp = 0.0D;
+         if(defender instanceof Player) {
+            addedExp = prop.playerKillingExp;
+            int aLevel = attacker.getTieredLevel(false);
+            int dLevel = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)defender).getTieredLevel(false);
+            addedExp *= findExpAdjustment(aLevel, dLevel);
+            experienceType = HeroClass.ExperienceType.PVP;
+         } else if(defender instanceof LivingEntity && !(defender instanceof Player)) {
+            Monster monster = HeroesSkillTree.heroes.getCharacterManager().getMonster(defender);
+            addedExp = (double) monster.getExperience();
+            if(addedExp == -1.0D && !prop.creatureKillingExp.containsKey(defender.getType())) {
+            }
+
+            if(addedExp == -1.0D) {
+               addedExp = prop.creatureKillingExp.get(defender.getType()).doubleValue();
+            }
+
+            if(prop.noSpawnCamp && monster.getSpawnReason() == SpawnReason.SPAWNER) {
+               addedExp *= prop.spawnCampExpMult;
+            }
+         }
+         if(experienceType != null && addedExp > 0.0D) { return addedExp; }
+         return addedExp;
+      }
+      return 1.0D;
+   }
+  
+//  private double findExpAdjustment(int aLevel, int dLevel) {
+//	  //It works but it's MADNESS
+//      int diff = aLevel - dLevel;
+//      return (Math.abs(diff) <= Heroes.properties.pvpExpRange)
+//    		  ? 1.0D : ((diff >= Heroes.properties.pvpMaxExpRange)
+//    		  	? 0.0D : ((diff <= -Heroes.properties.pvpMaxExpRange)
+//    		  	  ? 2.0D : ((diff > 0)
+//    		  	    ? 1.0D - (double)((diff - Heroes.properties.pvpExpRange) / Heroes.properties.pvpMaxExpRange) : ((diff < 0) 
+//    		  	      ? 1.0D + (double)((Math.abs(diff) - Heroes.properties.pvpExpRange) / Heroes.properties.pvpMaxExpRange)
+//    		  	    	: 1.0D))));
+//  }
+  
+  private double findExpAdjustment(int aLevel, int dLevel){
+    int diff = aLevel - dLevel;
+    if (Math.abs(diff) <= Heroes.properties.pvpExpRange) {
+      return 1.0D;
+    }
+    if (diff >= Heroes.properties.pvpMaxExpRange) {
+      return 0.0D;
+    }
+    if (diff <= -Heroes.properties.pvpMaxExpRange) {
+      return 2.0D;
+    }
+    if (diff > 0) {
+      return 1.0D - (diff - Heroes.properties.pvpExpRange) / Heroes.properties.pvpMaxExpRange;
+    }
+    if (diff < 0) {
+      return 1.0D + (Math.abs(diff) - Heroes.properties.pvpExpRange) / Heroes.properties.pvpMaxExpRange;
+    }
+    return 1.0D;
   }
 }

@@ -548,7 +548,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
 	   if(gained == 0) { return; }
 	   final Hologram holo = new Hologram(
 		 Lang.HOLOGRAM_MESSAGE_EXP_GAINED.toString().replace("%gained%", String.valueOf(gained)),
-		 Lang.HOLOGRAM_MESSAGE_EXP_MINMAX.toString()
+		 Lang.HOLOGRAM_MESSAGE_EXP_MAX.toString()
 		   .replace("%current%", String.valueOf(current))
 		   .replace("%needed%", String.valueOf(needed)));
 	   holo.show(p, loc);

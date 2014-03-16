@@ -32,6 +32,7 @@ commands:
     aliases: ['sl']
     description: Shows all unlocked skills
   skillgui:
+    aliases: ['sg']
     description: Shows ItemGUI SkillTree
   wybor:
     description: Choose class
