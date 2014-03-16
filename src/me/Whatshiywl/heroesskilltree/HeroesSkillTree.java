@@ -49,6 +49,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
 
    private static HeroesSkillTree instance;
    private ManaPotion manaPotion;
+   private ItemGUI IGUI;
    private final EventListener HEventListener = new EventListener(this);
    private final WEventListener WEventListener = new WEventListener();
    private final ManaPotion WManaPotion = new ManaPotion();
@@ -111,6 +112,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
       setupSMS(pm);
       setupManaPotion();
       registerEvents(pm);
+      if (IGUI != null) { IGUI.setAutosave(true); }
       
       Logger.info(Lang.CONSOLE_ENABLED.toString());
    }
@@ -118,6 +120,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    private void setupSMS(PluginManager pm) {
 	   Plugin p = pm.getPlugin("ScrollingMenuSign");
        if (p instanceof ScrollingMenuSign && p.isEnabled()) {
+    	   IGUI = new ItemGUI((ScrollingMenuSign) p);
     	   Logger.info(Lang.CONSOLE_SMS_ENABLED.toString());
        } else {
     	   // plugin not available
@@ -174,7 +177,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
         	 sender.sendMessage(Lang.ERROR_IN_CONSOLE_DENIED.toString());
         	 return true;
          }
-      } else if(commandLabel.equalsIgnoreCase("choose")) {
+      } else if(commandLabel.equalsIgnoreCase("wybor")) {
           ItemGUI.createClassChoose((Player)sender);
           return true;
       } else if(commandLabel.equalsIgnoreCase("skilldown")) {

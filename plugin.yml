@@ -23,19 +23,17 @@ commands:
     aliases: ['sp']
     description: Shows the player's remaining SkillPoints
   skilladmin:
-    alias: ['sa']
+    aliases: ['sa']
     description: Admin commands
   unlocks:
-    alias: ['un']
+    aliases: ['un']
     description: Shows all unlockable skills
   slist:
-    alias: ['sl']
+    aliases: ['sl']
     description: Shows all unlocked skills
   skillgui:
-    alias: ['sg']
     description: Shows ItemGUI SkillTree
-  choose:
-    alias: ['wybor']
+  wybor:
     description: Choose class
 permissions:
   skilltree.*:
