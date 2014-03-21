@@ -8,6 +8,8 @@ import org.bukkit.event.Listener;
 import com.herocraftonline.heroes.characters.Hero;
 
 public class WEventListener implements Listener {
+	//TODO add more events
+	
 	@EventHandler
 	public void onPlayerRegister(fr.xephi.authme.events.LoginEvent e) {
 		Player player = e.getPlayer();

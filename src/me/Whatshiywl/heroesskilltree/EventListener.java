@@ -22,15 +22,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class EventListener implements Listener {
+  //TODO speed up this class
+  //TODO translate messages
+
   private static HeroesSkillTree plugin;
-  
-  public EventListener(HeroesSkillTree instance) {
-    plugin = instance;
-  }
   
   @EventHandler
   public void onPluginEnable(PluginEnableEvent event) {
@@ -40,7 +40,7 @@ public class EventListener implements Listener {
   }
   
   @EventHandler
-  public void onPluginDisable(org.bukkit.event.server.PluginDisableEvent event) {
+  public void onPluginDisable(PluginDisableEvent event) {
     if (event.getPlugin().getDescription().getName().equals("Heroes")) {
       Bukkit.getPluginManager().disablePlugin(plugin);
     }
@@ -48,6 +48,8 @@ public class EventListener implements Listener {
   
   @EventHandler(priority=EventPriority.LOW)
   public void onEntityKill(EntityDeathEvent e) {
+	  //TODO it will be hard but I'll try to DELETE all calcuations and only GET proper value from Hereos
+	  //FIXME sometimes too long current experience 
 	  if (e.getEntity().getKiller() instanceof Player) {		
 		  if ((e.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent) 
 				  && (e.getEntity().getKiller() instanceof Player) 
@@ -55,10 +57,7 @@ public class EventListener implements Listener {
 			  Player p = e.getEntity().getKiller();
 			  Hero killingHero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)e.getEntity().getKiller());
 			  HeroClass heroClass = killingHero.getHeroClass();
-				
-			  //double total = killingHero.getExperience(heroClass);
-			  //double needed = killingHero.getMaxExperiance(level);
-			  //int level = killingHero.getLevel();
+
 			  double addedExperiation = getKillExp(killingHero, e.getEntity()) * heroClass.getExpModifier();
 			  double current = killingHero.currentXPToNextLevel(heroClass);
 			  double exp = killingHero.getExperience(heroClass);
@@ -125,7 +124,7 @@ public class EventListener implements Listener {
         boolean reset = false;
         if (evt.getTo().isDefault()) {
           reset = true;
-          for (com.herocraftonline.heroes.characters.classes.HeroClass hClass : HeroesSkillTree.heroes.getClassManager().getClasses()) {
+          for (HeroClass hClass : HeroesSkillTree.heroes.getClassManager().getClasses()) {
             if (hero.getExperience(hClass) != 0.0D) {
               reset = false;
               break;
@@ -189,6 +188,8 @@ public class EventListener implements Listener {
     event.setStaminaCost(event.getStaminaCost() - stamina);
   }
   
+  
+  //TODO delete that, instead of that add more get features 
   private double getKillExp(Hero attacker, LivingEntity defender) {
       Properties prop = Heroes.properties;
       HeroClass.ExperienceType experienceType = null;
@@ -220,18 +221,7 @@ public class EventListener implements Listener {
       return 1.0D;
    }
   
-//  private double findExpAdjustment(int aLevel, int dLevel) {
-//	  //It works but it's MADNESS
-//      int diff = aLevel - dLevel;
-//      return (Math.abs(diff) <= Heroes.properties.pvpExpRange)
-//    		  ? 1.0D : ((diff >= Heroes.properties.pvpMaxExpRange)
-//    		  	? 0.0D : ((diff <= -Heroes.properties.pvpMaxExpRange)
-//    		  	  ? 2.0D : ((diff > 0)
-//    		  	    ? 1.0D - (double)((diff - Heroes.properties.pvpExpRange) / Heroes.properties.pvpMaxExpRange) : ((diff < 0) 
-//    		  	      ? 1.0D + (double)((Math.abs(diff) - Heroes.properties.pvpExpRange) / Heroes.properties.pvpMaxExpRange)
-//    		  	    	: 1.0D))));
-//  }
-  
+  //TODO delete that, instead of that add more get features 
   private double findExpAdjustment(int aLevel, int dLevel){
     int diff = aLevel - dLevel;
     if (Math.abs(diff) <= Heroes.properties.pvpExpRange) {

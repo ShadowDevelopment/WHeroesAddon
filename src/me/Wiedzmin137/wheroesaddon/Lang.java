@@ -10,6 +10,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 * @author Bednar12
 */
 public enum Lang {
+	//TODO compare this list with lang.yml 
     TITLE("titleName", "&1[&bSkillTree&1]&r:"),
     TITLE_ITEM_GUI("titleItemGUI", "&1[&9 %class% &1]&r"),
     GUI_INVAILD_SKILLS("GUIInvaildSkills", "Skill %skill% has no valid identifiers and can not be used on the menu! Please contact the author to fix the skill."),

@@ -50,7 +50,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    private static HeroesSkillTree instance;
    private ManaPotion manaPotion;
    private ItemGUI IGUI;
-   private final EventListener HEventListener = new EventListener(this);
+   private final EventListener HEventListener = new EventListener();
    private final WEventListener WEventListener = new WEventListener();
    private final ManaPotion WManaPotion = new ManaPotion();
    private HashMap<String, HashMap<String, HashMap<String, Integer>>> playerSkills 
@@ -73,10 +73,18 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    public List<Skill> SkillWeakParents = new ArrayList<Skill>();
    
    //TODO add support for "#" character in config.yml & lang.yml
-   //TODO cleanup some thing
+   //TODO add comments and documentation to all classes
+   //TODO (HARD) clean up to speed up plugin
+   
    //TODO (HARD) make API class instead of huge main class
    //TODO try to make main class WHereosAddon in Wiedzmin137 package
-   //TODO add comments and documentation to all classes
+   //TODO remade HeroesSkillTree.class to be ONLY HereosSkillTree, not main class
+   //TODO create me.Wiedzmin137.wheroesaddon.Core
+   
+   //TODO trough-tier SkillTrees
+   //TODO skills needing class level to upgrade
+   //TODO support BHereosStamina
+   //TODO support WHeroesRaces
    
    //FIXME error on /hero reset (can't delete player.yml in WHA)
    
@@ -84,7 +92,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
 	      saveAll();
 	      LANG = null;
 	      LANG_FILE = null;
-    	  instance = null;
+	      instance = null;
 	      HandlerList.unregisterAll(HEventListener);
 	      HandlerList.unregisterAll(WEventListener);
 	      
@@ -154,7 +162,8 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    }
    
    public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-	  //TODO fix strange ClassCastException (it's occur even if it shouldn't) casted in console (Spigot)
+	  //FIXME fix strange ClassCastException (it's occur even if it shouldn't) casted in console (Spigot)
+	  //FIXME some command doesn't work due to unreal permissions lack
 	  //TODO clean up all commands
       Hero hero = heroes.getCharacterManager().getHero((Player)sender);
       String skillPoints = String.valueOf(getPlayerPoints(hero));
@@ -225,6 +234,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    }
 
    public void resetPlayer(Player player) {
+	  //FIXME error on /Hero reset
       String name = player.getName();
       playerSkills.put(name, playerClasses);
       playerClasses.put(name, new HashMap<String, Integer>());
@@ -232,6 +242,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    } 
    
    private void resetPlayerConfig(String name) {
+	 //FIXME error on /Hero reset
      File playerFolder = new File(getDataFolder(), "data");
      if (!playerFolder.exists()) {
        playerFolder.mkdir();
@@ -251,9 +262,9 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    public int getPlayerPoints(Hero hero) {
       return playerClasses.get(hero.getPlayer().getName()) != null && playerClasses
     		  .get(hero.getPlayer().getName())
-    		  .get(hero.getHeroClass().getName()) != null?((Integer)playerClasses
+    		  .get(hero.getHeroClass().getName()) != null ? ((Integer)playerClasses
     		  .get(hero.getPlayer().getName())
-    		  .get(hero.getHeroClass().getName())).intValue():0;
+    		  .get(hero.getHeroClass().getName())).intValue() : 0;
    }
 
    //FIXME I think it doesn't work properly, I used this SupressWarnings but problems are somewhere in code

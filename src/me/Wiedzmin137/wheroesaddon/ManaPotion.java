@@ -18,6 +18,9 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class ManaPotion implements Listener {
+   //FIXME it is probably not work
+   //TODO add more functions for potions
+   //TODO clean up
 
    private Material potion;
    private byte potionData;
@@ -69,7 +72,7 @@ public class ManaPotion implements Listener {
       return randNum1;
    }
 
-   public void addMana(Player player) {
+   private void addMana(Player player) {
       Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero(player);
       int mana = getRegain();
       HeroClass hClass = hero.getHeroClass();
