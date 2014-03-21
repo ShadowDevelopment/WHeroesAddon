@@ -3,6 +3,7 @@ package me.Whatshiywl.heroesskilltree;
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.events.ClassChangeEvent;
 import com.herocraftonline.heroes.api.events.HeroChangeLevelEvent;
+import com.herocraftonline.heroes.api.events.SkillDamageEvent;
 import com.herocraftonline.heroes.api.events.SkillUseEvent;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.Monster;
@@ -157,13 +158,6 @@ public class EventListener implements Listener {
       event.setCancelled(true);
       return;
     }
-    //TODO test "hst-damage" feature
-    //TODO repair them all (@gabizou have said they looks OK but they not good like he said)
-    int damage = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-damage", 0.0D, false) 
-    	* plugin.getSkillLevel(hero, skill);
-    int firstDamage = (int)SkillConfigManager.getUseSetting(hero, skill, "damage", 0.0D, false);
-    damage = (damage > 0) ? damage : 0;
-    event.getHero().setSkillSetting(skill, "damage", firstDamage + damage);
     
     int health = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-health", 0.0D, false) 
     	* plugin.getSkillLevel(hero, skill);
@@ -188,6 +182,26 @@ public class EventListener implements Listener {
     event.setStaminaCost(event.getStaminaCost() - stamina);
   }
   
+  //TODO test "hst-damage" feature
+  @EventHandler
+  public void onSkillDamage(SkillDamageEvent event) {
+	  Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)event.getDamager());  
+	  Skill skill = event.getSkill();
+	  
+	  double damage = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-damage", 0.0D, false) 
+			  * plugin.getSkillLevel(hero, skill);
+	    int firstDamage = (int)SkillConfigManager.getUseSetting(hero, skill, "damage", 0.0D, false);
+	    damage = (damage > 0) ? damage : 0;
+	    
+	  event.setDamage(firstDamage + damage);
+  }
+  
+    //TODO do that!
+//  @EventHandler
+//  public void onSkillComplete(SkillCompleteEvent event) {
+//	  Hero hero = event.getHero();
+//	  Skill skill = event.getSkill();
+//  }
   
   //TODO delete that, instead of that add more get features 
   private double getKillExp(Hero attacker, LivingEntity defender) {
