@@ -14,6 +14,7 @@ import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.util.Properties;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -102,10 +103,10 @@ public class EventListener implements Listener {
   public void onLevelChangeEvent(HeroChangeLevelEvent event) {
     final Hero hero = event.getHero();
     plugin.setPlayerPoints(hero, event.getHeroClass(), 
-      plugin.getPlayerPoints(hero) + (event.getTo() - event.getFrom()) * plugin.getPointsPerLevel());
+    plugin.getPlayerPoints(hero) + (event.getTo() - event.getFrom()) * plugin.getPointsPerLevel());
     plugin.savePlayerConfig(hero.getPlayer().getName());
-    if (hero.getHeroClass() != event.getHeroClass()) return;
-    hero.getPlayer().sendMessage(org.bukkit.ChatColor.GOLD + "[HST] " + org.bukkit.ChatColor.AQUA + "SkillPoints: " + plugin.getPlayerPoints(hero));
+    if (hero.getHeroClass() != event.getHeroClass()) {return;}
+    hero.getPlayer().sendMessage(ChatColor.GOLD + "[HST] " + ChatColor.AQUA + "SkillPoints: " + plugin.getPlayerPoints(hero));
     
     Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
       public void run() {
@@ -123,12 +124,12 @@ public class EventListener implements Listener {
   @EventHandler(priority=EventPriority.MONITOR)
   public void onClassChangeEvent(ClassChangeEvent event) {
     final Hero hero = event.getHero();
-    final ClassChangeEvent evt = event;
+    final ClassChangeEvent e = event;
 
     Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
       public void run() {
         boolean reset = false;
-        if (evt.getTo().isDefault()) {
+        if (e.getTo().isDefault()) {
           reset = true;
           for (HeroClass hClass : HeroesSkillTree.heroes.getClassManager().getClasses()) {
             if (hero.getExperience(hClass) != 0.0D) {
@@ -140,7 +141,7 @@ public class EventListener implements Listener {
         if (reset) {
           EventListener.plugin.resetPlayer(hero.getPlayer());
         } else {
-          EventListener.plugin.recalcPlayerPoints(hero, evt.getTo());
+          EventListener.plugin.recalcPlayerPoints(hero, e.getTo());
         }
         for (Effect effect : hero.getEffects()) {
           Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(effect.getName());

@@ -34,7 +34,6 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -429,45 +428,45 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
      return true;
    }
 
-   public void loadPlayerConfig(String name) {
+   public void loadPlayerConfig(String player) {
      FileConfiguration playerConfig = new YamlConfiguration();
-     File playerFolder = new File(heroes.getDataFolder() + "/players", name.toLowerCase().substring(0, 1));
+     File playerFolder = new File(heroes.getDataFolder() + "/players", player.toLowerCase().substring(0, 1));
      if (!playerFolder.exists()) {
        playerFolder.mkdir();
      }
-     File playerConfigFile = new File(playerFolder, name.toLowerCase() + ".yml");
+     File playerConfigFile = new File(playerFolder, player.toLowerCase() + ".yml");
      if (!playerConfigFile.exists()) {
        try {
          playerConfigFile.createNewFile();
        }
        catch (IOException ex) {
-    	 Logger.severe(Lang.SERVRE_FAILED_CREATE.toString().replace("%name%", name));
+    	 Logger.severe(Lang.SERVRE_FAILED_CREATE.toString().replace("%name%", player));
          return;
        }
      }
      try {
        playerConfig.load(playerConfigFile);
-       if (!playerClasses.containsKey(name)) {
-         playerClasses.put(name, new HashMap<String, Integer>());
+       if (!playerClasses.containsKey(player)) {
+         playerClasses.put(player, new HashMap<String, Integer>());
        }
        for (String s : playerConfig.getKeys(false)) {
-         playerClasses.get(name).put(s, Integer.valueOf(playerConfig.getInt(s + ".points", 0)));
+         playerClasses.get(player).put(s, Integer.valueOf(playerConfig.getInt(s + ".points", 0)));
          if (!playerSkills.containsKey(s)) {
-           playerSkills.put(name, new HashMap<String, HashMap<String, Integer>>());
+           playerSkills.put(player, new HashMap<String, HashMap<String, Integer>>());
          }
-         if (!playerSkills.get(name).containsKey(s)) {
-           playerSkills.get(name).put(s, new HashMap<String, Integer>());
+         if (!playerSkills.get(player).containsKey(s)) {
+           playerSkills.get(player).put(s, new HashMap<String, Integer>());
          }
          if (playerConfig.getConfigurationSection(s + ".skills") != null) {
            for (String st : playerConfig.getConfigurationSection(s + ".skills").getKeys(false)) {
-             ((HashMap<String, Integer>)playerSkills.get(name).get(s))
+             ((HashMap<String, Integer>)playerSkills.get(player).get(s))
             		 .put(st, Integer.valueOf(playerConfig.getInt(s + ".skills." + st, 0)));
            }
          }
        }
      }
      catch (Exception e) {
-    	 Logger.severe("[HeroesSkillTree] failed to load " + name + ".yml");
+    	 Logger.severe("[HeroesSkillTree] failed to load " + player + ".yml");
      }
    }
    
@@ -510,13 +509,6 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
       if(!playerFile.exists()) {
          try {
             playerFile.createNewFile();
-            try {
-				playerConfig.load(playerFile);
-			} catch (InvalidConfigurationException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-            playerConfig.addDefault("Test", 2);
          } catch (IOException ioe) {
             Logger.severe("[HeroesSkillTree] failed to create " + player + ".yml at");
             Logger.severe(playerFile.getPath());
@@ -524,9 +516,12 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
          }
       }
       try {
-    	 //FIXME saving 
+    	 //FIXME saving
+    	 playerConfig.load(playerFile);
          Iterator<String> message1 = this.playerClasses.get(player).keySet().iterator();
 
+         //TODO clean up those Iterator and HashMaps
+         //TODO rename var, message and e
          while(message1.hasNext()) {
             String e = message1.next();
             playerConfig.set(e + ".points", this.playerClasses.get(player).get(e));
