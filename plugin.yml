@@ -1,17 +1,19 @@
 name: WHeroesAddon
-main: me.Whatshiywl.heroesskilltree.HeroesSkillTree
 version: A0.2
+description: Brings new features to the Heroes plugin.
 authors: [Wiedzmin137, Whatshiywl, Bednar12]
 website: https://github.com/wiedzmin137/HeroesSkillTree
-description: Brings skill trees to the Heroes plugin.
+
 depend: [Heroes]
 softdepend: [ScrollingMenuSign, AuthMe]
+main: me.Whatshiywl.heroesskilltree.HeroesSkillTree
+
 commands:
   heroesskilltree:
-    aliases: ['hst', 'skilltree', 'st', 'PKT']
+    aliases: [hst, skilltree, st, PKT]
     description: Shows HST's help menu
   skillup:
-    aliases: ['sup']
+    aliases: [sup]
     description: Levels up a skill
   skilldown:
     aliases: ['sdown']
@@ -36,6 +38,8 @@ commands:
     description: Shows ItemGUI SkillTree
   wybor:
     description: Choose class
+  test:
+    description: Save sender's SkillTree data
 permissions:
   skilltree.*:
     description: Gives all permissions

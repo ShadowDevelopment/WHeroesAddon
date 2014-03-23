@@ -23,6 +23,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.inventory.ItemStack;
@@ -75,10 +76,14 @@ public class EventListener implements Listener {
   }
   
   @EventHandler
-  public void onPlayerJoin(org.bukkit.event.player.PlayerJoinEvent event) {
+  public void onPlayerJoin(PlayerJoinEvent event) {
     Player player = event.getPlayer();
     final Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero(player);
-    plugin.loadPlayerConfig(player.getName());
+    try {
+        plugin.loadPlayerConfig(player.getName());
+    } catch (NullPointerException e) {
+        plugin.savePlayerConfig(player.toString());
+    }
     plugin.recalcPlayerPoints(hero, hero.getHeroClass());
     Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
       public void run() {
@@ -148,7 +153,7 @@ public class EventListener implements Listener {
     }, 1L);
   }
   
-  @EventHandler(priority=EventPriority.MONITOR)
+  @EventHandler(priority=EventPriority.HIGHEST)
   public void onPlayerUseSkill(SkillUseEvent event) {
     Hero hero = event.getHero();
     Skill skill = event.getSkill();
@@ -159,38 +164,38 @@ public class EventListener implements Listener {
       return;
     }
     
-    int health = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-health", 0.0D, false) 
+    int health = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-health", 0, false) 
     	* plugin.getSkillLevel(hero, skill);
     health = (health > 0) ? health : 0;
     event.setHealthCost(event.getHealthCost() + health);
 
-    int mana = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-mana", 0.0D, false)
+    int mana = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-mana", 0, false)
     	* plugin.getSkillLevel(hero, skill);
     mana = (mana > 0) ? mana : 0;
     event.setManaCost(event.getManaCost() - mana);
 
-    int reagent = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-reagent", 0.0D, false) 
+    int reagent = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-reagent", 0, false) 
     	* plugin.getSkillLevel(hero, skill);
     reagent = (reagent > 0) ? reagent : 0;
     ItemStack is = event.getReagentCost();
     if (is != null) { is.setAmount(event.getReagentCost().getAmount() - reagent); }
     event.setReagentCost(is);
 
-    int stamina = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-stamina", 0.0D, false)
+    int stamina = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-stamina", 0, false)
     	* plugin.getSkillLevel(hero, skill);
     stamina = (stamina > 0) ? stamina : 0;
     event.setStaminaCost(event.getStaminaCost() - stamina);
   }
   
   //TODO test "hst-damage" feature
-  @EventHandler
+  @EventHandler(priority=EventPriority.HIGHEST)
   public void onSkillDamage(SkillDamageEvent event) {
 	  Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)event.getDamager());  
 	  Skill skill = event.getSkill();
 	  
-	  double damage = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-damage", 0.0D, false) 
+	  double damage = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-damage", 0, false) 
 			  * plugin.getSkillLevel(hero, skill);
-	    int firstDamage = (int)SkillConfigManager.getUseSetting(hero, skill, "damage", 0.0D, false);
+	    int firstDamage = (int)SkillConfigManager.getUseSetting(hero, skill, "damage", 0, false);
 	    damage = (damage > 0) ? damage : 0;
 	    
 	  event.setDamage(firstDamage + damage);
