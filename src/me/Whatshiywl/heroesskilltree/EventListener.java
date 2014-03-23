@@ -14,7 +14,6 @@ import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.util.Properties;
 
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.Sound;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
@@ -24,7 +23,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.inventory.ItemStack;
@@ -77,14 +75,10 @@ public class EventListener implements Listener {
   }
   
   @EventHandler
-  public void onPlayerJoin(PlayerJoinEvent event) {
+  public void onPlayerJoin(org.bukkit.event.player.PlayerJoinEvent event) {
     Player player = event.getPlayer();
     final Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero(player);
-    try {
-        plugin.loadPlayerConfig(player.getName());
-    } catch (NullPointerException e) {
-        plugin.savePlayerConfig(player.toString());
-    }
+    plugin.loadPlayerConfig(player.getName());
     plugin.recalcPlayerPoints(hero, hero.getHeroClass());
     Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
       public void run() {
@@ -103,10 +97,10 @@ public class EventListener implements Listener {
   public void onLevelChangeEvent(HeroChangeLevelEvent event) {
     final Hero hero = event.getHero();
     plugin.setPlayerPoints(hero, event.getHeroClass(), 
-    plugin.getPlayerPoints(hero) + (event.getTo() - event.getFrom()) * plugin.getPointsPerLevel());
+      plugin.getPlayerPoints(hero) + (event.getTo() - event.getFrom()) * plugin.getPointsPerLevel());
     plugin.savePlayerConfig(hero.getPlayer().getName());
-    if (hero.getHeroClass() != event.getHeroClass()) {return;}
-    hero.getPlayer().sendMessage(ChatColor.GOLD + "[HST] " + ChatColor.AQUA + "SkillPoints: " + plugin.getPlayerPoints(hero));
+    if (hero.getHeroClass() != event.getHeroClass()) return;
+    hero.getPlayer().sendMessage(org.bukkit.ChatColor.GOLD + "[HST] " + org.bukkit.ChatColor.AQUA + "SkillPoints: " + plugin.getPlayerPoints(hero));
     
     Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
       public void run() {
@@ -124,12 +118,12 @@ public class EventListener implements Listener {
   @EventHandler(priority=EventPriority.MONITOR)
   public void onClassChangeEvent(ClassChangeEvent event) {
     final Hero hero = event.getHero();
-    final ClassChangeEvent e = event;
+    final ClassChangeEvent evt = event;
 
     Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
       public void run() {
         boolean reset = false;
-        if (e.getTo().isDefault()) {
+        if (evt.getTo().isDefault()) {
           reset = true;
           for (HeroClass hClass : HeroesSkillTree.heroes.getClassManager().getClasses()) {
             if (hero.getExperience(hClass) != 0.0D) {
@@ -141,7 +135,7 @@ public class EventListener implements Listener {
         if (reset) {
           EventListener.plugin.resetPlayer(hero.getPlayer());
         } else {
-          EventListener.plugin.recalcPlayerPoints(hero, e.getTo());
+          EventListener.plugin.recalcPlayerPoints(hero, evt.getTo());
         }
         for (Effect effect : hero.getEffects()) {
           Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(effect.getName());
@@ -154,7 +148,7 @@ public class EventListener implements Listener {
     }, 1L);
   }
   
-  @EventHandler(priority=EventPriority.HIGHEST)
+  @EventHandler(priority=EventPriority.MONITOR)
   public void onPlayerUseSkill(SkillUseEvent event) {
     Hero hero = event.getHero();
     Skill skill = event.getSkill();
@@ -165,38 +159,38 @@ public class EventListener implements Listener {
       return;
     }
     
-    int health = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-health", 0, false) 
+    int health = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-health", 0.0D, false) 
     	* plugin.getSkillLevel(hero, skill);
     health = (health > 0) ? health : 0;
     event.setHealthCost(event.getHealthCost() + health);
 
-    int mana = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-mana", 0, false)
+    int mana = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-mana", 0.0D, false)
     	* plugin.getSkillLevel(hero, skill);
     mana = (mana > 0) ? mana : 0;
     event.setManaCost(event.getManaCost() - mana);
 
-    int reagent = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-reagent", 0, false) 
+    int reagent = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-reagent", 0.0D, false) 
     	* plugin.getSkillLevel(hero, skill);
     reagent = (reagent > 0) ? reagent : 0;
     ItemStack is = event.getReagentCost();
     if (is != null) { is.setAmount(event.getReagentCost().getAmount() - reagent); }
     event.setReagentCost(is);
 
-    int stamina = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-stamina", 0, false)
+    int stamina = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-stamina", 0.0D, false)
     	* plugin.getSkillLevel(hero, skill);
     stamina = (stamina > 0) ? stamina : 0;
     event.setStaminaCost(event.getStaminaCost() - stamina);
   }
   
   //TODO test "hst-damage" feature
-  @EventHandler(priority=EventPriority.HIGHEST)
+  @EventHandler
   public void onSkillDamage(SkillDamageEvent event) {
 	  Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)event.getDamager());  
 	  Skill skill = event.getSkill();
 	  
-	  double damage = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-damage", 0, false) 
+	  double damage = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-damage", 0.0D, false) 
 			  * plugin.getSkillLevel(hero, skill);
-	    int firstDamage = (int)SkillConfigManager.getUseSetting(hero, skill, "damage", 0, false);
+	    int firstDamage = (int)SkillConfigManager.getUseSetting(hero, skill, "damage", 0.0D, false);
 	    damage = (damage > 0) ? damage : 0;
 	    
 	  event.setDamage(firstDamage + damage);
