@@ -34,6 +34,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -509,30 +510,38 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
       if(!playerFile.exists()) {
          try {
             playerFile.createNewFile();
+            try {
+				playerConfig.load(playerFile);
+			} catch (InvalidConfigurationException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            playerConfig.addDefault("Test", 2);
          } catch (IOException ioe) {
-            Logger.severe("[HeroesSkillTree] failed to save " + player + ".yml (A) at");
+            Logger.severe("[HeroesSkillTree] failed to create " + player + ".yml at");
             Logger.severe(playerFile.getPath());
             return;
          }
       }
       try {
-         playerConfig.load(playerFile);
-         Iterator<String> namePlayer = playerClasses.get(player).keySet().iterator();
-         while(namePlayer.hasNext()) {
-            String name = namePlayer.next();
-            if(playerSkills.containsKey(player) && playerSkills.get(player).containsKey(name)) {
-               if (playerConfig.getConfigurationSection(player + ".skills") != null) {
-                   for (String st : playerConfig.getConfigurationSection(player + ".skills").getKeys(false)) {
-                     ((HashMap<String, Integer>)playerSkills.get(name).get(player))
-                     .put(st, Integer.valueOf(playerConfig.getInt(player + ".skills." + st, 0)));
-                   }
+    	 //FIXME saving 
+         Iterator<String> message1 = this.playerClasses.get(player).keySet().iterator();
+
+         while(message1.hasNext()) {
+            String e = message1.next();
+            playerConfig.set(e + ".points", this.playerClasses.get(player).get(e));
+            if(this.playerSkills.containsKey(player) && this.playerSkills.get(player).containsKey(e)) {
+               Iterator var8 = ((HashMap)this.playerSkills.get(player).get(e)).keySet().iterator();
+
+               while(var8.hasNext()) {
+                  String skillName = (String)var8.next();
+                  playerConfig.set(e + ".skills." + skillName, ((HashMap)this.playerSkills.get(player).get(e)).get(skillName));
                }
             }
          }
-         playerConfig.addDefault("Test", 2);
          playerConfig.save(playerFile);
       } catch (Exception e) {
-         Logger.severe("[HeroesSkillTree] failed to save " + player + ".yml (B)");
+         Logger.severe("[HeroesSkillTree] failed to save/load " + player + ".yml");
       }
    }
 
