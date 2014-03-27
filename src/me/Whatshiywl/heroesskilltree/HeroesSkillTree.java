@@ -50,7 +50,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    private static HeroesSkillTree instance;
    private ManaPotion manaPotion;
    private ItemGUI IGUI;
-   private final EventListener HEventListener = new EventListener();
+   private final EventListener HEventListener = new EventListener(this);
    private final WEventListener WEventListener = new WEventListener();
    private final ManaPotion WManaPotion = new ManaPotion();
    private HashMap<String, HashMap<String, HashMap<String, Integer>>> playerSkills 

@@ -23,32 +23,35 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
-import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class EventListener implements Listener {
-  //TODO speed up this class
-  //TODO translate messages
-
-  private static HeroesSkillTree plugin;
-  
-  @EventHandler
-  public void onPluginEnable(PluginEnableEvent event) {
-    if (event.getPlugin().getDescription().getName().equals("Heroes")) {
-      HeroesSkillTree.heroes = (Heroes)event.getPlugin();
-    }
-  }
-  
-  @EventHandler
-  public void onPluginDisable(PluginDisableEvent event) {
-    if (event.getPlugin().getDescription().getName().equals("Heroes")) {
-      Bukkit.getPluginManager().disablePlugin(plugin);
-    }
-  }
-  
-  @EventHandler(priority=EventPriority.LOW)
-  public void onEntityKill(EntityDeathEvent e) {
+	//TODO speed up this class
+	//TODO translate messages
+	
+	private static HeroesSkillTree plugin; 
+	public EventListener(HeroesSkillTree instance) {
+		plugin = instance;
+	}
+	  
+	@EventHandler
+	public void onPluginEnable(PluginEnableEvent event) {
+		if (event.getPlugin().getDescription().getName().equals("Heroes")) {
+			HeroesSkillTree.heroes = (Heroes)event.getPlugin();
+		}
+	}
+	  
+	@EventHandler
+	public void onPluginDisable(org.bukkit.event.server.PluginDisableEvent event) {
+		if (event.getPlugin().getDescription().getName().equals("Heroes")) {
+			Bukkit.getPluginManager().disablePlugin(plugin);
+		}
+	}
+	  
+	@EventHandler(priority=EventPriority.LOW)
+	//TODO replace EntityDeathEvent to ExperienceChangeEvent, it will be TRULLY better
+	public void onEntityKill(EntityDeathEvent e) {
 	  //TODO it will be hard but I'll try to DELETE all calcuations and only GET proper value from Hereos
 	  //FIXME sometimes too long current experience 
 	  if (e.getEntity().getKiller() instanceof Player) {		
@@ -183,18 +186,18 @@ public class EventListener implements Listener {
   }
   
   //TODO test "hst-damage" feature
-  @EventHandler
-  public void onSkillDamage(SkillDamageEvent event) {
-	  Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)event.getDamager());  
-	  Skill skill = event.getSkill();
-	  
-	  double damage = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-damage", 0.0D, false) 
-			  * plugin.getSkillLevel(hero, skill);
-	    int firstDamage = (int)SkillConfigManager.getUseSetting(hero, skill, "damage", 0.0D, false);
-	    damage = (damage > 0) ? damage : 0;
-	    
-	  event.setDamage(firstDamage + damage);
-  }
+//  @EventHandler
+//  public void onSkillDamage(SkillDamageEvent event) {
+//	  Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)event.getDamager());  
+//	  Skill skill = event.getSkill();
+//	  
+//	  double damage = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-damage", 0.0D, false) 
+//			  * plugin.getSkillLevel(hero, skill);
+//	    int firstDamage = (int)SkillConfigManager.getUseSetting(hero, skill, "damage", 0.0D, false);
+//	    damage = (damage > 0) ? damage : 0;
+//	    
+//	  event.setDamage(firstDamage + damage);
+//  }
   
     //TODO do that!
 //  @EventHandler
