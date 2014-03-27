@@ -2,11 +2,10 @@ package me.Whatshiywl.heroesskilltree;
 
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.events.ClassChangeEvent;
+import com.herocraftonline.heroes.api.events.ExperienceChangeEvent;
 import com.herocraftonline.heroes.api.events.HeroChangeLevelEvent;
-import com.herocraftonline.heroes.api.events.SkillDamageEvent;
 import com.herocraftonline.heroes.api.events.SkillUseEvent;
 import com.herocraftonline.heroes.characters.Hero;
-import com.herocraftonline.heroes.characters.Monster;
 import com.herocraftonline.heroes.characters.classes.HeroClass;
 import com.herocraftonline.heroes.characters.effects.Effect;
 import com.herocraftonline.heroes.characters.skill.Skill;
@@ -14,15 +13,10 @@ import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.util.Properties;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Sound;
-import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -50,30 +44,22 @@ public class EventListener implements Listener {
 	}
 	  
 	@EventHandler(priority=EventPriority.LOW)
-	//TODO replace EntityDeathEvent to ExperienceChangeEvent, it will be TRULLY better
-	public void onEntityKill(EntityDeathEvent e) {
-	  //TODO it will be hard but I'll try to DELETE all calcuations and only GET proper value from Hereos
-	  //FIXME sometimes too long current experience 
-	  if (e.getEntity().getKiller() instanceof Player) {		
-		  if ((e.getEntity().getLastDamageCause() instanceof EntityDamageByEntityEvent) 
-				  && (e.getEntity().getKiller() instanceof Player) 
-				  && (plugin.areHologramsEnabled())) {
-			  Player p = e.getEntity().getKiller();
-			  Hero killingHero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)e.getEntity().getKiller());
-			  HeroClass heroClass = killingHero.getHeroClass();
-
-			  double addedExperiation = getKillExp(killingHero, e.getEntity()) * heroClass.getExpModifier();
-			  double current = killingHero.currentXPToNextLevel(heroClass);
-			  double exp = killingHero.getExperience(heroClass);
-			  int level = Properties.getLevel(exp);
-			  double maxExperiation = Properties.getTotalExp(level + 1) - Properties.getTotalExp(level);
-			  
-			  p.playSound(p.getLocation(), Sound.LEVEL_UP, 1.0F, 1.0F);
-			  if (plugin.areHologramsEnabled()) {
-				  HeroesSkillTree.expMessage(p, e.getEntity().getLocation().subtract(0.0D, 0.5D, 0.0D), 
-						  addedExperiation, maxExperiation, current + addedExperiation);
-			  }
-		  }
+	public void onEntityKill(ExperienceChangeEvent e) {
+      Hero hero = e.getHero();
+      Player player = hero.getPlayer();
+      HeroClass heroClass = e.getHeroClass();
+      
+	  if ((e.getSource() == HeroClass.ExperienceType.KILLING) && (plugin.areHologramsEnabled())) {
+		  double change = e.getExpChange();
+		  double current = hero.currentXPToNextLevel(heroClass);
+		  double currentRounded = Math.round(current);
+		  
+		  double exp = hero.getExperience(heroClass);
+		  int level = Properties.getLevel(exp);
+		  double maxExperiation = Properties.getTotalExp(level + 1) - Properties.getTotalExp(level);
+		  
+		  HeroesSkillTree.expMessage(player, e.getLocation().subtract(0.0D, 0.5D, 0.0D), 
+				  change, maxExperiation, currentRounded + change);
 	  }
   }
   
@@ -205,57 +191,4 @@ public class EventListener implements Listener {
 //	  Hero hero = event.getHero();
 //	  Skill skill = event.getSkill();
 //  }
-  
-  //TODO delete that, instead of that add more get features 
-  private double getKillExp(Hero attacker, LivingEntity defender) {
-      Properties prop = Heroes.properties;
-      HeroClass.ExperienceType experienceType = null;
-      if (!attacker.isOwnedSummon(defender) && !attacker.getPlayer().equals(defender)) {
-         double addedExp = 0.0D;
-         if(defender instanceof Player) {
-            addedExp = prop.playerKillingExp;
-            int aLevel = attacker.getTieredLevel(false);
-            int dLevel = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)defender).getTieredLevel(false);
-            addedExp *= findExpAdjustment(aLevel, dLevel);
-            experienceType = HeroClass.ExperienceType.PVP;
-         } else if(defender instanceof LivingEntity && !(defender instanceof Player)) {
-            Monster monster = HeroesSkillTree.heroes.getCharacterManager().getMonster(defender);
-            addedExp = (double) monster.getExperience();
-            if(addedExp == -1.0D && !prop.creatureKillingExp.containsKey(defender.getType())) {
-            }
-
-            if(addedExp == -1.0D) {
-               addedExp = prop.creatureKillingExp.get(defender.getType()).doubleValue();
-            }
-
-            if(prop.noSpawnCamp && monster.getSpawnReason() == SpawnReason.SPAWNER) {
-               addedExp *= prop.spawnCampExpMult;
-            }
-         }
-         if(experienceType != null && addedExp > 0.0D) { return addedExp; }
-         return addedExp;
-      }
-      return 1.0D;
-   }
-  
-  //TODO delete that, instead of that add more get features 
-  private double findExpAdjustment(int aLevel, int dLevel){
-    int diff = aLevel - dLevel;
-    if (Math.abs(diff) <= Heroes.properties.pvpExpRange) {
-      return 1.0D;
-    }
-    if (diff >= Heroes.properties.pvpMaxExpRange) {
-      return 0.0D;
-    }
-    if (diff <= -Heroes.properties.pvpMaxExpRange) {
-      return 2.0D;
-    }
-    if (diff > 0) {
-      return 1.0D - (diff - Heroes.properties.pvpExpRange) / Heroes.properties.pvpMaxExpRange;
-    }
-    if (diff < 0) {
-      return 1.0D + (Math.abs(diff) - Heroes.properties.pvpExpRange) / Heroes.properties.pvpMaxExpRange;
-    }
-    return 1.0D;
-  }
 }
