@@ -36,9 +36,11 @@ commands:
     description: Shows ItemGUI SkillTree
   wybor:
     description: Choose class
-  wskilltree:
+  skilltree:
     aliases: [wst]
     description: mss
+  choose:
+    description: Choose class
 permissions:
   skilltree.*:
     description: Gives all permissions
