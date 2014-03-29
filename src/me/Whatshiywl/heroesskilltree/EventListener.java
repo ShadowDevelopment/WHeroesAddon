@@ -17,6 +17,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -52,19 +53,18 @@ public class EventListener implements Listener {
 	  if ((e.getSource() == HeroClass.ExperienceType.KILLING) && (plugin.areHologramsEnabled())) {
 		  double change = e.getExpChange();
 		  double current = hero.currentXPToNextLevel(heroClass);
-		  double currentRounded = Math.round(current);
 		  
 		  double exp = hero.getExperience(heroClass);
 		  int level = Properties.getLevel(exp);
 		  double maxExperiation = Properties.getTotalExp(level + 1) - Properties.getTotalExp(level);
 		  
 		  HeroesSkillTree.expMessage(player, e.getLocation().subtract(0.0D, 0.5D, 0.0D), 
-				  change, maxExperiation, currentRounded + change);
+				  change, maxExperiation, Math.round(current) + change);
 	  }
   }
   
   @EventHandler
-  public void onPlayerJoin(org.bukkit.event.player.PlayerJoinEvent event) {
+  public void onPlayerJoin(PlayerJoinEvent event) {
     Player player = event.getPlayer();
     final Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero(player);
     plugin.loadPlayerConfig(player.getName());

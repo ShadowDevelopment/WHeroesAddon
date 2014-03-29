@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import me.Whatshiywl.heroesskilltree.EventListener;
+import me.Whatshiywl.heroesskilltree.commands.CommandManager;
 import me.Whatshiywl.heroesskilltree.commands.SkillAdminCommand;
 import me.Whatshiywl.heroesskilltree.commands.SkillDownCommand;
 import me.Whatshiywl.heroesskilltree.commands.SkillInfoCommand;
@@ -53,10 +54,11 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    private final EventListener HEventListener = new EventListener(this);
    private final WEventListener WEventListener = new WEventListener();
    private final ManaPotion WManaPotion = new ManaPotion();
-   private HashMap<String, HashMap<String, HashMap<String, Integer>>> playerSkills 
-   	= new LinkedHashMap<String, HashMap<String, HashMap<String, Integer>>>();
-   private HashMap<String, HashMap<String, Integer>> playerClasses = new LinkedHashMap<String, HashMap<String, Integer>>();
    private HashMap<String, FileConfiguration> hConfigs = new LinkedHashMap<String, FileConfiguration>();
+   
+   public HashMap<String, HashMap<String, HashMap<String, Integer>>> playerSkills 
+  	= new LinkedHashMap<String, HashMap<String, HashMap<String, Integer>>>();
+   public HashMap<String, HashMap<String, Integer>> playerClasses = new LinkedHashMap<String, HashMap<String, Integer>>();
    
    private int pointsPerLevel = 1;
    private int hologram_time = 2500;
@@ -87,27 +89,15 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    //TODO support WHeroesRaces
    
    //FIXME error on /hero reset (can't delete player.yml in WHA)
-   
-   public void onDisable() {
-	      saveAll();
-	      LANG = null;
-	      LANG_FILE = null;
-	      instance = null;
-	      HandlerList.unregisterAll(HEventListener);
-	      HandlerList.unregisterAll(WEventListener);
-	      
-	      Logger.info(Lang.CONSOLE_DISABLED.toString());
-   }
   
    @Override
    public void onEnable() {
       setInstance(this);
       
       PluginManager pm = getServer().getPluginManager();
-	  Logger = getServer().getLogger();
+	  Logger Logger = getServer().getLogger();
       
-      getConfig().options().copyDefaults(true);
-      getConfig().options().copyHeader(true);
+      getConfig().options().copyDefaults(true).copyHeader(true);
       saveConfig();
       loadConfig();
       loadLang();
@@ -122,7 +112,20 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
       registerEvents(pm);
       if (IGUI != null) { IGUI.setAutosave(true); }
       
+      getCommand("skilltree").setExecutor(new CommandManager(this));
+      
       Logger.info(Lang.CONSOLE_ENABLED.toString());
+   }
+   
+   public void onDisable() {
+	      saveAll();
+	      LANG = null;
+	      LANG_FILE = null;
+	      HandlerList.unregisterAll(HEventListener);
+	      HandlerList.unregisterAll(WEventListener);
+	      
+	      getServer().getLogger().info(Lang.CONSOLE_DISABLED.toString());
+	      instance = null;
    }
    
    private void setupSMS(PluginManager pm) {
@@ -165,8 +168,9 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
 	  //FIXME fix strange ClassCastException (it's occur even if it shouldn't) casted in console (Spigot)
 	  //FIXME some command doesn't work due to unreal permissions lack
 	  //TODO clean up all commands
+	  
       Hero hero = heroes.getCharacterManager().getHero((Player)sender);
-      String skillPoints = String.valueOf(getPlayerPoints(hero));
+      String skillPoints = String.valueOf(getCurrentPoints(hero, hero.getHeroClass()));
       
       if(commandLabel.equalsIgnoreCase("skillup")) {
          SkillUpCommand.skillUp(this, sender, args);
@@ -267,44 +271,54 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
     		  .get(hero.getHeroClass().getName())).intValue() : 0;
    }
 
-   //FIXME I think it doesn't work properly, I used this SupressWarnings but problems are somewhere in code
-   @SuppressWarnings({ "unchecked", "rawtypes" })
    public void recalcPlayerPoints(Hero hero, HeroClass hClass) {
 	    String name = hero.getPlayer().getName();
 	    String className = hClass.getName();
-	    int points = hero.getLevel(hClass) * getPointsPerLevel();
-	    if (playerClasses.get(name) == null) {
-	      playerClasses.put(name, new HashMap<String, Integer>());
-	    }
-	    if (hero.getPlayer().hasPermission("skilltree.override.usepoints")) {
-	      playerClasses.get(name).put(className, Integer.valueOf(points));
-	      return;
-	    }
-	    if (playerClasses.get(name).get(className) == null) {
-	      playerClasses.get(name).put(className, Integer.valueOf(0));
-	      return;
-	    }
-	    if (playerSkills.get(name) == null) {
-	      playerSkills.put(name, new HashMap<String, HashMap<String, Integer>>());
-	      return;
-	    }
-	    if (playerSkills.get(name).get(className) == null) {
-	      playerSkills.get(name).put(className, new HashMap());
-	      return;
-	    }
-	    for (Skill skill : heroes.getSkillManager().getSkills()) {
-	      String skillName = skill.getName();
-	      if (((HashMap<?, ?>)playerSkills.get(name).get(className)).get(skillName) != null) {
-	        points -= ((Integer)((HashMap<?, ?>)playerSkills.get(name)
-	        		.get(className))
-	        		.get(skillName)).intValue();
-	        if (points < 0) {
-	          Logger.warning("[HeroesSkillTree] " + name + "'s skills are at a too high level!");
-	          points = 0;
-	        }
-	      }
-	    }
-	    playerClasses.get(name).put(className, Integer.valueOf(points));
+	    playerClasses.get(name).put(className, Integer.valueOf(1/*getSkillsPoints(hero, hClass)*/));
+   }
+   
+   //FIXME I think it doesn't work properly, I used this SupressWarnings but problems are somewhere in code
+   @SuppressWarnings({ "rawtypes", "unchecked" })
+   public int getUsedPoints(Hero hero, HeroClass hClass) {
+	   String name = hero.getPlayer().getName();
+	   String className = hClass.getName();
+	   int points = 0;
+	   if (playerClasses.get(name) == null) {
+		   playerClasses.put(name, new HashMap<String, Integer>());
+		   return 0;
+	   }
+	   if (hero.getPlayer().hasPermission("skilltree.override.usepoints")) {
+		   return 0;
+	   }
+	   if (playerClasses.get(name).get(className) == null) {
+		   playerClasses.get(name).put(className, Integer.valueOf(0));
+		   return 0;
+	   }
+	   if (playerSkills.get(name) == null) {
+		   playerSkills.put(name, new HashMap<String, HashMap<String, Integer>>());
+		   return 0;
+	   }
+	   if (playerSkills.get(name).get(className) == null) {
+		   playerSkills.get(name).put(className, new HashMap());
+		   return 0;
+	   }
+	   for (Skill skill : heroes.getSkillManager().getSkills()) {
+		   String skillName = skill.getName();
+		   if (((HashMap)playerSkills.get(name).get(className)).get(skillName) != null) {
+			   points += ((Integer)((HashMap)playerSkills.get(name)
+					   .get(className))
+					   .get(skillName)).intValue();
+			   if (points < 0) {
+				   Logger.warning("[HeroesSkillTree] " + name + "'s skills are at a too high level!");
+				   points = 0;
+			   }
+		   }
+	   }
+	   return points;
+   }
+   
+   public int getCurrentPoints(Hero hero, HeroClass hClass) {
+	   return getPlayerPoints(hero) - getUsedPoints(hero, hClass);
    }
 
    public void setPlayerPoints(Hero hero, int i) {
@@ -494,6 +508,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
      }
    }
 
+   @SuppressWarnings("rawtypes")
    public void savePlayerConfig(String name) {
 	  FileConfiguration playerConfig = new YamlConfiguration();
 	  File playerDataFolder = new File(getDataFolder(), "data");

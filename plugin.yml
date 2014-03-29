@@ -8,7 +8,7 @@ depend: [Heroes]
 softdepend: [ScrollingMenuSign, AuthMe]
 commands:
   heroesskilltree:
-    aliases: ['hst', 'skilltree', 'st', 'PKT']
+    aliases: ['hst', 'st', 'PKT']
     description: Shows HST's help menu
   skillup:
     aliases: ['sup']
@@ -36,6 +36,9 @@ commands:
     description: Shows ItemGUI SkillTree
   wybor:
     description: Choose class
+  wskilltree:
+    aliases: [wst]
+    description: mss
 permissions:
   skilltree.*:
     description: Gives all permissions
