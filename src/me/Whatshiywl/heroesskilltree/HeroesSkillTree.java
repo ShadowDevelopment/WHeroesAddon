@@ -56,9 +56,9 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    private final ManaPotion WManaPotion = new ManaPotion();
    private HashMap<String, FileConfiguration> hConfigs = new LinkedHashMap<String, FileConfiguration>();
    
-   public HashMap<String, HashMap<String, HashMap<String, Integer>>> playerSkills 
+   protected HashMap<String, HashMap<String, HashMap<String, Integer>>> playerSkills 
   	= new LinkedHashMap<String, HashMap<String, HashMap<String, Integer>>>();
-   public HashMap<String, HashMap<String, Integer>> playerClasses = new LinkedHashMap<String, HashMap<String, Integer>>();
+   protected HashMap<String, HashMap<String, Integer>> playerClasses = new LinkedHashMap<String, HashMap<String, Integer>>();
    
    private int pointsPerLevel = 1;
    private int hologram_time = 2500;
@@ -70,7 +70,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    public static YamlConfiguration LANG;
    public static File LANG_FILE;
    public static Heroes heroes = (Heroes)Bukkit.getServer().getPluginManager().getPlugin("Heroes");
-   //TODO Take carry about those HashMaps and ArrayLists, they're bugged (saving or loading or both)
+
    public List<Skill> SkillStrongParents = new ArrayList<Skill>();
    public List<Skill> SkillWeakParents = new ArrayList<Skill>();
    
