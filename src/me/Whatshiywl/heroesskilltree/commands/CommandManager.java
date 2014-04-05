@@ -40,6 +40,7 @@ public class CommandManager implements CommandExecutor {
 				}
 				return true;
 			} else {
+				
 				sender.sendMessage("There is some problem with colors in console, use /skilltree IN game, sorry.");
 			}
 			return true;
