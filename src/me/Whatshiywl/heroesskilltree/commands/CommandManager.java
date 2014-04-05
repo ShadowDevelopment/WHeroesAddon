@@ -29,31 +29,30 @@ public class CommandManager implements CommandExecutor {
 					} else if (args.length > 0) {
 						switch (args[1]) {
 							case "admin": SkillAdminCommand.skillAdmin(plugin, sender, args); break;
-	        				case "down": SkillDownCommand.skillDown(plugin, sender, args); break;
-	        				case "info": SkillInfoCommand.skillInfo(plugin, sender, args); ; break;
-	        				case "list": SkillListCommand.skillList(plugin, sender, args); break;
-	        				case "unlocks": SkillLockedCommand.skillList(plugin, sender, args); break;
-	        				case "up": SkillUpCommand.skillUp(plugin, sender, args); break;
-	        				default: showInfoList(sender); break;
+							case "down": SkillDownCommand.skillDown(plugin, sender, args); break;
+							case "info": SkillInfoCommand.skillInfo(plugin, sender, args); ; break;
+							case "list": SkillListCommand.skillList(plugin, sender, args); break;
+							case "unlocks": SkillLockedCommand.skillList(plugin, sender, args); break;
+							case "up": SkillUpCommand.skillUp(plugin, sender, args); break;
+							default: showInfoList(sender); break;
 						}
 					}
-					return true;
-				} else {
-					sender.sendMessage("There is some problem with colors in console, use /skilltree IN game, sorry.");
 				}
 				return true;
-			} else if (cmd.getName().equalsIgnoreCase("choose")) {
-				ItemGUI.createClassChoose((Player)sender);
-				return true;
+			} else {
+				sender.sendMessage("There is some problem with colors in console, use /skilltree IN game, sorry.");
 			}
-			return false;
+			return true;
+		} else if (cmd.getName().equalsIgnoreCase("choose")) {
+			ItemGUI.createClassChoose((Player)sender);
+			return true;
 		}
 		return false;
 	}
 
 	protected void showInfoList(CommandSender sender) {
 		Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
-		String skillPoints = String.valueOf(plugin.getCurrentPoints(hero, hero.getHeroClass()));
+		String skillPoints = String.valueOf(plugin.getPlayerPoints(hero));
 		
 		sender.sendMessage(Lang.HELP_1.toString());
 		sender.sendMessage(Lang.HELP_2.toString());

@@ -74,7 +74,7 @@ public class EventListener implements Listener {
         for (Effect effect : hero.getEffects()) {
           Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(effect.getName());
           if (skill != null) {
-            if (EventListener.plugin.isLocked(hero, skill))
+            if (plugin.isLocked(hero, skill))
               hero.removeEffect(effect);
           }
         }
@@ -86,7 +86,7 @@ public class EventListener implements Listener {
   public void onLevelChangeEvent(HeroChangeLevelEvent event) {
     final Hero hero = event.getHero();
     plugin.setPlayerPoints(hero, event.getHeroClass(), 
-      plugin.getPlayerPoints(hero) + (event.getTo() - event.getFrom()) * plugin.getPointsPerLevel());
+    plugin.getPlayerPoints(hero) + (event.getTo() - event.getFrom()) * plugin.getPointsPerLevel());
     plugin.savePlayerConfig(hero.getPlayer().getName());
     if (hero.getHeroClass() != event.getHeroClass()) return;
     hero.getPlayer().sendMessage(org.bukkit.ChatColor.GOLD + "[HST] " + org.bukkit.ChatColor.AQUA + "SkillPoints: " + plugin.getPlayerPoints(hero));
@@ -96,7 +96,7 @@ public class EventListener implements Listener {
         for (Effect effect : hero.getEffects()) {
           Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(effect.getName());
           if (skill != null) {
-            if (EventListener.plugin.isLocked(hero, skill))
+            if (plugin.isLocked(hero, skill))
               hero.removeEffect(effect);
           }
         }
@@ -122,14 +122,14 @@ public class EventListener implements Listener {
           }
         }
         if (reset) {
-          EventListener.plugin.resetPlayer(hero.getPlayer());
+          plugin.resetPlayer(hero.getPlayer());
         } else {
-          EventListener.plugin.recalcPlayerPoints(hero, evt.getTo());
+          plugin.recalcPlayerPoints(hero, evt.getTo());
         }
         for (Effect effect : hero.getEffects()) {
           Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(effect.getName());
           if (skill != null) {
-            if (EventListener.plugin.isLocked(hero, skill))
+            if (plugin.isLocked(hero, skill))
               hero.removeEffect(effect);
           }
         }

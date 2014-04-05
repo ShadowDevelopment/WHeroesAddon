@@ -132,7 +132,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
 	   Plugin p = pm.getPlugin("ScrollingMenuSign");
        if (p instanceof ScrollingMenuSign && p.isEnabled()) {
     	   IGUI = new ItemGUI((ScrollingMenuSign) p);
-    	   Logger.info(Lang.CONSOLE_SMS_ENABLED.toString());
+    	   getServer().getLogger().info(Lang.CONSOLE_SMS_ENABLED.toString());
        } else {
     	   // plugin not available
        }
@@ -164,78 +164,78 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
 	   }
    }
    
-   public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-	  //FIXME fix strange ClassCastException (it's occur even if it shouldn't) casted in console (Spigot)
-	  //FIXME some command doesn't work due to unreal permissions lack
-	  //TODO clean up all commands
-	  
-      Hero hero = heroes.getCharacterManager().getHero((Player)sender);
-      String skillPoints = String.valueOf(getCurrentPoints(hero, hero.getHeroClass()));
-      
-      if(commandLabel.equalsIgnoreCase("skillup")) {
-         SkillUpCommand.skillUp(this, sender, args);
-         return true;
-      } else if(commandLabel.equalsIgnoreCase("skillgui")) {
-    	 //TODO clean up commands
-         if (sender instanceof Player) {
-        	 if (sender.hasPermission("skilltree.skillgui")) {
-                 HeroClass heroclass = hero.getHeroClass();
-            	 ItemGUI.createSkillTree(sender, heroclass, heroes, this);
-        	 } else {
-            	 sender.sendMessage(Lang.ERROR_IN_CONSOLE_DENIED.toString());
-                 return true;
-        	 }
-             return true;
-         } else {
-        	 sender.sendMessage(Lang.ERROR_IN_CONSOLE_DENIED.toString());
-        	 return true;
-         }
-      } else if(commandLabel.equalsIgnoreCase("wybor")) {
-          ItemGUI.createClassChoose((Player)sender);
-          return true;
-      } else if(commandLabel.equalsIgnoreCase("skilldown")) {
-         SkillDownCommand.skillDown(this, sender, args);
-         return true;
-      } else if(commandLabel.equalsIgnoreCase("skillinfo")) {
-         SkillInfoCommand.skillInfo(this, sender, args);
-         return true;
-      } else if(commandLabel.equalsIgnoreCase("skillpoints")) {
-         if(!(sender instanceof Player)) {
-        	 sender.sendMessage(Lang.ERROR_IN_CONSOLE_DENIED.toString());
-            return true;
-         } else {
-            if(sender.hasPermission("skilltree.points")) {
-               sender.sendMessage(Lang.TITLE.toString() + Lang.INFO_SKILLPOINTS.toString().replace("%points%", skillPoints));
-            } else {
-               sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_PERMISSION_DENIED);
-            }
-            return true;
-         }
-      } else if(commandLabel.equalsIgnoreCase("skilladmin")) {
-         SkillAdminCommand.skillAdmin(this, sender, args);
-         return true;
-      } else if(!commandLabel.equalsIgnoreCase("slist") && !commandLabel.equalsIgnoreCase("sl")) {
-         if(!commandLabel.equalsIgnoreCase("unlocks") && !commandLabel.equalsIgnoreCase("un")) {
-        	sender.sendMessage(Lang.HELP_1.toString());
-        	sender.sendMessage(Lang.HELP_2.toString());
-        	sender.sendMessage(Lang.HELP_3.toString());
-        	sender.sendMessage(Lang.HELP_4.toString());
-        	sender.sendMessage(Lang.HELP_5.toString());
-        	sender.sendMessage(Lang.HELP_6.toString());
-        	sender.sendMessage(Lang.HELP_7.toString());
-        	if(sender instanceof Player) {
-            	sender.sendMessage(Lang.INFO_SKILLPOINTS.toString().replace("%points%", skillPoints));
-        	}
-            return true;
-         } else {
-            SkillLockedCommand.skillList(this, sender, args);
-            return true;
-         }
-      } else {
-         SkillListCommand.skillList(this, sender, args);
-         return true;
-      }
-   }
+//   public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+//	  //FIXME fix strange ClassCastException (it's occur even if it shouldn't) casted in console (Spigot)
+//	  //FIXME some command doesn't work due to unreal permissions lack
+//	  //TODO clean up all commands
+//	  
+//      Hero hero = heroes.getCharacterManager().getHero((Player)sender);
+//      String skillPoints = String.valueOf(getPlayerPoints(hero));
+//      
+//      if(commandLabel.equalsIgnoreCase("skillup")) {
+//         SkillUpCommand.skillUp(this, sender, args);
+//         return true;
+//      } else if(commandLabel.equalsIgnoreCase("skillgui")) {
+//    	 //TODO clean up commands
+//         if (sender instanceof Player) {
+//        	 if (sender.hasPermission("skilltree.skillgui")) {
+//                 HeroClass heroclass = hero.getHeroClass();
+//            	 ItemGUI.createSkillTree(sender, heroclass, heroes, this);
+//        	 } else {
+//            	 sender.sendMessage(Lang.ERROR_IN_CONSOLE_DENIED.toString());
+//                 return true;
+//        	 }
+//             return true;
+//         } else {
+//        	 sender.sendMessage(Lang.ERROR_IN_CONSOLE_DENIED.toString());
+//        	 return true;
+//         }
+//      } else if(commandLabel.equalsIgnoreCase("wybor")) {
+//          ItemGUI.createClassChoose((Player)sender);
+//          return true;
+//      } else if(commandLabel.equalsIgnoreCase("skilldown")) {
+//         SkillDownCommand.skillDown(this, sender, args);
+//         return true;
+//      } else if(commandLabel.equalsIgnoreCase("skillinfo")) {
+//         SkillInfoCommand.skillInfo(this, sender, args);
+//         return true;
+//      } else if(commandLabel.equalsIgnoreCase("skillpoints")) {
+//         if(!(sender instanceof Player)) {
+//        	 sender.sendMessage(Lang.ERROR_IN_CONSOLE_DENIED.toString());
+//            return true;
+//         } else {
+//            if(sender.hasPermission("skilltree.points")) {
+//               sender.sendMessage(Lang.TITLE.toString() + Lang.INFO_SKILLPOINTS.toString().replace("%points%", skillPoints));
+//            } else {
+//               sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_PERMISSION_DENIED);
+//            }
+//            return true;
+//         }
+//      } else if(commandLabel.equalsIgnoreCase("skilladmin")) {
+//         SkillAdminCommand.skillAdmin(this, sender, args);
+//         return true;
+//      } else if(!commandLabel.equalsIgnoreCase("slist") && !commandLabel.equalsIgnoreCase("sl")) {
+//         if(!commandLabel.equalsIgnoreCase("unlocks") && !commandLabel.equalsIgnoreCase("un")) {
+//        	sender.sendMessage(Lang.HELP_1.toString());
+//        	sender.sendMessage(Lang.HELP_2.toString());
+//        	sender.sendMessage(Lang.HELP_3.toString());
+//        	sender.sendMessage(Lang.HELP_4.toString());
+//        	sender.sendMessage(Lang.HELP_5.toString());
+//        	sender.sendMessage(Lang.HELP_6.toString());
+//        	sender.sendMessage(Lang.HELP_7.toString());
+//        	if(sender instanceof Player) {
+//            	sender.sendMessage(Lang.INFO_SKILLPOINTS.toString().replace("%points%", skillPoints));
+//        	}
+//            return true;
+//         } else {
+//            SkillLockedCommand.skillList(this, sender, args);
+//            return true;
+//         }
+//      } else {
+//         SkillListCommand.skillList(this, sender, args);
+//         return true;
+//      }
+//   }
 
    public void resetPlayer(Player player) {
 	  //FIXME error on /Hero reset
@@ -262,50 +262,44 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
        Logger.severe(Lang.SERVRE_FAILED_CREATE.toString().replace("%name%", name));
      }
    }
-
+   
    public int getPlayerPoints(Hero hero) {
-      return playerClasses.get(hero.getPlayer().getName()) != null && playerClasses
-    		  .get(hero.getPlayer().getName())
-    		  .get(hero.getHeroClass().getName()) != null ? ((Integer)playerClasses
-    		  .get(hero.getPlayer().getName())
-    		  .get(hero.getHeroClass().getName())).intValue() : 0;
-   }
-
-   public void recalcPlayerPoints(Hero hero, HeroClass hClass) {
-	    String name = hero.getPlayer().getName();
-	    String className = hClass.getName();
-	    playerClasses.get(name).put(className, Integer.valueOf(1/*getSkillsPoints(hero, hClass)*/));
+	   return playerClasses.get(hero.getPlayer().getName()) != null && playerClasses
+			   .get(hero.getPlayer().getName())
+			   .get(hero.getHeroClass().getName()) != null ? ((Integer)playerClasses
+					   .get(hero.getPlayer().getName())
+					   .get(hero.getHeroClass().getName())).intValue() : 0;
    }
    
    //FIXME I think it doesn't work properly, I used this SupressWarnings but problems are somewhere in code
-   @SuppressWarnings({ "rawtypes", "unchecked" })
-   public int getUsedPoints(Hero hero, HeroClass hClass) {
+   @SuppressWarnings({ "unchecked", "rawtypes" })
+   public void recalcPlayerPoints(Hero hero, HeroClass hClass) {
 	   String name = hero.getPlayer().getName();
 	   String className = hClass.getName();
-	   int points = 0;
+	   int points = hero.getLevel(hClass) * getPointsPerLevel();
 	   if (playerClasses.get(name) == null) {
 		   playerClasses.put(name, new HashMap<String, Integer>());
-		   return 0;
 	   }
 	   if (hero.getPlayer().hasPermission("skilltree.override.usepoints")) {
-		   return 0;
-	   }
+		   playerClasses.get(name).put(className, Integer.valueOf(points));
+		   return;
+	   	}
 	   if (playerClasses.get(name).get(className) == null) {
 		   playerClasses.get(name).put(className, Integer.valueOf(0));
-		   return 0;
+		   return;
 	   }
 	   if (playerSkills.get(name) == null) {
 		   playerSkills.put(name, new HashMap<String, HashMap<String, Integer>>());
-		   return 0;
+		   return;
 	   }
 	   if (playerSkills.get(name).get(className) == null) {
 		   playerSkills.get(name).put(className, new HashMap());
-		   return 0;
+		   return;
 	   }
 	   for (Skill skill : heroes.getSkillManager().getSkills()) {
 		   String skillName = skill.getName();
-		   if (((HashMap)playerSkills.get(name).get(className)).get(skillName) != null) {
-			   points += ((Integer)((HashMap)playerSkills.get(name)
+		   if (((HashMap<?, ?>)playerSkills.get(name).get(className)).get(skillName) != null) {
+			   points -= ((Integer)((HashMap<?, ?>)playerSkills.get(name)
 					   .get(className))
 					   .get(skillName)).intValue();
 			   if (points < 0) {
@@ -314,26 +308,22 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
 			   }
 		   }
 	   }
-	   return points;
+	   playerClasses.get(name).put(className, Integer.valueOf(points));
+   }
+		
+   public void setPlayerPoints(Hero hero, int i) {
+	   if(playerClasses.get(hero.getPlayer().getName()) == null) {
+		   playerClasses.put(hero.getPlayer().getName(), new HashMap<String, Integer>());
+	   }
+	   playerClasses.get(hero.getPlayer().getName())
+	   	.put(hero.getHeroClass().getName(), Integer.valueOf(i));
    }
    
-   public int getCurrentPoints(Hero hero, HeroClass hClass) {
-	   return getPlayerPoints(hero) - getUsedPoints(hero, hClass);
-   }
-
-   public void setPlayerPoints(Hero hero, int i) {
-      if(playerClasses.get(hero.getPlayer().getName()) == null) {
-         playerClasses.put(hero.getPlayer().getName(), new HashMap<String, Integer>());
-      }
-      playerClasses.get(hero.getPlayer().getName())
-                   .put(hero.getHeroClass().getName(), Integer.valueOf(i));
-   }
-
    public void setPlayerPoints(Hero hero, HeroClass hClass, int i) {
-      if(playerClasses.get(hero.getPlayer().getName()) == null) {
-         playerClasses.put(hero.getPlayer().getName(), new HashMap<String, Integer>());
-      }
-      playerClasses.get(hero.getPlayer().getName()).put(hClass.getName(), Integer.valueOf(i));
+	   if(playerClasses.get(hero.getPlayer().getName()) == null) {
+		   playerClasses.put(hero.getPlayer().getName(), new HashMap<String, Integer>());
+	   }
+	   playerClasses.get(hero.getPlayer().getName()).put(hClass.getName(), Integer.valueOf(i));
    }
 
    //FIXME this probably not good like up
