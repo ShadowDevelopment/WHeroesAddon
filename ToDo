@@ -1,0 +1,13 @@
+Things to added:
+	Add support for "#" character in config.yml & lang.yml
+	Add comments and documentation to all classes
+	(HARD) clean up to speed up plugin
+   
+	(HARD) make API class instead of huge main class
+	Try to make main class WHereosAddon in Wiedzmin137 package
+	Remade HeroesSkillTree.class to be ONLY HereosSkillTree, not main class
+	Create me.Wiedzmin137.wheroesaddon.Core
+   
+	Trough-tier SkillTrees
+	Skills needing class level to upgrade
+	Support BHereosStamina

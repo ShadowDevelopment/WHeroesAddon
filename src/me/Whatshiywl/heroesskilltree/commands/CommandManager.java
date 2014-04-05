@@ -23,10 +23,7 @@ public class CommandManager implements CommandExecutor {
 		if (sender instanceof Player) {
 			if (cmd.getName().equalsIgnoreCase("skilltree")) {
 				if (sender instanceof Player) {
-					if (args.length == 0) {
-						showInfoList(sender);
-						return true;
-					} else if (args.length > 0) {
+					if (args.length > 0) {
 						switch (args[1]) {
 							case "admin": SkillAdminCommand.skillAdmin(plugin, sender, args); break;
 							case "down": SkillDownCommand.skillDown(plugin, sender, args); break;
@@ -35,7 +32,10 @@ public class CommandManager implements CommandExecutor {
 							case "unlocks": SkillLockedCommand.skillList(plugin, sender, args); break;
 							case "up": SkillUpCommand.skillUp(plugin, sender, args); break;
 							default: showInfoList(sender); break;
-						}
+						} 
+					} else if (args.length == 0) {
+							showInfoList(sender);
+							return true;
 					}
 				}
 				return true;

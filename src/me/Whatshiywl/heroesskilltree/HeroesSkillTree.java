@@ -74,20 +74,6 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    public List<Skill> SkillStrongParents = new ArrayList<Skill>();
    public List<Skill> SkillWeakParents = new ArrayList<Skill>();
    
-   //TODO add support for "#" character in config.yml & lang.yml
-   //TODO add comments and documentation to all classes
-   //TODO (HARD) clean up to speed up plugin
-   
-   //TODO (HARD) make API class instead of huge main class
-   //TODO try to make main class WHereosAddon in Wiedzmin137 package
-   //TODO remade HeroesSkillTree.class to be ONLY HereosSkillTree, not main class
-   //TODO create me.Wiedzmin137.wheroesaddon.Core
-   
-   //TODO trough-tier SkillTrees
-   //TODO skills needing class level to upgrade
-   //TODO support BHereosStamina
-   //TODO support WHeroesRaces
-   
    //FIXME error on /hero reset (can't delete player.yml in WHA)
   
    @Override
