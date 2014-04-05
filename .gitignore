@@ -4,6 +4,8 @@
 
 /lib
 
+/target/
 /.classpath
 /.project
 /.settings
+.settings/
