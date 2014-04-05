@@ -1,33 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" output="target/classes" path="src">
-		<attributes>
-			<attribute name="optional" value="true"/>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre7">
-		<attributes>
-			<attribute name="maven.pomderived" value="true"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Marek/Documents/Eclipse/Lib/Heroes 1.7.2.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="file:/C:/Users/Marek/Documents/Eclipse/Heroes-javadoc.jar"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Marek/Documents/Eclipse/Bukkit-1.7.2.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://jd.bukkit.org/apidocs/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Marek/Documents/Eclipse/Lib/ScrollingMenuSign.jar">
-		<attributes>
-			<attribute name="javadoc_location" value="http://dl.dropboxusercontent.com/u/12467600/ScrollingMenuSign/apidocs/"/>
-		</attributes>
-	</classpathentry>
-	<classpathentry kind="lib" path="C:/Users/Marek/Documents/Eclipse/Lib/Vault.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Marek/Documents/Eclipse/Spigot 1.7.2.jar"/>
-	<classpathentry kind="lib" path="C:/Users/Marek/Documents/Eclipse/Lib/AuthMe.jar"/>
-	<classpathentry kind="output" path="target/classes"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="lib/AuthMe.jar"/>
+	<classpathentry kind="lib" path="lib/Heroes 1.7.4.jar"/>
+	<classpathentry kind="lib" path="lib/ScrollingMenuSign.jar"/>
+	<classpathentry kind="lib" path="lib/Spigot 1.7.2.jar"/>
+	<classpathentry kind="output" path="bin"/>
 </classpath>

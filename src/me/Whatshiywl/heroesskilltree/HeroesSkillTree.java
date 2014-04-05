@@ -56,9 +56,9 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    private final ManaPotion WManaPotion = new ManaPotion();
    private HashMap<String, FileConfiguration> hConfigs = new LinkedHashMap<String, FileConfiguration>();
    
-   protected HashMap<String, HashMap<String, HashMap<String, Integer>>> playerSkills 
+   private HashMap<String, HashMap<String, HashMap<String, Integer>>> playerSkills 
   	= new LinkedHashMap<String, HashMap<String, HashMap<String, Integer>>>();
-   protected HashMap<String, HashMap<String, Integer>> playerClasses = new LinkedHashMap<String, HashMap<String, Integer>>();
+   private HashMap<String, HashMap<String, Integer>> playerClasses = new LinkedHashMap<String, HashMap<String, Integer>>();
    
    private int pointsPerLevel = 1;
    private int hologram_time = 2500;
@@ -73,20 +73,6 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
 
    public List<Skill> SkillStrongParents = new ArrayList<Skill>();
    public List<Skill> SkillWeakParents = new ArrayList<Skill>();
-   
-   //TODO add support for "#" character in config.yml & lang.yml
-   //TODO add comments and documentation to all classes
-   //TODO (HARD) clean up to speed up plugin
-   
-   //TODO (HARD) make API class instead of huge main class
-   //TODO try to make main class WHereosAddon in Wiedzmin137 package
-   //TODO remade HeroesSkillTree.class to be ONLY HereosSkillTree, not main class
-   //TODO create me.Wiedzmin137.wheroesaddon.Core
-   
-   //TODO trough-tier SkillTrees
-   //TODO skills needing class level to upgrade
-   //TODO support BHereosStamina
-   //TODO support WHeroesRaces
    
    //FIXME error on /hero reset (can't delete player.yml in WHA)
   
