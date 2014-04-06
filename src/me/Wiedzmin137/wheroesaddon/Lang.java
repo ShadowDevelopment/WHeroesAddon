@@ -11,7 +11,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 */
 public enum Lang {
 	//TODO compare this list with lang.yml 
-    TITLE("Title.mainTitle", "&1[&bSkillTree&1]&r"),
+    TITLE("Title.MainTitle", "&1[&bSkillTree&1]&r"),
     TITLE_ITEM_GUI("Title.ItemGUI", "&1[&9 %class% &1]&r"),
     GUI_INVAILD_SKILLS("GUI.InvaildSkills", "Skill %skill% has no valid identifiers and can not be used on the menu! Please contact the author to fix the skill."),
     GUI_LORE("GUI.Lore", "&eClick for use!"),
@@ -25,7 +25,7 @@ public enum Lang {
     CONSOLE_DISABLED("Console.Disabled", "[WHeroesAddon] Version B1.6 By wiedzmin137 and Bednar12 has been disabled!"),
     CONSOLE_SMS_ENABLED("Console.SMSEnabled", "[WHeroesAddon] ScrollingMenuSign integration is enabled; menus created"),
     CONSOLE_AUTHME_ENABLED("Console.AuthMeEnabled", "[WHeroesAddon] AuthMe integration is enabled"),
-    INFO_SKILLPOINTS("Info.SkillPoints", "&b[&rYou currently have &9%points% &rSkillPoints.&b]"),
+    INFO_SKILLPOINTS("Info.SkillPoints", "&b[&rYou currently have &9%points% &rSkillPoints&b]"),
     SERVRE_FAILED_CREATE("Servre.FailedCreate", "failed to create new %name.yml"),
     SERVRE_FAILED_DELETE("Servre.FailedDelete", "failed to delete %name.yml"),
     WARNING_TOO_HIGH_LEVEL("Warning.TooHighLevel", "%player%'s skills are at a too high level!"),
@@ -38,13 +38,13 @@ public enum Lang {
     ADMIN_SELF_RESET_SUCCESS("Admin.SelfResetSuccess", "&2You have reseted your character"),
     ADMIN_SKILLPOINTS_ADD_SUCCESS("Admin.SkillPointsAddSuccess", "You have added %player% %skillpoints% skillpoint(s)."),
     ADMIN_SKILLPOINTS_REMOVE_SUCCESS("Admin.SkillPointsRemoveSuccess", "You have removed %skillpoints% skillpoint(s) from %player%."),
-    HELP_1("Help.1", "&1[&9Help&1] &9SkillTree&r:"),
-    HELP_2("Help.2", "&9/skillup &b<skill> [amount] &r- level up a skill"),
-    HELP_3("Help.3", "&9/skilldown &b<skill> [amount] &r- de-levels a skill"),
-    HELP_4("Help.4", "&9/slist &r- ists all unlocked skills"),
-    HELP_5("Help.5", "&9/unlocks &r- lists all adjacent unlockable skills"),
-    HELP_6("Help.6", "&9/skillinfo &r<skill> (all info on a skill)"),
-    HELP_7("Help.7", "&9/skilladmin &b<command> (amount) [player]");
+    HELP_1("Help.1", "&9&l=._______==&1[&b&oSkillTree&1]&9&l==_______.="),
+    HELP_2("Help.2", "&9/SkillTree up &b<&oskill&b&b> [&oamount&b] &r- level up a skill"),
+    HELP_3("Help.3", "&9/SkillTree down &b<&oskill&b> [&oamount&b] &r- de-levels a skill"),
+    HELP_4("Help.4", "&9/SkillTree list &r- list of all unlocked skills"),
+    HELP_5("Help.5", "&9/SkillTree unlocks &r- lists all adjacent unlockable skills"),
+    HELP_6("Help.6", "&9/SkillTree info &b<&oskill&b> &r- all info on a skill"),
+    HELP_7("Help.7", "&9/SkillTree admin &b<&ocommand&b> (&oamount&b) [&oplayer&b]");
 
     private String path;
     private String def;

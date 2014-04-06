@@ -19,6 +19,7 @@ public class SkillLockedCommand {
    public static void skillList(HeroesSkillTree hst, CommandSender sender, String[] args) {
       if(!(sender instanceof Player)) {
          sender.sendMessage(ChatColor.RED + "You must be in game to use this command");
+         return;
       } else {
          Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
          int j = 0;
@@ -47,24 +48,24 @@ public class SkillLockedCommand {
            }
 
          Collections.sort(alphabeticalSkills);
-         int var14 = 0;
-         int var15 = 0;
-         if(args.length > 0 && !args[0].equalsIgnoreCase("1")) {
+         int k = 0;
+         int t = 0;
+         if(args.length > 1 && !args[1].equalsIgnoreCase("1")) {
             try {
-               var15 = Integer.parseInt(args[0]);
-               var15 = var15 < 2?1:var15;
-               var14 = (var15 - 1) * 10;
-            } catch (NumberFormatException var13) {
-               var14 = 0;
+               t = Integer.parseInt(args[1]);
+               t = (t < 2) ? 1 : t;
+               k = (t - 1) * 10;
+            } catch (NumberFormatException e) {
+               k = 0;
             }
          } else {
-            var15 = 1;
+            t = 1;
          }
 
-         sender.sendMessage(ChatColor.GOLD + "[HST] Unlockable skills list page " + var15 + "/" + Math.round((double)alphabeticalSkills.size() / 10.0D));
+         sender.sendMessage(ChatColor.GOLD + "[HST] Unlockable skills list page " + t + "/" + Math.round((double)alphabeticalSkills.size() / 10.0D));
 
-         for(int var16 = var14; j < 10 && var16 < alphabeticalSkills.size() && j <= 9; ++var16) {
-            name = alphabeticalSkills.get(var16);
+         for(int i = k; j < 10 && i < alphabeticalSkills.size() && j <= 9; ++i) {
+            name = alphabeticalSkills.get(i);
             sender.sendMessage(name);
             ++j;
          }
@@ -72,8 +73,7 @@ public class SkillLockedCommand {
       }
    }
 
-   private static boolean shouldListSkill(HeroesSkillTree hst, Hero hero, Skill skill)
-   {
+   private static boolean shouldListSkill(HeroesSkillTree hst, Hero hero, Skill skill) {
      if (skill == null) {
        return false;
      }
@@ -97,8 +97,7 @@ public class SkillLockedCommand {
          }
        }
      }
-     if (hasWeakParents)
-     {
+     if (hasWeakParents) {
        for (String name : hst.getWeakParentSkills(hero, skill)) {
          if (!hst.isLocked(hero, HeroesSkillTree.heroes.getSkillManager().getSkill(name))) {
            return true;

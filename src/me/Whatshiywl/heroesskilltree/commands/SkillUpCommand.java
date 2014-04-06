@@ -16,20 +16,20 @@ public class SkillUpCommand {
    public static void skillUp(HeroesSkillTree hst, CommandSender sender, String[] args) {
       if(!sender.hasPermission("skilltree.up")) {
          sender.sendMessage(ChatColor.RED + "You don\'t have enough permissions!");
-      } else if(args.length < 1) {
+      } else if(args.length < 2) {
          sender.sendMessage(ChatColor.RED + "No skill given: /skillup (skill) [amount]");
       } else if(!(sender instanceof Player)) {
          sender.sendMessage(ChatColor.RED + "You must be in game to use this command");
       } else {
          Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
-         Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(args[0]);
+         Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(args[1]);
          if(skill != null && hero.hasAccessToSkill(skill.getName())) {
             if(hst.getSkillMaxLevel(hero, skill) == -1) {
                sender.sendMessage(ChatColor.RED + "This skill can\'t be increased");
             } else {
                int pointsToIncrease;
                try {
-                  pointsToIncrease = args.length > 1?Integer.parseInt(args[1]):1;
+                  pointsToIncrease = (args.length > 2) ? Integer.parseInt(args[2]) : 1;
                } catch (NumberFormatException var7) {
                   sender.sendMessage(ChatColor.RED + "Please enter a number of points to increase");
                   return;

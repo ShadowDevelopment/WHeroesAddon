@@ -14,16 +14,16 @@ public class SkillInfoCommand {
    public static void skillInfo(HeroesSkillTree hst, CommandSender sender, String[] args) {
       if(!sender.hasPermission("skilltree.info")) {
          sender.sendMessage(ChatColor.RED + "You don\'t have enough permissions!");
-      } else if(args.length < 1) {
+      } else if(args.length < 2) {
          sender.sendMessage(ChatColor.RED + "/skillinfo (skill)");
       } else if(!(sender instanceof Player)) {
          sender.sendMessage(ChatColor.RED + "You must be in game to use this command");
       } else {
          Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
-         if(!hero.hasAccessToSkill(args[0])) {
+         if(!hero.hasAccessToSkill(args[1])) {
             sender.sendMessage(ChatColor.RED + "You don\'t have this skill");
          } else {
-            Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(args[0]);
+            Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(args[1]);
             sender.sendMessage(ChatColor.GOLD + "[HST] " + ChatColor.AQUA + skill.getName() + "\'s info:");
             if(hst.isLocked(hero, skill)) {
                sender.sendMessage(ChatColor.RED + "This skill is currently locked!");

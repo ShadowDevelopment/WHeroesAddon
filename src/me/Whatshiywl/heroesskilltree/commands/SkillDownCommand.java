@@ -14,20 +14,19 @@ public class SkillDownCommand {
    public static void skillDown(HeroesSkillTree hst, CommandSender sender, String[] args) {
       if(!sender.hasPermission("skilltree.down")) {
          sender.sendMessage(ChatColor.RED + "You don\'t have enough permissions!");
-      } else if(args.length < 1) {
+      } else if(args.length < 2) {
          sender.sendMessage(ChatColor.RED + "No skill given: /skilldown (skill) [amount]");
       } else if(!(sender instanceof Player)) {
          sender.sendMessage(ChatColor.RED + "You must be in game to use this command");
       } else {
          Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
-         if(!hero.hasAccessToSkill(args[0])) {
+         if(!hero.hasAccessToSkill(args[1])) {
             sender.sendMessage(ChatColor.RED + "You don\'t have this skill");
          } else {
-            Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(args[0]);
-
+            Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(args[1]);
             int pointsDecrease;
             try {
-               pointsDecrease = args.length > 1?Integer.parseInt(args[1]):1;
+               pointsDecrease = (args.length > 2) ? Integer.parseInt(args[2]) : 1;
             } catch (NumberFormatException var7) {
                sender.sendMessage(ChatColor.RED + "Please enter a number of points to increase");
                return;
@@ -36,7 +35,7 @@ public class SkillDownCommand {
             if(hst.getSkillLevel(hero, skill) < pointsDecrease) {
                sender.sendMessage(ChatColor.RED + "This skill is not a high enough level");
             } else {
-               if(hst.getSkillLevel(hero, skill) - pointsDecrease < 1) {
+               if(hst.getSkillLevel(hero, skill) - pointsDecrease < 2) {
                   if(!sender.hasPermission("skilltree.lock")) {
                      sender.sendMessage(ChatColor.RED + "You don\'t have enough permissions!");
                      return;
