@@ -29,13 +29,13 @@ public class SkillAdminCommand {
                   hst.setPlayerPoints(hero, 0);
                } else {
                   if(!(sender instanceof Player)) {
-                	 sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_IN_CONSOLE_DENIED);
+                	 sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_CONSOLE_DENIED);
                      return;
                   }
                   hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
                   hst.setPlayerPoints(hero, 0);
                }
-               sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_RESET_SUCCESS.toString().replace("%player%", args[2]));
+               sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_PLAYER_RESET_SUCCESS.toString().replace("%player%", args[2]));
             }
          } else if(args[1].equalsIgnoreCase("reset")) {
             if(!sender.hasPermission("skilladmin.reset")) {
@@ -44,41 +44,41 @@ public class SkillAdminCommand {
                if(args.length == 3) {
                   if(Bukkit.getPlayer(args[2]) != null) {
                      hst.resetPlayer(Bukkit.getPlayer(args[2]));
-                     sender.sendMessage(Lang.TITLE.toString() +  Lang.ADMIN_RESET_SUCCESS.toString().replace("%player%", args[2]));
+                     sender.sendMessage(Lang.TITLE.toString() +  Lang.ADMIN_PLAYER_RESET_SUCCESS.toString().replace("%player%", args[2]));
                   } else {
                      sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_PLAYER_OFFLINE.toString().replace("%player", args[2]));
                   }
                } else {
                   if(!(sender instanceof Player)) {
-                     sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_IN_CONSOLE_DENIED.toString().replace("%player%", args[2]));
+                     sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_CONSOLE_DENIED.toString().replace("%player%", args[2]));
                      return;
                   }
                   hst.resetPlayer((Player)sender);
-                  sender.sendMessage(Lang.TITLE.toString() + Lang.SELF_RESET_SUCCESS);
+                  sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_SELF_RESET_SUCCESS);
                }
             }
          } else if(args.length < 3) {
-            sender.sendMessage(Lang.WRONG_CMD_USAGE.toString());
+            sender.sendMessage(Lang.ERROR_COMMAND_USAGE.toString());
          } else if(args[1].equalsIgnoreCase("set")) {
             if(!sender.hasPermission("skilladmin.set")) {
                sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_PERMISSION_DENIED);
             } else {
                if(args.length > 3) {
                   if(Bukkit.getPlayer(args[3]) != null) {
-                     hero = HeroesSkillTree.heroes.getCharacterManager().getHero(Bukkit.getPlayer(args[2]));
+                     hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)Bukkit.getPlayer(args[2]));
                      hst.setPlayerPoints(hero, Integer.parseInt(args[2]));
                      sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_SKILLPOINTS_ADD_SUCCESS.toString().replace("%player%", args[3]).replace("%points%", args[2]));
                   } else {
                      sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_PLAYER_OFFLINE.toString().replace("%player%", args[3]));
                   }
                } else {
-                  if(!(sender instanceof Player)) {
-                     sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_IN_CONSOLE_DENIED);
-                     return;
-                  }
-                  hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
-                  hst.setPlayerPoints(hero, Integer.parseInt(args[2]));
-                  sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_SKILLPOINTS_ADD_SUCCESS.toString().replace("%player%", "your").replace("%points%", args[2]));
+            	   if(!(sender instanceof Player)) {
+            		   sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_CONSOLE_DENIED);
+            		   return;
+            	   }
+            	   hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
+            	   hst.setPlayerPoints(hero, Integer.parseInt(args[2]));
+            	   sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_SKILLPOINTS_ADD_SUCCESS.toString().replace("%player%", "your").replace("%points%", args[2]));
                }
             }
          } else if(args[1].equalsIgnoreCase("give")) {
@@ -95,7 +95,7 @@ public class SkillAdminCommand {
                   }
                } else {
                   if(!(sender instanceof Player)) {
-                     sender.sendMessage(Lang.ERROR_IN_CONSOLE_DENIED.toString());
+                     sender.sendMessage(Lang.ERROR_CONSOLE_DENIED.toString());
                      return;
                   }
                   hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
@@ -120,7 +120,7 @@ public class SkillAdminCommand {
                   }
                } else {
                   if(!(sender instanceof Player)) {
-                     sender.sendMessage(Lang.ERROR_IN_CONSOLE_DENIED.toString());
+                     sender.sendMessage(Lang.ERROR_CONSOLE_DENIED.toString());
                      return;
                   }
                   hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);

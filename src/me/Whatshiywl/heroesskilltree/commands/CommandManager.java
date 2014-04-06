@@ -24,7 +24,7 @@ public class CommandManager implements CommandExecutor {
 			if (cmd.getName().equalsIgnoreCase("skilltree")) {
 				if (sender instanceof Player) {
 					if (args.length > 0) {
-						switch (args[1]) {
+						switch (args[0]) {
 							case "admin": SkillAdminCommand.skillAdmin(plugin, sender, args); break;
 							case "down": SkillDownCommand.skillDown(plugin, sender, args); break;
 							case "info": SkillInfoCommand.skillInfo(plugin, sender, args); ; break;
