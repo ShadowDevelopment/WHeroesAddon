@@ -1,5 +1,5 @@
 Title:
-  mainTitle: '&1[&bSkillTree&1]&r'
+  MainTitle: '&1[&bSkillTree&1]&r'
   ItemGUI: '&1[&9 %class% &1]&r'
 GUI:
   InvaildSkills: Skill %skill% has no valid identifiers and can not be used on the menu! Please contact the author to fix the skill.
@@ -37,9 +37,10 @@ Admin:
   SkillPointsRemoveSuccess: You have removed %skillpoints% skillpoint(s) from %player%.
 Help:
   '1': '&9&l=._______==&1[&b&oSkillTree&1]&9&l==_______.='
-  '2': '&9/SkillTree up &b<&oskill&b&b> [&oamount&b] &r- level up a skill'
-  '3': '&9/SkillTree down &b<&oskill&b> [&oamount&b] &r- de-levels a skill'
-  '4': '&9/SkillTree list &r- list of all unlocked skills'
-  '5': '&9/SkillTree unlocks &r- lists all adjacent unlockable skills'
-  '6': '&9/SkillTree info &b<&oskill&b> &r- all info on a skill'
-  '7': '&9/SkillTree admin &b<&ocommand&b> (&oamount&b) [&oplayer&b]'
+  '2': '&9/SkillTree Up &b<&oskill&b&b> [&oamount&b] &r- level up a skill'
+  '3': '&9/SkillTree Down &b<&oskill&b> [&oamount&b] &r- de-levels a skill'
+  '4': '&9/SkillTree List &r- list of all unlocked skills'
+  '5': '&9/SkillTree Unlocks &r- lists all adjacent unlockable skills'
+  '6': '&9/SkillTree Info &b<&oskill&b> &r- all info on a skill'
+  '7': '&9/SkillTree GUI &r- show upgrading skills GUI (DEV)'
+  '8': '&9/SkillTree Admin &b<&ocommand&b> (&oamount&b) [&oplayer&b]'

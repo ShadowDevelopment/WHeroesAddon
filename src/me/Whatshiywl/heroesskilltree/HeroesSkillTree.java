@@ -66,7 +66,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    public List<Skill> SkillStrongParents = new ArrayList<Skill>();
    public List<Skill> SkillWeakParents = new ArrayList<Skill>();
    
-   //FIXME error on /hero reset (can't delete player.yml in WHA)
+   //FIXME error on /hero reset (can't delete player.yml by WHA)
   
    @Override
    public void onEnable() {
@@ -91,6 +91,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
       if (IGUI != null) { IGUI.setAutosave(true); }
       
       getCommand("skilltree").setExecutor(new CommandManager(this));
+      getCommand("choose").setExecutor(new CommandManager(this));
       
       Logger.info(Lang.CONSOLE_ENABLED.toString());
    }
@@ -522,7 +523,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
 		   Logger.warning("HeroesSkillTree: Report this stack trace to Wiedzmin137.");
 		   e.printStackTrace();
 	   }
-   	}
+   }
    
    private void setInstance(HeroesSkillTree HST) { instance = HST; }
    

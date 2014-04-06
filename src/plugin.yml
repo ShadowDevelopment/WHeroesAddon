@@ -7,39 +7,11 @@ description: Brings skill trees to the Heroes plugin.
 depend: [Heroes]
 softdepend: [ScrollingMenuSign, AuthMe]
 commands:
-  heroesskilltree:
-    aliases: ['hst', 'st', 'PKT']
-    description: Shows HST's help menu
-  skillup:
-    aliases: ['sup']
-    description: Levels up a skill
-  skilldown:
-    aliases: ['sdown']
-    description: Levels down a skill
-  skillinfo:
-    aliases: ['sinfo']
-    description: Shows a skill's information regarding the tree
-  skillpoints:
-    aliases: ['sp']
-    description: Shows the player's remaining SkillPoints
-  skilladmin:
-    aliases: ['sa']
-    description: Admin commands
-  unlocks:
-    aliases: ['un']
-    description: Shows all unlockable skills
-  slist:
-    aliases: ['sl']
-    description: Shows all unlocked skills
-  skillgui:
-    aliases: ['sg']
-    description: Shows ItemGUI SkillTree
-  wybor:
-    description: Choose class
   skilltree:
-    aliases: [wst]
-    description: mss
+    aliases: [hst, st, wha]
+    description: SkillTree commands
   choose:
+    aliases: [wybor]
     description: Choose class
 permissions:
   skilltree.*:

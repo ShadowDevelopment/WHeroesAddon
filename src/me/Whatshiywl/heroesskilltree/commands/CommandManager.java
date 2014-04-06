@@ -25,12 +25,13 @@ public class CommandManager implements CommandExecutor {
 				if (sender instanceof Player) {
 					if (args.length > 0) {
 						switch (args[0]) {
-							case "admin": SkillAdminCommand.skillAdmin(plugin, sender, args); break;
+							case "up": SkillUpCommand.skillUp(plugin, sender, args); break;
 							case "down": SkillDownCommand.skillDown(plugin, sender, args); break;
-							case "info": SkillInfoCommand.skillInfo(plugin, sender, args); ; break;
 							case "list": SkillListCommand.skillList(plugin, sender, args); break;
 							case "unlocks": SkillLockedCommand.skillList(plugin, sender, args); break;
-							case "up": SkillUpCommand.skillUp(plugin, sender, args); break;
+							case "info": SkillInfoCommand.skillInfo(plugin, sender, args); ; break;
+							case "gui": ItemGUI.createSkillTree(sender, HeroesSkillTree.heroes, plugin); break;
+							case "admin": SkillAdminCommand.skillAdmin(plugin, sender, args); break;
 							default: showInfoList(sender); break;
 						} 
 					} else if (args.length == 0) {
@@ -39,19 +40,18 @@ public class CommandManager implements CommandExecutor {
 					}
 				}
 				return true;
-			} else {
-				
-				sender.sendMessage("There is some problem with colors in console, use /skilltree IN game, sorry.");
+			} else if (cmd.getName().equalsIgnoreCase("choose")) {
+				ItemGUI.createClassChoose((Player)sender);
+				return true;
 			}
-			return true;
-		} else if (cmd.getName().equalsIgnoreCase("choose")) {
-			ItemGUI.createClassChoose((Player)sender);
+		} else {
+			sender.sendMessage("There is some problem with colors in console, use that command IN game, sorry.");
 			return true;
 		}
 		return false;
 	}
 
-	protected void showInfoList(CommandSender sender) {
+	private void showInfoList(CommandSender sender) {
 		Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
 		String skillPoints = String.valueOf(plugin.getPlayerPoints(hero));
 		
@@ -62,6 +62,7 @@ public class CommandManager implements CommandExecutor {
 		sender.sendMessage(Lang.HELP_5.toString());
 		sender.sendMessage(Lang.HELP_6.toString());
 		sender.sendMessage(Lang.HELP_7.toString());
+		sender.sendMessage(Lang.HELP_8.toString());
 		sender.sendMessage(Lang.INFO_SKILLPOINTS.toString().replace("%points%", skillPoints));
 	}
 }

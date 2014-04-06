@@ -35,11 +35,13 @@ public class ItemGUI implements Listener {
      }
     }
 
-    public static void createSkillTree(CommandSender sender, HeroClass hc, Heroes plugin, HeroesSkillTree hst) {
-     //TODO cleanup. Some things and change some names
-        String name = hc.getName();
+    public static void createSkillTree(CommandSender sender, Heroes plugin, HeroesSkillTree hst) {
+    	//TODO cleanup. Some things and change some names
         SMSMenu menu = null;
+        
         Hero commandSendingHero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player) sender);
+        HeroClass hc = commandSendingHero.getHeroClass();
+        String name = hc.getName();
 
         if (smsHandler == null) {
           return;

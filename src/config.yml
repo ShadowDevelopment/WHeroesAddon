@@ -2,7 +2,7 @@
 points-per-level: 1
 
 #Configs for holograms
-holograms: false
+holograms: true
 hologram_time: 250
 
 #If is class choosing on login is enabled?
