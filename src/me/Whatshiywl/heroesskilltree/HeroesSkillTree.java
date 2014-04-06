@@ -18,12 +18,6 @@ import java.util.logging.Logger;
 
 import me.Whatshiywl.heroesskilltree.EventListener;
 import me.Whatshiywl.heroesskilltree.commands.CommandManager;
-import me.Whatshiywl.heroesskilltree.commands.SkillAdminCommand;
-import me.Whatshiywl.heroesskilltree.commands.SkillDownCommand;
-import me.Whatshiywl.heroesskilltree.commands.SkillInfoCommand;
-import me.Whatshiywl.heroesskilltree.commands.SkillListCommand;
-import me.Whatshiywl.heroesskilltree.commands.SkillLockedCommand;
-import me.Whatshiywl.heroesskilltree.commands.SkillUpCommand;
 import me.Wiedzmin137.wheroesaddon.Hologram;
 import me.Wiedzmin137.wheroesaddon.ItemGUI;
 import me.Wiedzmin137.wheroesaddon.Lang;
@@ -34,8 +28,6 @@ import me.desht.scrollingmenusign.ScrollingMenuSign;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
@@ -149,79 +141,6 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
 		   pm.registerEvents(WEventListener, this);
 	   }
    }
-   
-//   public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
-//	  //FIXME fix strange ClassCastException (it's occur even if it shouldn't) casted in console (Spigot)
-//	  //FIXME some command doesn't work due to unreal permissions lack
-//	  //TODO clean up all commands
-//	  
-//      Hero hero = heroes.getCharacterManager().getHero((Player)sender);
-//      String skillPoints = String.valueOf(getPlayerPoints(hero));
-//      
-//      if(commandLabel.equalsIgnoreCase("skillup")) {
-//         SkillUpCommand.skillUp(this, sender, args);
-//         return true;
-//      } else if(commandLabel.equalsIgnoreCase("skillgui")) {
-//    	 //TODO clean up commands
-//         if (sender instanceof Player) {
-//        	 if (sender.hasPermission("skilltree.skillgui")) {
-//                 HeroClass heroclass = hero.getHeroClass();
-//            	 ItemGUI.createSkillTree(sender, heroclass, heroes, this);
-//        	 } else {
-//            	 sender.sendMessage(Lang.ERROR_IN_CONSOLE_DENIED.toString());
-//                 return true;
-//        	 }
-//             return true;
-//         } else {
-//        	 sender.sendMessage(Lang.ERROR_IN_CONSOLE_DENIED.toString());
-//        	 return true;
-//         }
-//      } else if(commandLabel.equalsIgnoreCase("wybor")) {
-//          ItemGUI.createClassChoose((Player)sender);
-//          return true;
-//      } else if(commandLabel.equalsIgnoreCase("skilldown")) {
-//         SkillDownCommand.skillDown(this, sender, args);
-//         return true;
-//      } else if(commandLabel.equalsIgnoreCase("skillinfo")) {
-//         SkillInfoCommand.skillInfo(this, sender, args);
-//         return true;
-//      } else if(commandLabel.equalsIgnoreCase("skillpoints")) {
-//         if(!(sender instanceof Player)) {
-//        	 sender.sendMessage(Lang.ERROR_IN_CONSOLE_DENIED.toString());
-//            return true;
-//         } else {
-//            if(sender.hasPermission("skilltree.points")) {
-//               sender.sendMessage(Lang.TITLE.toString() + Lang.INFO_SKILLPOINTS.toString().replace("%points%", skillPoints));
-//            } else {
-//               sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_PERMISSION_DENIED);
-//            }
-//            return true;
-//         }
-//      } else if(commandLabel.equalsIgnoreCase("skilladmin")) {
-//         SkillAdminCommand.skillAdmin(this, sender, args);
-//         return true;
-//      } else if(!commandLabel.equalsIgnoreCase("slist") && !commandLabel.equalsIgnoreCase("sl")) {
-//         if(!commandLabel.equalsIgnoreCase("unlocks") && !commandLabel.equalsIgnoreCase("un")) {
-//        	sender.sendMessage(Lang.HELP_1.toString());
-//        	sender.sendMessage(Lang.HELP_2.toString());
-//        	sender.sendMessage(Lang.HELP_3.toString());
-//        	sender.sendMessage(Lang.HELP_4.toString());
-//        	sender.sendMessage(Lang.HELP_5.toString());
-//        	sender.sendMessage(Lang.HELP_6.toString());
-//        	sender.sendMessage(Lang.HELP_7.toString());
-//        	if(sender instanceof Player) {
-//            	sender.sendMessage(Lang.INFO_SKILLPOINTS.toString().replace("%points%", skillPoints));
-//        	}
-//            return true;
-//         } else {
-//            SkillLockedCommand.skillList(this, sender, args);
-//            return true;
-//         }
-//      } else {
-//         SkillListCommand.skillList(this, sender, args);
-//         return true;
-//      }
-//   }
 
    public void resetPlayer(Player player) {
 	  //FIXME error on /Hero reset
