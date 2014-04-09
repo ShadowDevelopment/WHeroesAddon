@@ -23,25 +23,22 @@ public class ManaPotion implements Listener {
    //TODO clean up
 
    private Material potion;
-   private byte potionData;
+   private short potionData;
    private boolean regainRand = false;
    private int regain = 0;
    private int regain_min = 0;
    private int regain_max = 0;
    
-   @SuppressWarnings("deprecation")
    @EventHandler(priority = EventPriority.NORMAL)
    public void onPlayerInteract(PlayerInteractEvent event) {
       Action action = event.getAction();
       Player player = event.getPlayer();
-      int material = player.getItemInHand().getType().getId();
-      if (player.getItemInHand() != null) {} 
-      else {
-          if (material == getPotion().getId()
-        		  && material == getPotionData() 
-        		  && action == Action.RIGHT_CLICK_AIR) {
-             addMana(event.getPlayer());
-          }
+      ItemStack material = player.getItemInHand();
+      Material materialItemStack = player.getItemInHand().getType();
+      if (material.getDurability() == getPotionData()
+    		  && materialItemStack == getPotion() 
+    		  && action == Action.RIGHT_CLICK_AIR) {
+    	  addMana(event.getPlayer());
       }
    }
    
@@ -53,9 +50,9 @@ public class ManaPotion implements Listener {
    public void setRegainRand(boolean RegainRand) { regainRand = RegainRand; }
    public void setRegain(int newRegain) { regain = newRegain; }
    public void setPotion(Material mat) { potion = mat; }
-   public void setPotionData(byte data) { potionData = data; }
+   public void setPotionData(short data) { potionData = data; }
    
-   public byte getPotionData() { return potionData; }
+   public short getPotionData() { return potionData; }
    public Material getPotion() { return potion; }
 
    public int getRegain() {
@@ -76,7 +73,7 @@ public class ManaPotion implements Listener {
       Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero(player);
       int mana = getRegain();
       HeroClass hClass = hero.getHeroClass();
-      if(hero.getMana() + mana > hero.getMaxMana()) {
+      if (hero.getMana() + mana > hero.getMaxMana()) {
          hero.setMana(hero.getMaxMana());
       } else {
          hero.setMana(hero.getMana() + mana + hero.getLevel(hClass));

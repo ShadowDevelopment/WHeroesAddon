@@ -1,34 +1,49 @@
-#Sets how many SkillPoints the player will earn/lose per level.
-points-per-level: 1
+# Go to WHeroesAddon.jar/config.yml for info
+# Configs for WHeroesAddon
+SkillTree:
+  #Are the SkillTree enabled [WARNING: Need tests!]?
+  Enabled: true
 
-#Configs for holograms
-holograms: true
-hologram_time: 250
+  #Sets how many SkillPoints the player will earn/lose per level.  
+  PointsPerLevel: 1
 
-#If is class choosing on login is enabled?
-useJoinChoose: true
+  #Sets the cost to unlock a skill (PLANNED)
+  #CostToUnlock: 0
 
-#If is class ManaPotion is enabled?
-useManaPotion: true
+  #Sets the cost to level up a skill (PLANNED)
+  #CostToLevelUp: 0
 
-# Mana potion data value
-potion-id: 0
-# Should players regain a flat amount of mana (false) or a random amount (true)
-regain-static: false
-# Flat mana regain amount (if regain-static is true)
-regain: 50
-# Range for random mana regain amount (if regain-static is false)
-regain-min: 1
-regain-max: 100
+  #Sets the cost to level down a skill (PLANNED)
+  #CostToLevelDown: 0
 
-#Sets the cost to unlock a skill (PLANNED)
-#cost-to-unlock: 0
+  #Sets the cost to reset all stats (PLANNED)
+  #CostToReset: 0
 
-#Sets the cost to level up a skill (PLANNED)
-#cost-to-level-up: 0
+# Configs for Holograms
+Hologram:
+  #Are the Holograms enabled?
+  Enabled: true
 
-#Sets the cost to level down a skill (PLANNED)
-#cost-to-level-down: 0
+  #How much holograms should be
+  Time: 250
 
-#Sets the cost to reset all stats (PLANNED)
-#cost-to-reset: 0
+# If is class choosing on login is enabled (menu definied by SMS)?
+UseJoinChoose: true
+
+# Configs for ManaPotions [WARNING: It's NOT work]
+ManaPotion:
+  #Are the ManaPotions enabled?
+  Enabled: false
+
+  #Mana potion data value
+  Potion-ID: 8197
+
+  #Should players regain a flat amount of mana (false) or a random amount (true)
+  RegainStatic: false
+
+  #Flat mana regain amount (if regain-static is true)
+  Regain: 50
+
+  #Range for random mana regain amount (if regain-static is false)
+  RegainMin: 1
+  RegainMax: 100

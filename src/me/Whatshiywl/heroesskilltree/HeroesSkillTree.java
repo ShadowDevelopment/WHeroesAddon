@@ -57,6 +57,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    private boolean holograms = false;
    private boolean useJoinChoose = false;
    private boolean useManaPotion = true;
+   private boolean useSkillTree = true;
    
    public static Logger Logger;
    public static YamlConfiguration LANG;
@@ -80,24 +81,31 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
       loadConfig();
       loadLang();
       
-      for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-        Hero hero = heroes.getCharacterManager().getHero(player);
-        recalcPlayerPoints(hero, hero.getHeroClass());
+      if (this.isUsingSkillTree()) {
+    	  for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+    		  Hero hero = heroes.getCharacterManager().getHero(player);
+    		  recalcPlayerPoints(hero, hero.getHeroClass());
+    	  }
+    	  
+          getCommand("skilltree").setExecutor(new CommandManager(this));
       }
       
       setupSMS(pm);
       setupManaPotion();
       registerEvents(pm);
+      
       if (IGUI != null) { IGUI.setAutosave(true); }
       
-      getCommand("skilltree").setExecutor(new CommandManager(this));
       getCommand("choose").setExecutor(new CommandManager(this));
       
       Logger.info(Lang.CONSOLE_ENABLED.toString());
    }
    
    public void onDisable() {
-	      saveAll();
+	      if (this.isUsingSkillTree()) {
+	    	  saveAll();
+	      }
+	      
 	      LANG = null;
 	      LANG_FILE = null;
 	      HandlerList.unregisterAll(HEventListener);
@@ -112,21 +120,19 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
        if (p instanceof ScrollingMenuSign && p.isEnabled()) {
     	   IGUI = new ItemGUI((ScrollingMenuSign) p);
     	   getServer().getLogger().info(Lang.CONSOLE_SMS_ENABLED.toString());
-       } else {
-    	   // plugin not available
-       }
+       } else {}
    }
    
    public void setupManaPotion() {
 	   manaPotion = new ManaPotion();
-	   if(!getConfig().getBoolean("static-regain")) {
+	   if(!getConfig().getBoolean("ManaPotion.StaticRegain")) {
 		   manaPotion.setRegainRand(true);
-		   manaPotion.setRegains(getConfig().getInt("regain-min"), getConfig().getInt("regain-max"));
+		   manaPotion.setRegains(getConfig().getInt("ManaPotion.RegainMin"), getConfig().getInt("ManaPotion.RegainMax"));
 	   } else {
 		   manaPotion.setRegainRand(false);
-		   manaPotion.setRegain(getConfig().getInt("regain"));
+		   manaPotion.setRegain(getConfig().getInt("ManaPotion.Regain"));
 	   }
-	   byte id = (byte)getConfig().getInt("potion-id");
+	   short id = (short)getConfig().getInt("ManaPotion.Potion-ID");
 	   manaPotion.setPotion(Material.POTION);
 	   manaPotion.setPotionData(id);
    }
@@ -461,11 +467,12 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
       FileConfiguration config = new YamlConfiguration();
       try {
          config.load(configFile);
-         pointsPerLevel = config.getInt("points-per-level", 1);
-         hologram_time = config.getInt("hologram_time");
-         holograms = config.getBoolean("holograms");
-         useJoinChoose = config.getBoolean("useJoinChoose");
-         useManaPotion = config.getBoolean("useJoinChoose");
+         pointsPerLevel = config.getInt("SkillTree.PointsPerLevel", 1);
+         hologram_time = config.getInt("Hologram.Time");
+         holograms = config.getBoolean("Hologram.Enabled");
+         useJoinChoose = config.getBoolean("UseJoinChoose");
+         useManaPotion = config.getBoolean("ManaPotion.Enabled");
+         useSkillTree = config.getBoolean("SkillTree.Enabled");
       } catch (Exception e) {
     	  Logger.severe("[HeroesSkillTree] failed to load config.yml");
       }
@@ -535,5 +542,6 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    public boolean areHologramsEnabled() { return holograms; }
    public boolean isUsingJoinChoose() { return useJoinChoose; }
    public boolean isUsingManaPotion() { return useManaPotion; }
+   public boolean isUsingSkillTree() { return useSkillTree; }
    public static HeroesSkillTree getInstance() { return instance; }
 }

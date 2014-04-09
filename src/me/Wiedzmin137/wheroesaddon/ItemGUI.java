@@ -68,10 +68,6 @@ public class ItemGUI implements Listener {
              //TODO add full language support
               int skillLevel = commandSendingHero.getSkillLevel(skill);
               int skillMaxLevel = hst.getSkillMaxLevel(commandSendingHero, skill);
-              int manaA = (int)SkillConfigManager.getUseSetting(commandSendingHero, skill, "mana", 0.0D, false);
-              //int manaB = SkillConfigManager.getSetting(hc, skill, "hst-mana", 1);
-              //int manaC = hst.getSkillLevel(commandSendingHero, skill) - 1;
-              int manaCost = manaA;
               String indicator = (String)SkillConfigManager.getSetting(hc, skill, "hst-indicator");
               
               SMSMenuItem skillsClass = new SMSMenuItem(menu, /*menu*/
@@ -82,8 +78,7 @@ public class ItemGUI implements Listener {
              Lang.GUI_LORE.toString(), //Click for use!: String
              Lang.GUI_LORE_LEVEL.toString() //SkillLevel: String
              .replace("%level%", String.valueOf(skillLevel)) //skillLevel: int
-             .replace("%maxLevel%", String.valueOf(skillMaxLevel)), //maxLevel: int
-             Lang.GUI_LORE_MANA.toString().replace("%manaCost%", String.valueOf(manaCost))
+             .replace("%maxLevel%", String.valueOf(skillMaxLevel)) //maxLevel: int
              //SkillDamage (if it's war spell): int
              //SkillManaCost: int
              //SkillReagentCost: int
@@ -114,7 +109,6 @@ public class ItemGUI implements Listener {
         SMSMenu menuChoose = null;
         
         if (smsHandler == null) { return; }
-          
         try { menuChoose = smsHandler.getMenu("ClassChoose"); }
         catch (SMSException e) { menuChoose = smsHandler.createMenu("ClassChoose", Lang.GUI_TITLE_CHOOSE.toString(), "wiedzmin137"); }
 
