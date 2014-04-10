@@ -8,146 +8,41 @@ import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
-import me.Whatshiywl.heroesskilltree.EventListener;
-import me.Whatshiywl.heroesskilltree.commands.CommandManager;
 import me.Wiedzmin137.wheroesaddon.Hologram;
-import me.Wiedzmin137.wheroesaddon.ItemGUI;
 import me.Wiedzmin137.wheroesaddon.Lang;
-import me.Wiedzmin137.wheroesaddon.ManaPotion;
-import me.Wiedzmin137.wheroesaddon.WEventListener;
-import me.desht.scrollingmenusign.ScrollingMenuSign;
-
+import me.Wiedzmin137.wheroesaddon.WAddonCore;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class HeroesSkillTree extends JavaPlugin implements Listener {
 
    private static HeroesSkillTree instance;
-   private ManaPotion manaPotion;
-   private ItemGUI IGUI;
-   private final EventListener HEventListener = new EventListener(this);
-   private final WEventListener WEventListener = new WEventListener();
-   private final ManaPotion WManaPotion = new ManaPotion();
+   
    private HashMap<String, FileConfiguration> hConfigs = new LinkedHashMap<String, FileConfiguration>();
    
-   private HashMap<String, HashMap<String, HashMap<String, Integer>>> playerSkills 
+   public HashMap<String, HashMap<String, HashMap<String, Integer>>> playerSkills 
   	= new LinkedHashMap<String, HashMap<String, HashMap<String, Integer>>>();
-   private HashMap<String, HashMap<String, Integer>> playerClasses = new LinkedHashMap<String, HashMap<String, Integer>>();
-   
-   private int pointsPerLevel = 1;
-   private int hologram_time = 2500;
-   private boolean holograms = false;
-   private boolean useJoinChoose = false;
-   private boolean useManaPotion = true;
-   private boolean useSkillTree = true;
+   public HashMap<String, HashMap<String, Integer>> playerClasses = new LinkedHashMap<String, HashMap<String, Integer>>();
    
    public static Logger Logger;
-   public static YamlConfiguration LANG;
-   public static File LANG_FILE;
    public static Heroes heroes = (Heroes)Bukkit.getServer().getPluginManager().getPlugin("Heroes");
 
    public List<Skill> SkillStrongParents = new ArrayList<Skill>();
    public List<Skill> SkillWeakParents = new ArrayList<Skill>();
    
    //FIXME error on /hero reset (can't delete player.yml by WHA)
-  
-   @Override
-   public void onEnable() {
-      setInstance(this);
-      
-      PluginManager pm = getServer().getPluginManager();
-	  Logger Logger = getServer().getLogger();
-      
-      getConfig().options().copyDefaults(true).copyHeader(true);
-      saveConfig();
-      loadConfig();
-      loadLang();
-      
-      if (this.isUsingSkillTree()) {
-    	  for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-    		  Hero hero = heroes.getCharacterManager().getHero(player);
-    		  recalcPlayerPoints(hero, hero.getHeroClass());
-    	  }
-    	  
-          getCommand("skilltree").setExecutor(new CommandManager(this));
-      }
-      
-      setupSMS(pm);
-      setupManaPotion();
-      registerEvents(pm);
-      
-      if (IGUI != null) { IGUI.setAutosave(true); }
-      
-      getCommand("choose").setExecutor(new CommandManager(this));
-      
-      Logger.info(Lang.CONSOLE_ENABLED.toString());
-   }
-   
-   public void onDisable() {
-	      if (this.isUsingSkillTree()) {
-	    	  saveAll();
-	      }
-	      
-	      LANG = null;
-	      LANG_FILE = null;
-	      HandlerList.unregisterAll(HEventListener);
-	      HandlerList.unregisterAll(WEventListener);
-	      
-	      getServer().getLogger().info(Lang.CONSOLE_DISABLED.toString());
-	      instance = null;
-   }
-   
-   private void setupSMS(PluginManager pm) {
-	   Plugin p = pm.getPlugin("ScrollingMenuSign");
-       if (p instanceof ScrollingMenuSign && p.isEnabled()) {
-    	   IGUI = new ItemGUI((ScrollingMenuSign) p);
-    	   getServer().getLogger().info(Lang.CONSOLE_SMS_ENABLED.toString());
-       } else {}
-   }
-   
-   public void setupManaPotion() {
-	   manaPotion = new ManaPotion();
-	   if(!getConfig().getBoolean("ManaPotion.StaticRegain")) {
-		   manaPotion.setRegainRand(true);
-		   manaPotion.setRegains(getConfig().getInt("ManaPotion.RegainMin"), getConfig().getInt("ManaPotion.RegainMax"));
-	   } else {
-		   manaPotion.setRegainRand(false);
-		   manaPotion.setRegain(getConfig().getInt("ManaPotion.Regain"));
-	   }
-	   short id = (short)getConfig().getInt("ManaPotion.Potion-ID");
-	   manaPotion.setPotion(Material.POTION);
-	   manaPotion.setPotionData(id);
-   }
-   
-   public void registerEvents(PluginManager pm) {
-	   Plugin p = pm.getPlugin("AuthMe");
-	   pm.registerEvents(HEventListener, this);
-	   
-	   if ((getConfig().getBoolean("useManaPotion", true)) ) {
-		   pm.registerEvents(WManaPotion, this);
-	   }
-	   if ((getConfig().getBoolean("useJoinChoose", true)) && (p.isEnabled())) {
-		   pm.registerEvents(WEventListener, this);
-	   }
-   }
 
    public void resetPlayer(Player player) {
 	  //FIXME error on /Hero reset
@@ -188,7 +83,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    public void recalcPlayerPoints(Hero hero, HeroClass hClass) {
 	   String name = hero.getPlayer().getName();
 	   String className = hClass.getName();
-	   int points = hero.getLevel(hClass) * getPointsPerLevel();
+	   int points = hero.getLevel(hClass) * WAddonCore.getInstance().getPointsPerLevel();
 	   if (playerClasses.get(name) == null) {
 		   playerClasses.put(name, new HashMap<String, Integer>());
 	   }
@@ -338,48 +233,6 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
      }
      return true;
    }
-
-   public void loadPlayerConfig(String name) {
-     FileConfiguration playerConfig = new YamlConfiguration();
-     File playerFolder = new File(getDataFolder(), "data");
-     if (!playerFolder.exists()) {
-       playerFolder.mkdir();
-     }
-     File playerConfigFile = new File(playerFolder, name + ".yml");
-     if (!playerConfigFile.exists()) {
-       try {
-         playerConfigFile.createNewFile();
-       }
-       catch (IOException ex) {
-    	 Logger.severe(Lang.SERVRE_FAILED_CREATE.toString().replace("%name%", name));
-         return;
-       }
-     }
-     try {
-       playerConfig.load(playerConfigFile);
-       if (!playerClasses.containsKey(name)) {
-         playerClasses.put(name, new HashMap<String, Integer>());
-       }
-       for (String s : playerConfig.getKeys(false)) {
-         playerClasses.get(name).put(s, Integer.valueOf(playerConfig.getInt(s + ".points", 0)));
-         if (!playerSkills.containsKey(s)) {
-           playerSkills.put(name, new HashMap<String, HashMap<String, Integer>>());
-         }
-         if (!playerSkills.get(name).containsKey(s)) {
-           playerSkills.get(name).put(s, new HashMap<String, Integer>());
-         }
-         if (playerConfig.getConfigurationSection(s + ".skills") != null) {
-           for (String st : playerConfig.getConfigurationSection(s + ".skills").getKeys(false)) {
-             ((HashMap<String, Integer>)playerSkills.get(name).get(s))
-            		 .put(st, Integer.valueOf(playerConfig.getInt(s + ".skills." + st, 0)));
-           }
-         }
-       }
-     }
-     catch (Exception e) {
-    	 Logger.severe("[HeroesSkillTree] failed to load " + name + ".yml");
-     }
-   }
    
    public FileConfiguration getHeroesClassConfig(HeroClass hClass) {
       if(hConfigs.containsKey(hClass.getName())) {
@@ -403,80 +256,6 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
       }
       return null;
     }
-
-   private void saveAll() {
-     for (String s : playerClasses.keySet()) {
-       savePlayerConfig(s);
-     }
-   }
-
-   @SuppressWarnings("rawtypes")
-   public void savePlayerConfig(String name) {
-	  FileConfiguration playerConfig = new YamlConfiguration();
-	  File playerDataFolder = new File(getDataFolder(), "data");
-      if(!playerDataFolder.exists()) {
-         playerDataFolder.mkdir();
-      }
-      File playerFile = new File(getDataFolder() + "/data", name + ".yml");
-      String message;
-      if(!playerFile.exists()) {
-         try {
-            playerFile.createNewFile();
-         } catch (IOException ioe) {
-            message = "[HeroesSkillTree] failed to save " + name + ".yml";
-            Logger.severe(message);
-            return;
-         }
-      }
-      try {
-         playerConfig.load(playerFile);
-         
-         Iterator<String> message1 = this.playerClasses.get(name).keySet().iterator();
-
-         //TODO clean up those Iterator and HashMaps
-         //TODO rename var, message and e
-         while(message1.hasNext()) {
-            String e = message1.next();
-            playerConfig.set(e + ".points", this.playerClasses.get(name).get(e));
-            if(this.playerSkills.containsKey(name) && this.playerSkills.get(name).containsKey(e)) {
-               Iterator var8 = ((HashMap)this.playerSkills.get(name).get(e)).keySet().iterator();
-
-               while(var8.hasNext()) {
-                  String skillName = (String)var8.next();
-                  playerConfig.set(e + ".skills." + skillName, ((HashMap)this.playerSkills.get(name).get(e)).get(skillName));
-               }
-            }
-         }
-         playerConfig.save(playerFile);
-      } catch (Exception e) {
-         message = "[HeroesSkillTree] failed to save " + name + ".yml";
-         Logger.severe(message);
-      }
-   }
-
-   private void loadConfig() {
-      File configFile = new File(getDataFolder(), "config.yml");
-      if(!configFile.exists()) {
-         try {
-            configFile.createNewFile();
-         } catch (IOException ioe) {
-        	Logger.severe("[HeroesSkillTree] failed to create new config.yml");
-            return;
-         }
-      }
-      FileConfiguration config = new YamlConfiguration();
-      try {
-         config.load(configFile);
-         pointsPerLevel = config.getInt("SkillTree.PointsPerLevel", 1);
-         hologram_time = config.getInt("Hologram.Time");
-         holograms = config.getBoolean("Hologram.Enabled");
-         useJoinChoose = config.getBoolean("UseJoinChoose");
-         useManaPotion = config.getBoolean("ManaPotion.Enabled");
-         useSkillTree = config.getBoolean("SkillTree.Enabled");
-      } catch (Exception e) {
-    	  Logger.severe("[HeroesSkillTree] failed to load config.yml");
-      }
-   }
    
    public static void expMessage(Player p, Location loc, double gained, double needed, double current) {
 	   if(gained == 0) { return; }
@@ -491,57 +270,9 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
 		   public void run() {
 			   holo.destroy();
 		   }
-	   }, instance.getHologramTime());
-   }
-
-   public void loadLang() {
-	   File lang = new File(getDataFolder(), "lang.yml");
-	   if (!lang.exists()) {
-		   try {
-			   getDataFolder().mkdir();
-			   lang.createNewFile();
-			   InputStream defConfigStream = getResource("lang.yml");
-			   if (defConfigStream != null) {
-				   YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-				   defConfig.save(lang);
-				   Lang.setFile(defConfig);
-				   return;
-			   }
-		   } catch(IOException e) {
-			   e.printStackTrace();
-			   Logger.severe("[HeroesSkillTree] Couldn't create language file.");
-			   Logger.severe("[HeroesSkillTree] This is a fatal error. Now disabling");
-			   setEnabled(false);
-		   }
-	   }
-	   YamlConfiguration conf = YamlConfiguration.loadConfiguration(lang);
-	   for(Lang item:Lang.values()) {
-		   if (conf.getString(item.getPath()) == null) {
-			   conf.set(item.getPath(), item.getDefault());
-		   }
-	   }
-	   Lang.setFile(conf);
-	   HeroesSkillTree.LANG = conf;
-	   HeroesSkillTree.LANG_FILE = lang;
-	   try {
-		   conf.save(getLangFile());
-	   } catch(IOException e) {
-		   Logger.warning("HeroesSkillTree: Failed to save lang.yml.");
-		   Logger.warning("HeroesSkillTree: Report this stack trace to Wiedzmin137.");
-		   e.printStackTrace();
-	   }
+	   }, WAddonCore.getInstance().getHologramTime());
    }
    
-   private void setInstance(HeroesSkillTree HST) { instance = HST; }
-   
-   public YamlConfiguration getLang() { return LANG; }
-   public File getLangFile() { return LANG_FILE; }
-   
-   public int getPointsPerLevel() { return pointsPerLevel; } 
-   public int getHologramTime() { return hologram_time; }
-   public boolean areHologramsEnabled() { return holograms; }
-   public boolean isUsingJoinChoose() { return useJoinChoose; }
-   public boolean isUsingManaPotion() { return useManaPotion; }
-   public boolean isUsingSkillTree() { return useSkillTree; }
+   public void setInstance(HeroesSkillTree HST) { instance = HST; }
    public static HeroesSkillTree getInstance() { return instance; }
 }

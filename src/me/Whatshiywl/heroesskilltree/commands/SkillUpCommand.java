@@ -5,6 +5,7 @@ import com.herocraftonline.heroes.characters.effects.Effect;
 import com.herocraftonline.heroes.characters.skill.Skill;
 
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
+import me.Wiedzmin137.wheroesaddon.WAddonCore;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -47,7 +48,7 @@ public class SkillUpCommand {
                   }
 
                   hst.setSkillLevel(hero, skill, hst.getSkillLevel(hero, skill) + pointsToIncrease);
-                  hst.savePlayerConfig(sender.getName());
+                  WAddonCore.getInstance().savePlayerConfig(sender.getName());
                   hero.addEffect(new Effect(skill, skill.getName()));
                   if(hst.isLocked(hero, skill)) {
                      sender.sendMessage(ChatColor.GOLD + "[HST] " + ChatColor.AQUA + "You have unlocked " + skill.getName() + "! Level: " + hst.getSkillLevel(hero, skill));

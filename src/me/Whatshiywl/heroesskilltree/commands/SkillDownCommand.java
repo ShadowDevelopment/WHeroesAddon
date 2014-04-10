@@ -4,6 +4,7 @@ import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.skill.Skill;
 
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
+import me.Wiedzmin137.wheroesaddon.WAddonCore;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -47,7 +48,7 @@ public class SkillDownCommand {
 
                   hst.setSkillLevel(hero, skill, hst.getSkillLevel(hero, skill) - pointsDecrease);
                   hero.removeEffect(hero.getEffect(skill.getName()));
-                  hst.savePlayerConfig(sender.getName());
+                  WAddonCore.getInstance().savePlayerConfig(sender.getName());
                   sender.sendMessage(ChatColor.GOLD + "[HST] " + ChatColor.AQUA + "You have locked " + skill.getName() + "!");
                } else {
                   if(!sender.hasPermission("skilltree.down")) {
@@ -60,7 +61,7 @@ public class SkillDownCommand {
                   }
 
                   hst.setSkillLevel(hero, skill, hst.getSkillLevel(hero, skill) - pointsDecrease);
-                  hst.savePlayerConfig(sender.getName());
+                  WAddonCore.getInstance().savePlayerConfig(sender.getName());
                   sender.sendMessage(ChatColor.GOLD + "[HST] " + ChatColor.AQUA + skill.getName() + "leveled down: " + hst.getSkillLevel(hero, skill) + "/" + hst.getSkillMaxLevel(hero, skill));
                }
 

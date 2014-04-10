@@ -12,6 +12,8 @@ import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.util.Properties;
 
+import me.Wiedzmin137.wheroesaddon.WAddonCore;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -25,9 +27,11 @@ public class EventListener implements Listener {
 	//TODO speed up this class
 	//TODO translate messages
 	
-	private static HeroesSkillTree plugin; 
-	public EventListener(HeroesSkillTree instance) {
+	private static WAddonCore plugin;
+	private static HeroesSkillTree HST;
+	public EventListener(WAddonCore instance, HeroesSkillTree hst) {
 		plugin = instance;
+		HST = hst;
 	}
 	  
 	@EventHandler
@@ -52,7 +56,7 @@ public class EventListener implements Listener {
 	      HeroClass heroClass = e.getHeroClass();
 	      
 		  if (e.getSource() == HeroClass.ExperienceType.KILLING) {
-			  double change = e.getExpChange();
+			  double change = Math.round(e.getExpChange());
 			  double current = hero.currentXPToNextLevel(heroClass);
 			  
 			  double exp = hero.getExperience(heroClass);
@@ -71,13 +75,13 @@ public class EventListener implements Listener {
 		  Player player = event.getPlayer();
 		  final Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero(player);
 		  plugin.loadPlayerConfig(player.getName());
-		  plugin.recalcPlayerPoints(hero, hero.getHeroClass());
+		  HST.recalcPlayerPoints(hero, hero.getHeroClass());
 		  Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			  public void run() {
 				  for (Effect effect : hero.getEffects()) {
 					  Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(effect.getName());
 					  if (skill != null) {
-						  if (plugin.isLocked(hero, skill))
+						  if (HST.isLocked(hero, skill))
 							  hero.removeEffect(effect);
 					  }
 				  }
@@ -90,18 +94,18 @@ public class EventListener implements Listener {
   public void onLevelChangeEvent(HeroChangeLevelEvent event) {
 	  if (plugin.isUsingSkillTree()) {
 		  final Hero hero = event.getHero();
-		  plugin.setPlayerPoints(hero, event.getHeroClass(), 
-				  plugin.getPlayerPoints(hero) + (event.getTo() - event.getFrom()) * plugin.getPointsPerLevel());
+		  HST.setPlayerPoints(hero, event.getHeroClass(), 
+				  HST.getPlayerPoints(hero) + (event.getTo() - event.getFrom()) * plugin.getPointsPerLevel());
 		  plugin.savePlayerConfig(hero.getPlayer().getName());
 		  if (hero.getHeroClass() != event.getHeroClass()) return;
-		  hero.getPlayer().sendMessage(org.bukkit.ChatColor.GOLD + "[HST] " + org.bukkit.ChatColor.AQUA + "SkillPoints: " + plugin.getPlayerPoints(hero));
+		  hero.getPlayer().sendMessage(org.bukkit.ChatColor.GOLD + "[HST] " + org.bukkit.ChatColor.AQUA + "SkillPoints: " + HST.getPlayerPoints(hero));
     
 		  Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			  public void run() {
 				  for (Effect effect : hero.getEffects()) {
 					  Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(effect.getName());
 					  if (skill != null) {
-						  if (plugin.isLocked(hero, skill))
+						  if (HST.isLocked(hero, skill))
 							  hero.removeEffect(effect);
 					  }
 				  }
@@ -129,14 +133,14 @@ public class EventListener implements Listener {
 					  }
 				  }
 				  if (reset) {
-					  plugin.resetPlayer(hero.getPlayer());
+					  HST.resetPlayer(hero.getPlayer());
 				  } else {
-					  plugin.recalcPlayerPoints(hero, evt.getTo());
+					  HST.recalcPlayerPoints(hero, evt.getTo());
 				  }
 				  for (Effect effect : hero.getEffects()) {
 					  Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(effect.getName());
 					  if (skill != null) {
-						  if (plugin.isLocked(hero, skill))
+						  if (HST.isLocked(hero, skill))
 							  hero.removeEffect(effect);
 					  }
 				  }
@@ -150,7 +154,7 @@ public class EventListener implements Listener {
 	  if (plugin.isUsingSkillTree()) {
 		  Hero hero = event.getHero();
 		  Skill skill = event.getSkill();
-		  if ((plugin.isLocked(event.getHero(), event.getSkill())) && (!event.getPlayer().hasPermission("skilltree.override.locked"))) {
+		  if ((HST.isLocked(event.getHero(), event.getSkill())) && (!event.getPlayer().hasPermission("skilltree.override.locked"))) {
 			  event.getPlayer().sendMessage(org.bukkit.ChatColor.RED + "This skill is still locked! /skillup (skill) to unlock it.");
 			  event.getHero().hasEffect(event.getSkill().getName());
 			  event.setCancelled(true);
@@ -158,24 +162,24 @@ public class EventListener implements Listener {
 		  }
 		  
 		  int health = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-health", 0.0D, false) 
-				  * plugin.getSkillLevel(hero, skill);
+				  * HST.getSkillLevel(hero, skill);
 		  health = (health > 0) ? health : 0;
 		  event.setHealthCost(event.getHealthCost() + health);
     
 		  int mana = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-mana", 0.0D, false)
-				  * plugin.getSkillLevel(hero, skill);
+				  * HST.getSkillLevel(hero, skill);
 		  mana = (mana > 0) ? mana : 0;
 		  event.setManaCost(event.getManaCost() - mana);
 		  
 		  int reagent = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-reagent", 0.0D, false) 
-				  * plugin.getSkillLevel(hero, skill);
+				  * HST.getSkillLevel(hero, skill);
 		  reagent = (reagent > 0) ? reagent : 0;
 		  ItemStack is = event.getReagentCost();
 		  if (is != null) { is.setAmount(event.getReagentCost().getAmount() - reagent); }
 		  event.setReagentCost(is);
 
 		  int stamina = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-stamina", 0.0D, false)
-				  * plugin.getSkillLevel(hero, skill);
+				  * HST.getSkillLevel(hero, skill);
 		  stamina = (stamina > 0) ? stamina : 0;
 		  event.setStaminaCost(event.getStaminaCost() - stamina);
 	  }
