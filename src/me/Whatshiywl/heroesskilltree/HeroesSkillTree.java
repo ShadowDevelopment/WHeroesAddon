@@ -23,10 +23,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class HeroesSkillTree extends JavaPlugin implements Listener {
+public class HeroesSkillTree implements Listener {
 
    private static HeroesSkillTree instance;
    
@@ -54,7 +53,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
    
    private void resetPlayerConfig(String name) {
 	 //FIXME error on /Hero reset
-     File playerFolder = new File(getDataFolder(), "data");
+     File playerFolder = new File(WAddonCore.getInstance().getDataFolder(), "data");
      if (!playerFolder.exists()) {
        playerFolder.mkdir();
      }
@@ -265,7 +264,7 @@ public class HeroesSkillTree extends JavaPlugin implements Listener {
 		   .replace("%current%", String.valueOf(current))
 		   .replace("%needed%", String.valueOf(needed)));
 	   holo.show(p, loc);
-	   Bukkit.getScheduler().scheduleSyncDelayedTask(instance, new BukkitRunnable() {
+	   Bukkit.getScheduler().scheduleSyncDelayedTask(WAddonCore.getInstance(), new BukkitRunnable() {
 		   @Override
 		   public void run() {
 			   holo.destroy();

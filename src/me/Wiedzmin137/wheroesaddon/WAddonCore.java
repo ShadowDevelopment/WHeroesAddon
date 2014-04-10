@@ -33,6 +33,7 @@ public class WAddonCore extends JavaPlugin {
 	private final EventListener HEventListener = new EventListener(this, HeroesSkillTree.getInstance());
 	private final WEventListener WEventListener = new WEventListener();
 	private final ManaPotion WManaPotion = new ManaPotion();
+	private final HeroesSkillTree HSTClass = new HeroesSkillTree();
 	   
 	private int pointsPerLevel = 1;
 	private int hologram_time = 2500;
@@ -49,7 +50,8 @@ public class WAddonCore extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-		setInstance(this);
+		instance = this;
+		HSTClass.setInstance(HSTClass);
 	      
 		PluginManager pm = getServer().getPluginManager();
 		Logger Logger = getServer().getLogger();
@@ -165,7 +167,8 @@ public class WAddonCore extends JavaPlugin {
 	   }
 	   
 	   private void saveAll() {
-		     for (String s : HeroesSkillTree.getInstance().playerClasses.keySet()) {
+		   HeroesSkillTree hst = new HeroesSkillTree();
+		     for (String s : hst.playerClasses.keySet()) {
 		       savePlayerConfig(s);
 		     }
 		   }
@@ -292,6 +295,4 @@ public class WAddonCore extends JavaPlugin {
 	   public boolean isUsingManaPotion() { return useManaPotion; }
 	   public boolean isUsingSkillTree() { return useSkillTree; }
 	   public static WAddonCore getInstance() { return instance; }
-	   
-	   private void setInstance(WAddonCore WAdddonCore) { instance = WAdddonCore; }
 }

@@ -26,7 +26,7 @@ public class ItemGUI implements Listener {
     
     public ItemGUI(ScrollingMenuSign sms) {
     	smsHandler = sms.getHandler();
-    	Bukkit.getPluginManager().registerEvents(this, HeroesSkillTree.getInstance());
+    	Bukkit.getPluginManager().registerEvents(this, WAddonCore.getInstance());
     }
 
     public void setAutosave(boolean autosave) {

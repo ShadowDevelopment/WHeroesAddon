@@ -12,10 +12,10 @@ import org.bukkit.entity.Player;
 import com.herocraftonline.heroes.characters.Hero;
 
 public class CommandManager implements CommandExecutor {
-	private HeroesSkillTree plugin;
+	private HeroesSkillTree HST;
 	 
 	public CommandManager(HeroesSkillTree plugin) { 
-		this.plugin = plugin;
+		this.HST = plugin;
 	}
 	
 	@Override
@@ -25,13 +25,13 @@ public class CommandManager implements CommandExecutor {
 				if (sender instanceof Player) {
 					if (args.length > 0) {
 						switch (args[0]) {
-							case "up": SkillUpCommand.skillUp(plugin, sender, args); break;
-							case "down": SkillDownCommand.skillDown(plugin, sender, args); break;
-							case "list": SkillListCommand.skillList(plugin, sender, args); break;
-							case "unlocks": SkillLockedCommand.skillList(plugin, sender, args); break;
-							case "info": SkillInfoCommand.skillInfo(plugin, sender, args); ; break;
-							case "gui": ItemGUI.createSkillTree(sender, HeroesSkillTree.heroes, plugin); break;
-							case "admin": SkillAdminCommand.skillAdmin(plugin, sender, args); break;
+							case "up": SkillUpCommand.skillUp(HST, sender, args); break;
+							case "down": SkillDownCommand.skillDown(HST, sender, args); break;
+							case "list": SkillListCommand.skillList(HST, sender, args); break;
+							case "unlocks": SkillLockedCommand.skillList(HST, sender, args); break;
+							case "info": SkillInfoCommand.skillInfo(HST, sender, args); ; break;
+							case "gui": ItemGUI.createSkillTree(sender, HeroesSkillTree.heroes, HST); break;
+							case "admin": SkillAdminCommand.skillAdmin(HST, sender, args); break;
 							default: showInfoList(sender); break;
 						} 
 					} else if (args.length == 0) {
@@ -53,7 +53,7 @@ public class CommandManager implements CommandExecutor {
 
 	private void showInfoList(CommandSender sender) {
 		Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
-		String skillPoints = String.valueOf(plugin.getPlayerPoints(hero));
+		String skillPoints = String.valueOf(HST.getPlayerPoints(hero));
 		
 		sender.sendMessage(Lang.HELP_1.toString());
 		sender.sendMessage(Lang.HELP_2.toString());
