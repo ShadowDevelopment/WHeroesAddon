@@ -1,4 +1,4 @@
-package me.Wiedzmin137.wheroesaddon;
+package me.Wiedzmin137.wheroesaddon.addons;
 
 import java.util.ArrayList;
 import java.util.Arrays;

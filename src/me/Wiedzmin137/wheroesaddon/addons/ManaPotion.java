@@ -1,4 +1,4 @@
-package me.Wiedzmin137.wheroesaddon;
+package me.Wiedzmin137.wheroesaddon.addons;
 
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
 

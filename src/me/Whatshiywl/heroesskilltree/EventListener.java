@@ -28,10 +28,9 @@ public class EventListener implements Listener {
 	//TODO translate messages
 	
 	private static WAddonCore plugin;
-	private static HeroesSkillTree HST;
-	public EventListener(WAddonCore instance, HeroesSkillTree hst) {
+	private final HeroesSkillTree HST = new HeroesSkillTree();
+	public EventListener(WAddonCore instance) {
 		plugin = instance;
-		HST = hst;
 	}
 	  
 	@EventHandler

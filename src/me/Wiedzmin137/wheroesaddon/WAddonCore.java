@@ -10,6 +10,9 @@ import java.util.logging.Logger;
 import me.Whatshiywl.heroesskilltree.EventListener;
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
 import me.Whatshiywl.heroesskilltree.commands.CommandManager;
+import me.Wiedzmin137.wheroesaddon.addons.ItemGUI;
+import me.Wiedzmin137.wheroesaddon.addons.ManaPotion;
+import me.Wiedzmin137.wheroesaddon.addons.WEventListener;
 import me.desht.scrollingmenusign.ScrollingMenuSign;
 
 import org.bukkit.Bukkit;
@@ -30,10 +33,10 @@ public class WAddonCore extends JavaPlugin {
 	private static WAddonCore instance;
 	private ManaPotion manaPotion;
 	private ItemGUI IGUI;
-	private final EventListener HEventListener = new EventListener(this, HeroesSkillTree.getInstance());
 	private final WEventListener WEventListener = new WEventListener();
 	private final ManaPotion WManaPotion = new ManaPotion();
 	private final HeroesSkillTree HSTClass = new HeroesSkillTree();
+	private final EventListener HEventListener = new EventListener(this);
 	   
 	private int pointsPerLevel = 1;
 	private int hologram_time = 2500;
@@ -51,7 +54,6 @@ public class WAddonCore extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		instance = this;
-		HSTClass.setInstance(HSTClass);
 	      
 		PluginManager pm = getServer().getPluginManager();
 		Logger Logger = getServer().getLogger();
@@ -61,9 +63,9 @@ public class WAddonCore extends JavaPlugin {
 		loadConfig();
 		loadLang();
 	      
+		registerEvents(pm);
 		setupSMS(pm);
 		setupManaPotion();
-		registerEvents(pm);
 	      
 		if (IGUI != null) { IGUI.setAutosave(true); }
 	      
@@ -116,7 +118,7 @@ public class WAddonCore extends JavaPlugin {
 				HeroesSkillTree hst = new HeroesSkillTree();
 				hst.recalcPlayerPoints(hero, hero.getHeroClass());
 			}
-			getCommand("skilltree").setExecutor(new CommandManager(HeroesSkillTree.getInstance()));
+			getCommand("skilltree").setExecutor(new CommandManager(HSTClass));
 		}
 		
 		if ((getConfig().getBoolean("useManaPotion", true)) ) {
@@ -124,7 +126,7 @@ public class WAddonCore extends JavaPlugin {
 		}
 		if ((getConfig().getBoolean("useJoinChoose", true)) && (p.isEnabled())) {	   
 			pm.registerEvents(WEventListener, this);
-			getCommand("choose").setExecutor(new CommandManager(HeroesSkillTree.getInstance()));
+			getCommand("choose").setExecutor(new CommandManager(HSTClass));
 		}
 	}
 	   
@@ -191,7 +193,7 @@ public class WAddonCore extends JavaPlugin {
 		   }
 		   try {
 			   playerConfig.load(playerConfigFile);
-			   HeroesSkillTree hst = HeroesSkillTree.getInstance();
+			   HeroesSkillTree hst = HSTClass;
 			   if (!hst.playerClasses.containsKey(name)) {
 				   hst.playerClasses.put(name, new HashMap<String, Integer>());
 			   }
@@ -236,7 +238,7 @@ public class WAddonCore extends JavaPlugin {
 		   }
 		   try {
 			   playerConfig.load(playerFile);
-			   HeroesSkillTree hst = HeroesSkillTree.getInstance();
+			   HeroesSkillTree hst = HSTClass;
 	         
 			   Iterator<String> message1 = hst.playerClasses.get(name).keySet().iterator();
 

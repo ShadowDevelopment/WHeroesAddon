@@ -1,8 +1,8 @@
 package me.Whatshiywl.heroesskilltree.commands;
 
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
-import me.Wiedzmin137.wheroesaddon.ItemGUI;
 import me.Wiedzmin137.wheroesaddon.Lang;
+import me.Wiedzmin137.wheroesaddon.addons.ItemGUI;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;

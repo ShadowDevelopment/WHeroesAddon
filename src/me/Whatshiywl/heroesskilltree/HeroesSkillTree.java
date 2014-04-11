@@ -14,9 +14,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.logging.Logger;
 
-import me.Wiedzmin137.wheroesaddon.Hologram;
 import me.Wiedzmin137.wheroesaddon.Lang;
 import me.Wiedzmin137.wheroesaddon.WAddonCore;
+import me.Wiedzmin137.wheroesaddon.addons.Hologram;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -26,9 +27,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class HeroesSkillTree implements Listener {
-
-   private static HeroesSkillTree instance;
-   
    private HashMap<String, FileConfiguration> hConfigs = new LinkedHashMap<String, FileConfiguration>();
    
    public HashMap<String, HashMap<String, HashMap<String, Integer>>> playerSkills 
@@ -271,7 +269,4 @@ public class HeroesSkillTree implements Listener {
 		   }
 	   }, WAddonCore.getInstance().getHologramTime());
    }
-   
-   public void setInstance(HeroesSkillTree HST) { instance = HST; }
-   public static HeroesSkillTree getInstance() { return instance; }
 }

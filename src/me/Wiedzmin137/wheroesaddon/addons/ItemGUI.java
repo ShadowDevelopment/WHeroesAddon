@@ -1,6 +1,8 @@
-package me.Wiedzmin137.wheroesaddon;
+package me.Wiedzmin137.wheroesaddon.addons;
 
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
+import me.Wiedzmin137.wheroesaddon.Lang;
+import me.Wiedzmin137.wheroesaddon.WAddonCore;
 import me.desht.scrollingmenusign.SMSException;
 import me.desht.scrollingmenusign.SMSHandler;
 import me.desht.scrollingmenusign.SMSMenu;
