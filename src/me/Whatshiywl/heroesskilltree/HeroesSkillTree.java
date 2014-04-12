@@ -1,6 +1,5 @@
 package me.Whatshiywl.heroesskilltree;
 
-import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.classes.HeroClass;
 import com.herocraftonline.heroes.characters.skill.Skill;
@@ -16,40 +15,23 @@ import java.util.logging.Logger;
 
 import me.Wiedzmin137.wheroesaddon.Lang;
 import me.Wiedzmin137.wheroesaddon.WAddonCore;
-import me.Wiedzmin137.wheroesaddon.addons.Hologram;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
-import org.bukkit.scheduler.BukkitRunnable;
 
 public class HeroesSkillTree implements Listener {
    private HashMap<String, FileConfiguration> hConfigs = new LinkedHashMap<String, FileConfiguration>();
-   
-   public HashMap<String, HashMap<String, HashMap<String, Integer>>> playerSkills 
+   private HashMap<String, HashMap<String, HashMap<String, Integer>>> playerSkills 
   	= new LinkedHashMap<String, HashMap<String, HashMap<String, Integer>>>();
-   public HashMap<String, HashMap<String, Integer>> playerClasses = new LinkedHashMap<String, HashMap<String, Integer>>();
-   
-   public static Logger Logger;
-   public static Heroes heroes = (Heroes)Bukkit.getServer().getPluginManager().getPlugin("Heroes");
+   private HashMap<String, HashMap<String, Integer>> playerClasses = new LinkedHashMap<String, HashMap<String, Integer>>();
+   private final static Logger Log = Logger.getLogger("Minecraft");
 
    public List<Skill> SkillStrongParents = new ArrayList<Skill>();
    public List<Skill> SkillWeakParents = new ArrayList<Skill>();
    
    //FIXME error on /hero reset (can't delete player.yml by WHA)
-
-   public void resetPlayer(Player player) {
-	  //FIXME error on /Hero reset
-      String name = player.getName();
-      playerSkills.put(name, playerClasses);
-      playerClasses.put(name, new HashMap<String, Integer>());
-      resetPlayerConfig(name);
-   } 
    
-   private void resetPlayerConfig(String name) {
+   public void resetPlayerSkillTree(String name) {
 	 //FIXME error on /Hero reset
      File playerFolder = new File(WAddonCore.getInstance().getDataFolder(), "data");
      if (!playerFolder.exists()) {
@@ -57,20 +39,20 @@ public class HeroesSkillTree implements Listener {
      }
      File playerFile = new File(playerFolder, name + ".yml");
      if ((playerFolder.exists()) && (!playerFolder.delete())) {
-       Logger.severe(Lang.SERVRE_FAILED_DELETE.toString().replace("%name%", name));
+       Log.severe(Lang.SERVRE_FAILED_DELETE.toString().replace("%name%", name));
        return;
      }
      try {
        playerFile.createNewFile();
      } catch (IOException e) {
-       Logger.severe(Lang.SERVRE_FAILED_CREATE.toString().replace("%name%", name));
+    	 Log.severe(Lang.SERVRE_FAILED_CREATE.toString().replace("%name%", name));
      }
    }
    
    public int getPlayerPoints(Hero hero) {
-	   return playerClasses.get(hero.getPlayer().getName()) != null && playerClasses
+	   return getPlayerClasses().get(hero.getPlayer().getName()) != null && getPlayerClasses()
 			   .get(hero.getPlayer().getName())
-			   .get(hero.getHeroClass().getName()) != null ? ((Integer)playerClasses
+			   .get(hero.getHeroClass().getName()) != null ? ((Integer)getPlayerClasses()
 					   .get(hero.getPlayer().getName())
 					   .get(hero.getHeroClass().getName())).intValue() : 0;
    }
@@ -81,15 +63,15 @@ public class HeroesSkillTree implements Listener {
 	   String name = hero.getPlayer().getName();
 	   String className = hClass.getName();
 	   int points = hero.getLevel(hClass) * WAddonCore.getInstance().getPointsPerLevel();
-	   if (playerClasses.get(name) == null) {
-		   playerClasses.put(name, new HashMap<String, Integer>());
+	   if (getPlayerClasses().get(name) == null) {
+		   getPlayerClasses().put(name, new HashMap<String, Integer>());
 	   }
 	   if (hero.getPlayer().hasPermission("skilltree.override.usepoints")) {
-		   playerClasses.get(name).put(className, Integer.valueOf(points));
+		   getPlayerClasses().get(name).put(className, Integer.valueOf(points));
 		   return;
 	   	}
-	   if (playerClasses.get(name).get(className) == null) {
-		   playerClasses.get(name).put(className, Integer.valueOf(0));
+	   if (getPlayerClasses().get(name).get(className) == null) {
+		   getPlayerClasses().get(name).put(className, Integer.valueOf(0));
 		   return;
 	   }
 	   if (playerSkills.get(name) == null) {
@@ -100,34 +82,34 @@ public class HeroesSkillTree implements Listener {
 		   playerSkills.get(name).put(className, new HashMap());
 		   return;
 	   }
-	   for (Skill skill : heroes.getSkillManager().getSkills()) {
+	   for (Skill skill : WAddonCore.heroes.getSkillManager().getSkills()) {
 		   String skillName = skill.getName();
 		   if (((HashMap<?, ?>)playerSkills.get(name).get(className)).get(skillName) != null) {
 			   points -= ((Integer)((HashMap<?, ?>)playerSkills.get(name)
 					   .get(className))
 					   .get(skillName)).intValue();
 			   if (points < 0) {
-				   Logger.warning("[HeroesSkillTree] " + name + "'s skills are at a too high level!");
+				   Log.warning("[HeroesSkillTree] " + name + "'s skills are at a too high level!");
 				   points = 0;
 			   }
 		   }
 	   }
-	   playerClasses.get(name).put(className, Integer.valueOf(points));
+	   getPlayerClasses().get(name).put(className, Integer.valueOf(points));
    }
 		
    public void setPlayerPoints(Hero hero, int i) {
-	   if(playerClasses.get(hero.getPlayer().getName()) == null) {
-		   playerClasses.put(hero.getPlayer().getName(), new HashMap<String, Integer>());
+	   if(getPlayerClasses().get(hero.getPlayer().getName()) == null) {
+		   getPlayerClasses().put(hero.getPlayer().getName(), new HashMap<String, Integer>());
 	   }
-	   playerClasses.get(hero.getPlayer().getName())
+	   getPlayerClasses().get(hero.getPlayer().getName())
 	   	.put(hero.getHeroClass().getName(), Integer.valueOf(i));
    }
    
    public void setPlayerPoints(Hero hero, HeroClass hClass, int i) {
-	   if(playerClasses.get(hero.getPlayer().getName()) == null) {
-		   playerClasses.put(hero.getPlayer().getName(), new HashMap<String, Integer>());
+	   if(getPlayerClasses().get(hero.getPlayer().getName()) == null) {
+		   getPlayerClasses().put(hero.getPlayer().getName(), new HashMap<String, Integer>());
 	   }
-	   playerClasses.get(hero.getPlayer().getName()).put(hClass.getName(), Integer.valueOf(i));
+	   getPlayerClasses().get(hero.getPlayer().getName()).put(hClass.getName(), Integer.valueOf(i));
    }
 
    //FIXME this probably not good like up
@@ -215,14 +197,14 @@ public class HeroesSkillTree implements Listener {
      }
      if (hasStrongParents) {
        for (String name : getStrongParentSkills(hero, skill)) {
-         if (!isMastered(hero, heroes.getSkillManager().getSkill(name))) {
+         if (!isMastered(hero, WAddonCore.heroes.getSkillManager().getSkill(name))) {
            return false;
          }
        }
      }
      if (hasWeakParents) {
        for (String name : getWeakParentSkills(hero, skill)) {
-         if (isMastered(hero, heroes.getSkillManager().getSkill(name))) {
+         if (isMastered(hero, WAddonCore.heroes.getSkillManager().getSkill(name))) {
            return true;
          }
        }
@@ -235,7 +217,7 @@ public class HeroesSkillTree implements Listener {
       if(hConfigs.containsKey(hClass.getName())) {
          return hConfigs.get(hClass.getName());
       }
-      File classFolder = new File(heroes.getDataFolder(), "classes");
+      File classFolder = new File(WAddonCore.heroes.getDataFolder(), "classes");
       for (File f : classFolder.listFiles()) {
         FileConfiguration config = new YamlConfiguration();
         try {
@@ -254,19 +236,53 @@ public class HeroesSkillTree implements Listener {
       return null;
     }
    
-   public static void expMessage(Player p, Location loc, double gained, double needed, double current) {
-	   if(gained == 0) { return; }
-	   final Hologram holo = new Hologram(
-		 Lang.HOLOGRAM_MESSAGE_EXP_GAINED.toString().replace("%gained%", String.valueOf(gained)),
-		 Lang.HOLOGRAM_MESSAGE_EXP_MAX.toString()
-		   .replace("%current%", String.valueOf(current))
-		   .replace("%needed%", String.valueOf(needed)));
-	   holo.show(p, loc);
-	   Bukkit.getScheduler().scheduleSyncDelayedTask(WAddonCore.getInstance(), new BukkitRunnable() {
-		   @Override
-		   public void run() {
-			   holo.destroy();
+   public void loadPlayerConfig(String name) {
+	   FileConfiguration playerConfig = new YamlConfiguration();
+	   File playerFolder = new File(WAddonCore.getInstance().getDataFolder(), "data");
+	   if (!playerFolder.exists()) {
+		   playerFolder.mkdir();
+	   }
+	   File playerConfigFile = new File(playerFolder, name + ".yml");
+	   if (!playerConfigFile.exists()) {
+		   try {
+			   playerConfigFile.createNewFile();
 		   }
-	   }, WAddonCore.getInstance().getHologramTime());
+		   catch (IOException ex) {
+			   Log.severe(Lang.SERVRE_FAILED_CREATE.toString().replace("%name%", name));
+			   return;
+		   }
+	   }
+	   try {
+		   playerConfig.load(playerConfigFile);
+		   if (!getPlayerClasses().containsKey(name)) {
+			   getPlayerClasses().put(name, new HashMap<String, Integer>());
+		   }
+		   for (String s : playerConfig.getKeys(false)) {
+			   getPlayerClasses().get(name).put(s, Integer.valueOf(playerConfig.getInt(s + ".points", 0)));
+			   if (!playerSkills.containsKey(s)) {
+				   playerSkills.put(name, new HashMap<String, HashMap<String, Integer>>());
+			   }
+	    	    if (!playerSkills.get(name).containsKey(s)) {
+	    	    	playerSkills.get(name).put(s, new HashMap<String, Integer>());
+	    	    }
+	    	    if (playerConfig.getConfigurationSection(s + ".skills") != null) {
+	    	    	for (String st : playerConfig.getConfigurationSection(s + ".skills").getKeys(false)) {
+	      	      ((HashMap<String, Integer>)playerSkills.get(name).get(s))
+	      	      	.put(st, Integer.valueOf(playerConfig.getInt(s + ".skills." + st, 0)));
+	    	    	}
+	    	    }
+		   }
+	   }
+	   catch (Exception e) {
+		   Log.severe("[HeroesSkillTree] failed to load " + name + ".yml");
+	   }
+   }
+
+   public HashMap<String, HashMap<String, Integer>> getPlayerClasses() { return playerClasses; }
+   public void setPlayerClasses(HashMap<String, HashMap<String, Integer>> playerClasses) { this.playerClasses = playerClasses;  }
+
+   public HashMap<String, HashMap<String, HashMap<String, Integer>>> getPlayerSkills() { return playerSkills; }
+   public void setPlayerSkills(HashMap<String, HashMap<String, HashMap<String, Integer>>> playerSkills) { 
+	   this.playerSkills = playerSkills; 
    }
 }

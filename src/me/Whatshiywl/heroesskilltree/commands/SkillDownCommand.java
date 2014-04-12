@@ -20,11 +20,11 @@ public class SkillDownCommand {
       } else if(!(sender instanceof Player)) {
          sender.sendMessage(ChatColor.RED + "You must be in game to use this command");
       } else {
-         Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
+         Hero hero = WAddonCore.heroes.getCharacterManager().getHero((Player)sender);
          if(!hero.hasAccessToSkill(args[1])) {
             sender.sendMessage(ChatColor.RED + "You don\'t have this skill");
          } else {
-            Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(args[1]);
+            Skill skill = WAddonCore.heroes.getSkillManager().getSkill(args[1]);
             int pointsDecrease;
             try {
                pointsDecrease = (args.length > 2) ? Integer.parseInt(args[2]) : 1;

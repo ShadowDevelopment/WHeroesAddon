@@ -12,9 +12,12 @@ import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.util.Properties;
 
+import me.Wiedzmin137.wheroesaddon.Lang;
 import me.Wiedzmin137.wheroesaddon.WAddonCore;
+import me.Wiedzmin137.wheroesaddon.addons.Hologram;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -22,6 +25,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class EventListener implements Listener {
 	//TODO speed up this class
@@ -36,7 +40,7 @@ public class EventListener implements Listener {
 	@EventHandler
 	public void onPluginEnable(PluginEnableEvent event) {
 		if (event.getPlugin().getDescription().getName().equals("Heroes")) {
-			HeroesSkillTree.heroes = (Heroes)event.getPlugin();
+			WAddonCore.heroes = (Heroes)event.getPlugin();
 		}
 	}
 	  
@@ -62,7 +66,7 @@ public class EventListener implements Listener {
 			  int level = Properties.getLevel(exp);
 			  double maxExperiation = Properties.getTotalExp(level + 1) - Properties.getTotalExp(level);
 			  
-			  HeroesSkillTree.expMessage(player, e.getLocation().subtract(0.0D, 0.5D, 0.0D), 
+			  expMessage(player, e.getLocation().subtract(0.0D, 0.5D, 0.0D), 
 					  change, maxExperiation, Math.round(current) + change);
 		  }
 	  }
@@ -72,13 +76,13 @@ public class EventListener implements Listener {
   public void onPlayerJoin(PlayerJoinEvent event) {
 	  if (plugin.isUsingSkillTree()) {
 		  Player player = event.getPlayer();
-		  final Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero(player);
-		  plugin.loadPlayerConfig(player.getName());
+		  final Hero hero = WAddonCore.heroes.getCharacterManager().getHero(player);
+		  HST.loadPlayerConfig(player.getName());
 		  HST.recalcPlayerPoints(hero, hero.getHeroClass());
 		  Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			  public void run() {
 				  for (Effect effect : hero.getEffects()) {
-					  Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(effect.getName());
+					  Skill skill = WAddonCore.heroes.getSkillManager().getSkill(effect.getName());
 					  if (skill != null) {
 						  if (HST.isLocked(hero, skill))
 							  hero.removeEffect(effect);
@@ -102,7 +106,7 @@ public class EventListener implements Listener {
 		  Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			  public void run() {
 				  for (Effect effect : hero.getEffects()) {
-					  Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(effect.getName());
+					  Skill skill = WAddonCore.heroes.getSkillManager().getSkill(effect.getName());
 					  if (skill != null) {
 						  if (HST.isLocked(hero, skill))
 							  hero.removeEffect(effect);
@@ -124,7 +128,7 @@ public class EventListener implements Listener {
 				  boolean reset = false;
 				  if (evt.getTo().isDefault()) {
 					  reset = true;
-					  for (HeroClass hClass : HeroesSkillTree.heroes.getClassManager().getClasses()) {
+					  for (HeroClass hClass : WAddonCore.heroes.getClassManager().getClasses()) {
 						  if (hero.getExperience(hClass) != 0.0D) {
 							  reset = false;
 							  break;
@@ -132,12 +136,12 @@ public class EventListener implements Listener {
 					  }
 				  }
 				  if (reset) {
-					  HST.resetPlayer(hero.getPlayer());
+					  plugin.resetPlayer(hero.getPlayer());
 				  } else {
 					  HST.recalcPlayerPoints(hero, evt.getTo());
 				  }
 				  for (Effect effect : hero.getEffects()) {
-					  Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(effect.getName());
+					  Skill skill = WAddonCore.heroes.getSkillManager().getSkill(effect.getName());
 					  if (skill != null) {
 						  if (HST.isLocked(hero, skill))
 							  hero.removeEffect(effect);
@@ -204,4 +208,20 @@ public class EventListener implements Listener {
 //	  Hero hero = event.getHero();
 //	  Skill skill = event.getSkill();
 //  }
+  
+  public static void expMessage(Player p, Location loc, double gained, double needed, double current) {
+	   if(gained == 0) { return; }
+	   final Hologram holo = new Hologram(
+		 Lang.HOLOGRAM_MESSAGE_EXP_GAINED.toString().replace("%gained%", String.valueOf(gained)),
+		 Lang.HOLOGRAM_MESSAGE_EXP_MAX.toString()
+		   .replace("%current%", String.valueOf(current))
+		   .replace("%needed%", String.valueOf(needed)));
+	   holo.show(p, loc);
+	   Bukkit.getScheduler().scheduleSyncDelayedTask(WAddonCore.getInstance(), new BukkitRunnable() {
+		   @Override
+		   public void run() {
+			   holo.destroy();
+		   }
+	   }, WAddonCore.getInstance().getHologramTime());
+  }
 }

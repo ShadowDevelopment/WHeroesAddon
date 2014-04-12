@@ -8,6 +8,7 @@ import java.util.Collections;
 import java.util.HashMap;
 
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
+import me.Wiedzmin137.wheroesaddon.WAddonCore;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -20,14 +21,14 @@ public class SkillListCommand {
 			sender.sendMessage(ChatColor.RED + "You must be in game to use this command");
 			return;
 		}
-		Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
+		Hero hero = WAddonCore.heroes.getCharacterManager().getHero((Player)sender);
 		
 		int j = 0;
 		HashMap<String, Skill> skills = new HashMap<String, Skill>();
 		ArrayList<String> alphabeticalSkills = new ArrayList<String>();
 		if (hero.getHeroClass() != null) {
 			for (String skillName : hero.getHeroClass().getSkillNames()) {
-				Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(skillName);
+				Skill skill = WAddonCore.heroes.getSkillManager().getSkill(skillName);
 				if ((!hst.isLocked(hero, skill)) && (hero.canUseSkill(skill))) {
 					skills.put(skillName, skill);
 					alphabeticalSkills.add(skillName);

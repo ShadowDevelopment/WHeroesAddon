@@ -1,6 +1,6 @@
 package me.Wiedzmin137.wheroesaddon.addons;
 
-import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
+import me.Wiedzmin137.wheroesaddon.WAddonCore;
 
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.classes.HeroClass;
@@ -70,7 +70,7 @@ public class ManaPotion implements Listener {
    }
 
    private void addMana(Player player) {
-      Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero(player);
+      Hero hero = WAddonCore.heroes.getCharacterManager().getHero(player);
       int mana = getRegain();
       HeroClass hClass = hero.getHeroClass();
       if (hero.getMana() + mana > hero.getMaxMana()) {

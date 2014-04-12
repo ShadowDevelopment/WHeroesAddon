@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
+import me.Wiedzmin137.wheroesaddon.WAddonCore;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -21,14 +22,14 @@ public class SkillLockedCommand {
          sender.sendMessage(ChatColor.RED + "You must be in game to use this command");
          return;
       } else {
-         Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
+         Hero hero = WAddonCore.heroes.getCharacterManager().getHero((Player)sender);
          int j = 0;
          HashMap<String, Skill> skills = new HashMap<String, Skill>();
          ArrayList<String> alphabeticalSkills = new ArrayList<String>();
          String name;
          if (hero.getHeroClass() != null) {
              for (String skillName : hero.getHeroClass().getSkillNames()) {
-               Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(skillName);
+               Skill skill = WAddonCore.heroes.getSkillManager().getSkill(skillName);
                if ((skill != null) && (shouldListSkill(hst, hero, skill))) {
                  String message = ChatColor.GREEN + skillName + ChatColor.GRAY;
                  if (hst.getStrongParentSkills(hero, skill) != null) {
@@ -92,14 +93,14 @@ public class SkillLockedCommand {
      }
      if (hasStrongParents) {
        for (String name : hst.getStrongParentSkills(hero, skill)) {
-         if (hst.isLocked(hero, HeroesSkillTree.heroes.getSkillManager().getSkill(name))) {
+         if (hst.isLocked(hero, WAddonCore.heroes.getSkillManager().getSkill(name))) {
            return false;
          }
        }
      }
      if (hasWeakParents) {
        for (String name : hst.getWeakParentSkills(hero, skill)) {
-         if (!hst.isLocked(hero, HeroesSkillTree.heroes.getSkillManager().getSkill(name))) {
+         if (!hst.isLocked(hero, WAddonCore.heroes.getSkillManager().getSkill(name))) {
            return true;
          }
        }

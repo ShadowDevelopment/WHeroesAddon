@@ -22,8 +22,8 @@ public class SkillUpCommand {
       } else if(!(sender instanceof Player)) {
          sender.sendMessage(ChatColor.RED + "You must be in game to use this command");
       } else {
-         Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
-         Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(args[1]);
+         Hero hero = WAddonCore.heroes.getCharacterManager().getHero((Player)sender);
+         Skill skill = WAddonCore.heroes.getSkillManager().getSkill(args[1]);
          if(skill != null && hero.hasAccessToSkill(skill.getName())) {
             if(hst.getSkillMaxLevel(hero, skill) == -1) {
                sender.sendMessage(ChatColor.RED + "This skill can\'t be increased");

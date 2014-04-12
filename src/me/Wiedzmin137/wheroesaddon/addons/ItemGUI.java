@@ -24,24 +24,24 @@ import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 
 public class ItemGUI implements Listener {
-    public static SMSHandler smsHandler;
+	public static SMSHandler smsHandler;
     
-    public ItemGUI(ScrollingMenuSign sms) {
-    	smsHandler = sms.getHandler();
-    	Bukkit.getPluginManager().registerEvents(this, WAddonCore.getInstance());
-    }
+	public ItemGUI(ScrollingMenuSign sms) {
+		smsHandler = sms.getHandler();
+		Bukkit.getPluginManager().registerEvents(this, WAddonCore.getInstance());
+	}
 
-    public void setAutosave(boolean autosave) {
-     for (SMSMenu menu : smsHandler.listMenus()) {
-     menu.setAutosave(autosave);
-     }
-    }
+	public void setAutosave(boolean autosave) {
+		for (SMSMenu menu : smsHandler.listMenus()) {
+			menu.setAutosave(autosave);
+		}
+	}
 
-    public static void createSkillTree(CommandSender sender, Heroes plugin, HeroesSkillTree hst) {
+	public static void createSkillTree(CommandSender sender, Heroes plugin, HeroesSkillTree hst) {
     	//TODO cleanup. Some things and change some names
         SMSMenu menu = null;
         
-        Hero commandSendingHero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player) sender);
+        Hero commandSendingHero = WAddonCore.heroes.getCharacterManager().getHero((Player) sender);
         HeroClass hc = commandSendingHero.getHeroClass();
         String name = hc.getName();
 
@@ -59,11 +59,11 @@ public class ItemGUI implements Listener {
         menu.setAutosave(false);
         menu.setAutosort(false);
         
-        for (String sn : hc.getSkillNames()) {
-          Skill skill = plugin.getSkillManager().getSkill(sn);
+        for (String skillNames : hc.getSkillNames()) {
+          Skill skill = plugin.getSkillManager().getSkill(skillNames);
           if (skill instanceof ActiveSkill) {
             if (skill.getIdentifiers().length == 0) {
-              HeroesSkillTree.Logger.severe(Lang.GUI_INVAILD_SKILLS.toString().replace("%skill%", sn));
+              WAddonCore.Log.severe(Lang.GUI_INVAILD_SKILLS.toString().replace("%skill%", skillNames));
             } else {
              //TODO add level of skills - by quantity of items
              //TODO get statistics from .getSettings() and take them to the lore

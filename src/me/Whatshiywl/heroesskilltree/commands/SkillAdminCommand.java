@@ -4,6 +4,7 @@ import com.herocraftonline.heroes.characters.Hero;
 
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
 import me.Wiedzmin137.wheroesaddon.Lang;
+import me.Wiedzmin137.wheroesaddon.WAddonCore;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
@@ -25,14 +26,14 @@ public class SkillAdminCommand {
                      sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_PLAYER_OFFLINE.toString().replace("%player%", args[2]));
                      return;
                   }
-                  hero = HeroesSkillTree.heroes.getCharacterManager().getHero(Bukkit.getPlayer(args[2]));
+                  hero = WAddonCore.heroes.getCharacterManager().getHero(Bukkit.getPlayer(args[2]));
                   hst.setPlayerPoints(hero, 0);
                } else {
                   if(!(sender instanceof Player)) {
                 	 sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_CONSOLE_DENIED);
                      return;
                   }
-                  hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
+                  hero = WAddonCore.heroes.getCharacterManager().getHero((Player)sender);
                   hst.setPlayerPoints(hero, 0);
                }
                sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_PLAYER_RESET_SUCCESS.toString().replace("%player%", args[2]));
@@ -43,7 +44,7 @@ public class SkillAdminCommand {
             } else {
                if(args.length == 3) {
                   if(Bukkit.getPlayer(args[2]) != null) {
-                     hst.resetPlayer(Bukkit.getPlayer(args[2]));
+                	 WAddonCore.getInstance().resetPlayer(Bukkit.getPlayer(args[2]));
                      sender.sendMessage(Lang.TITLE.toString() +  Lang.ADMIN_PLAYER_RESET_SUCCESS.toString().replace("%player%", args[2]));
                   } else {
                      sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_PLAYER_OFFLINE.toString().replace("%player", args[2]));
@@ -53,7 +54,7 @@ public class SkillAdminCommand {
                      sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_CONSOLE_DENIED.toString().replace("%player%", args[2]));
                      return;
                   }
-                  hst.resetPlayer((Player)sender);
+                  WAddonCore.getInstance().resetPlayer((Player)sender);
                   sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_SELF_RESET_SUCCESS);
                }
             }
@@ -65,7 +66,7 @@ public class SkillAdminCommand {
             } else {
                if(args.length > 3) {
                   if(Bukkit.getPlayer(args[3]) != null) {
-                     hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)Bukkit.getPlayer(args[2]));
+                     hero = WAddonCore.heroes.getCharacterManager().getHero((Player)Bukkit.getPlayer(args[2]));
                      hst.setPlayerPoints(hero, Integer.parseInt(args[2]));
                      sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_SKILLPOINTS_ADD_SUCCESS.toString().replace("%player%", args[3]).replace("%points%", args[2]));
                   } else {
@@ -76,7 +77,7 @@ public class SkillAdminCommand {
             		   sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_CONSOLE_DENIED);
             		   return;
             	   }
-            	   hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
+            	   hero = WAddonCore.heroes.getCharacterManager().getHero((Player)sender);
             	   hst.setPlayerPoints(hero, Integer.parseInt(args[2]));
             	   sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_SKILLPOINTS_ADD_SUCCESS.toString().replace("%player%", "your").replace("%points%", args[2]));
                }
@@ -87,7 +88,7 @@ public class SkillAdminCommand {
             } else {
                if(args.length > 3) {
                   if(Bukkit.getPlayer(args[3]) != null) {
-                     hero = HeroesSkillTree.heroes.getCharacterManager().getHero(Bukkit.getPlayer(args[3]));
+                     hero = WAddonCore.heroes.getCharacterManager().getHero(Bukkit.getPlayer(args[3]));
                      hst.setPlayerPoints(hero, hst.getPlayerPoints(hero) + Integer.parseInt(args[2]));
                      sender.sendMessage(Lang.TITLE.toString()+ Lang.ADMIN_SKILLPOINTS_ADD_SUCCESS.toString().replace("%player%", args[3]) + Integer.parseInt(args[2]) + ".");
                   } else {
@@ -98,7 +99,7 @@ public class SkillAdminCommand {
                      sender.sendMessage(Lang.ERROR_CONSOLE_DENIED.toString());
                      return;
                   }
-                  hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
+                  hero = WAddonCore.heroes.getCharacterManager().getHero((Player)sender);
                   hst.setPlayerPoints(hero, hst.getPlayerPoints(hero) + Integer.parseInt(args[2]));
                   sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_SKILLPOINTS_REMOVE_SUCCESS.toString().replace("%player%", "your").replace("%skillpoints%", args[2]));
                }
@@ -112,7 +113,7 @@ public class SkillAdminCommand {
                }
                if(args.length > 3) {
                   if(Bukkit.getPlayer(args[3]) != null) {
-                     hero = HeroesSkillTree.heroes.getCharacterManager().getHero(Bukkit.getPlayer(args[3]));
+                     hero = WAddonCore.heroes.getCharacterManager().getHero(Bukkit.getPlayer(args[3]));
                      hst.setPlayerPoints(hero, hst.getPlayerPoints(hero) - Integer.parseInt(args[2]));
                      sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_SKILLPOINTS_REMOVE_SUCCESS.toString().replace("%player%", args[3]).replace("%skillpoints%", args[2]));
                   } else {
@@ -123,7 +124,7 @@ public class SkillAdminCommand {
                      sender.sendMessage(Lang.ERROR_CONSOLE_DENIED.toString());
                      return;
                   }
-                  hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
+                  hero = WAddonCore.heroes.getCharacterManager().getHero((Player)sender);
                   hst.setPlayerPoints(hero, hst.getPlayerPoints(hero) - Integer.parseInt(args[2]));
                   sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_SKILLPOINTS_REMOVE_SUCCESS.toString().replace("%player%", "yourself").replace("%skillpoints%", args[2]));
                }

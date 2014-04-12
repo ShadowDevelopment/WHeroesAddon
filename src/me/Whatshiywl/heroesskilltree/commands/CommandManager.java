@@ -1,7 +1,9 @@
 package me.Whatshiywl.heroesskilltree.commands;
 
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
+import me.Wiedzmin137.wheroesaddon.AddonsFileManager;
 import me.Wiedzmin137.wheroesaddon.Lang;
+import me.Wiedzmin137.wheroesaddon.WAddonCore;
 import me.Wiedzmin137.wheroesaddon.addons.ItemGUI;
 
 import org.bukkit.command.Command;
@@ -14,8 +16,8 @@ import com.herocraftonline.heroes.characters.Hero;
 public class CommandManager implements CommandExecutor {
 	private HeroesSkillTree HST;
 	 
-	public CommandManager(HeroesSkillTree plugin) { 
-		this.HST = plugin;
+	public CommandManager(HeroesSkillTree hst) { 
+		this.HST = hst;
 	}
 	
 	@Override
@@ -30,8 +32,10 @@ public class CommandManager implements CommandExecutor {
 							case "list": SkillListCommand.skillList(HST, sender, args); break;
 							case "unlocks": SkillLockedCommand.skillList(HST, sender, args); break;
 							case "info": SkillInfoCommand.skillInfo(HST, sender, args); ; break;
-							case "gui": ItemGUI.createSkillTree(sender, HeroesSkillTree.heroes, HST); break;
+							case "gui": ItemGUI.createSkillTree(sender, WAddonCore.heroes, HST); break;
 							case "admin": SkillAdminCommand.skillAdmin(HST, sender, args); break;
+							case "save": WAddonCore.getInstance().savePlayerConfig(sender.getName()); break;
+							case "try": tryModules(sender); break;
 							default: showInfoList(sender); break;
 						} 
 					} else if (args.length == 0) {
@@ -52,7 +56,7 @@ public class CommandManager implements CommandExecutor {
 	}
 
 	private void showInfoList(CommandSender sender) {
-		Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
+		Hero hero = WAddonCore.heroes.getCharacterManager().getHero((Player)sender);
 		String skillPoints = String.valueOf(HST.getPlayerPoints(hero));
 		
 		sender.sendMessage(Lang.HELP_1.toString());
@@ -64,5 +68,11 @@ public class CommandManager implements CommandExecutor {
 		sender.sendMessage(Lang.HELP_7.toString());
 		sender.sendMessage(Lang.HELP_8.toString());
 		sender.sendMessage(Lang.INFO_SKILLPOINTS.toString().replace("%points%", skillPoints));
+	}
+	
+	private void tryModules(CommandSender sender) {
+		AddonsFileManager AFM = new AddonsFileManager(WAddonCore.getInstance());
+		String requirements = AFM.getRequirements().toString();
+		sender.sendMessage(requirements);
 	}
 }

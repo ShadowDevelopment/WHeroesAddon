@@ -4,6 +4,7 @@ import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.skill.Skill;
 
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
+import me.Wiedzmin137.wheroesaddon.WAddonCore;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -19,11 +20,11 @@ public class SkillInfoCommand {
       } else if(!(sender instanceof Player)) {
          sender.sendMessage(ChatColor.RED + "You must be in game to use this command");
       } else {
-         Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)sender);
+         Hero hero = WAddonCore.heroes.getCharacterManager().getHero((Player)sender);
          if(!hero.hasAccessToSkill(args[1])) {
             sender.sendMessage(ChatColor.RED + "You don\'t have this skill");
          } else {
-            Skill skill = HeroesSkillTree.heroes.getSkillManager().getSkill(args[1]);
+            Skill skill = WAddonCore.heroes.getSkillManager().getSkill(args[1]);
             sender.sendMessage(ChatColor.GOLD + "[HST] " + ChatColor.AQUA + skill.getName() + "\'s info:");
             if(hst.isLocked(hero, skill)) {
                sender.sendMessage(ChatColor.RED + "This skill is currently locked!");
