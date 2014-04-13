@@ -42,33 +42,36 @@
     </build>
   <repositories>
     <repository>
-      <id>bukkit-repo</id>
-      <url>http://repo.bukkit.org/content/groups/public/</url>
-    </repository>
-    <repository>
 	  <id>spigot-repo</id>
 	  <url>http://repo.md-5.net/content/groups/public/</url>
 	</repository>
-	    <repository>
-	  <id>Heroes-repo</id>
-	  <url>http://nexus.theyeticave.net/content/groups/public</url>
-	</repository>
   </repositories>
   <dependencies>
-    <dependency>
-      <groupId>org.bukkit</groupId>
-      <artifactId>bukkit</artifactId>
-      <version>1.7.2-R0.3</version>
-    </dependency>
     <dependency>
 	  <groupId>org.spigotmc</groupId>
 	  <artifactId>spigot</artifactId>
 	  <version>1.7.2-R0.4-SNAPSHOT</version>
 	</dependency>
 	<dependency>
-      <groupId>com.herocraftonline.heroes</groupId>
-	  <artifactId>Heroes</artifactId>
-	  <version>1.5.5.1-SNAPSHOT</version>
+      <groupId>fr.xephi.authme.AuthMe</groupId>
+      <artifactId>Authme</artifactId>
+      <version>3.3.6</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/Authme-3.3.6.jar</systemPath>
     </dependency>
-   </dependencies>
+    <dependency>
+      <groupId>com.herocraftonline.heroes</groupId>
+      <artifactId>Heroes</artifactId>
+      <version>1.5.5.1</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/Heroes-1.5.5.1.jar</systemPath>
+    </dependency>
+    <dependency>
+      <groupId>me.desht.scrollingmenusign</groupId>
+      <artifactId>ScrollingMenuSign</artifactId>
+      <version>2.3.3</version>
+      <scope>system</scope>
+      <systemPath>${project.basedir}/lib/ScrollingMenuSign-2.3.3.jar</systemPath>
+    </dependency>
+  </dependencies>
 </project>

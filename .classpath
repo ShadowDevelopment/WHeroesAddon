@@ -2,10 +2,14 @@
 <classpath>
 	<classpathentry excluding="lib" kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="lib/AuthMe.jar"/>
-	<classpathentry kind="lib" path="lib/Heroes 1.7.4.jar"/>
-	<classpathentry kind="lib" path="lib/ScrollingMenuSign.jar"/>
-	<classpathentry kind="lib" path="lib/Spigot 1.7.2.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Marek/Documents/Eclipse/Lib/ScrollingMenuSign.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Marek/Documents/Eclipse/Spigot 1.7.2.jar"/>
 	<classpathentry kind="lib" path="C:/Users/Marek/Desktop/ChestCommands.jar" sourcepath="C:/Users/Marek/Desktop/ChestCommands.src.zip"/>
+	<classpathentry kind="lib" path="C:/Users/Marek/Documents/Eclipse/Lib/AuthMe.jar"/>
+	<classpathentry kind="lib" path="C:/Users/Marek/Documents/Eclipse/Lib/Heroes 1.7.4.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:file:/C:/Users/Marek/Documents/Eclipse/Heroes-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
