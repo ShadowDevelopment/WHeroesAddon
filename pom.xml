@@ -53,7 +53,7 @@
 	  <version>1.7.2-R0.4-SNAPSHOT</version>
 	</dependency>
 	<dependency>
-      <groupId>fr.xephi.authme.AuthMe</groupId>
+      <groupId>fr.xephi.authme</groupId>
       <artifactId>Authme</artifactId>
       <version>3.3.6</version>
       <scope>system</scope>
