@@ -16,6 +16,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
+import com.gmail.filoghost.chestcommands.components.IconMenu;
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.classes.HeroClass;
@@ -25,6 +26,8 @@ import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 
 public class ItemGUI implements Listener {
 	public static SMSHandler smsHandler;
+//	private int skillAmount;
+//	private IconMenu SkillList;
     
 	public ItemGUI(ScrollingMenuSign sms) {
 		smsHandler = sms.getHandler();
@@ -36,6 +39,28 @@ public class ItemGUI implements Listener {
 			menu.setAutosave(autosave);
 		}
 	}
+	
+//	public void createSkillList() {
+//		SkillList = new IconMenu("HeroesSkillList", "HeroesSkillList", 1);	
+//	}
+//
+//	public int countSkillAmount(CommandSender sender) {
+//        Hero commandSendingHero = WAddonCore.heroes.getCharacterManager().getHero((Player) sender);
+//        HeroClass hc = commandSendingHero.getHeroClass();
+//        
+//        for (String skillNames : hc.getSkillNames()) {
+//            Skill skill = WAddonCore.heroes.getSkillManager().getSkill(skillNames);
+//            if (skill instanceof ActiveSkill) {
+//            	if (!(skill.getIdentifiers().length == 0)) {
+//            		skillAmount++;
+//            	} else {
+//            		WAddonCore.Log.severe(Lang.GUI_INVAILD_SKILLS.toString().replace("%skill%", skillNames));
+//            	}
+//            }
+//        }
+//        //int lineAmount = skillAmount % 9;
+//        return skillAmount;
+//	}
 
 	public static void createSkillTree(CommandSender sender, Heroes plugin, HeroesSkillTree hst) {
     	//TODO cleanup. Some things and change some names
