@@ -57,7 +57,7 @@
       <artifactId>Authme</artifactId>
       <version>3.3.6</version>
       <scope>system</scope>
-      <systemPath>${project.basedir}/lib/Authme-3.3.6.jar</systemPath>
+      <systemPath>${project.basedir}/lib/AuthMe-3.3.6.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>com.herocraftonline.heroes</groupId>
