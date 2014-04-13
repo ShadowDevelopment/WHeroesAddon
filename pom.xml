@@ -50,27 +50,17 @@
     <dependency>
       <groupId>org.bukkit</groupId>
       <artifactId>bukkit</artifactId>
-      <version>1.6.4-R2.0</version>
+      <version>1.7.2-R0.3</version>
     </dependency>
-	<dependency>
-      <groupId>com.herocraftonline.heroes</groupId>
-	  <artifactId>Heroes</artifactId>
-	  <version>1.5.5.1-SNAPSHOT</version>
-	  <exclusions>
-		<exclusion>
-		  <artifactId>bukkit</artifactId>
-		  <groupId>org.bukkit</groupId>
-		</exclusion>
-	    <exclusion>
-	      <artifactId>HeroChat</artifactId>
-		  <groupId>com.dthielke.herochat</groupId>
-		</exclusion>
- 	  </exclusions>
-    </dependency>
-	<dependency>
+    <dependency>
 	  <groupId>org.spigotmc</groupId>
 	  <artifactId>spigot</artifactId>
 	  <version>1.7.2-R0.4-SNAPSHOT</version>
-	  </dependency>
+	</dependency>
+	<dependency>
+      <groupId>com.theyeticave.nexus</groupId>
+	  <artifactId>Heroes</artifactId>
+	  <version>1.5.5.1-SNAPSHOT</version>
+    </dependency>
    </dependencies>
 </project>
