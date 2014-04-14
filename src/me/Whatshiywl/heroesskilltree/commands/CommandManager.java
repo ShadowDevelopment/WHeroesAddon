@@ -1,7 +1,7 @@
 package me.Whatshiywl.heroesskilltree.commands;
 
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
-import me.Wiedzmin137.wheroesaddon.AddonsFileManager;
+import me.Wiedzmin137.wheroesaddon.Module;
 import me.Wiedzmin137.wheroesaddon.Lang;
 import me.Wiedzmin137.wheroesaddon.WAddonCore;
 import me.Wiedzmin137.wheroesaddon.addons.ItemGUI;
@@ -71,7 +71,7 @@ public class CommandManager implements CommandExecutor {
 	}
 	
 	private void tryModules(CommandSender sender) {
-		AddonsFileManager AFM = new AddonsFileManager(WAddonCore.getInstance());
+		Module AFM = new Module(WAddonCore.getInstance());
 		String requirements = AFM.getRequirements().toString();
 		sender.sendMessage(requirements);
 	}

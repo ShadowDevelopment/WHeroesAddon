@@ -18,18 +18,16 @@ import java.util.Map.Entry;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
-public class AddonsFileManager {	
-    private Map<String, Requirement> requirements;
-    private Map<String, Requirement> identifiers;
-    private Map<String, File> requirementFiles;
+public class Module {
+	public final Map<String, Requirement> modules;
+    private Map<String, File> moduleFiles;
     private final WAddonCore plugin;
     private final File dir;
     private final ClassLoader classLoader;
 
-    public AddonsFileManager(WAddonCore plugin) {
-    	requirements = new LinkedHashMap<String, Requirement>();
-    	identifiers = new HashMap<String, Requirement>();
-    	requirementFiles = new HashMap<String, File>();
+    public Module(WAddonCore plugin) {
+    	modules = new LinkedHashMap<String, Requirement>();
+    	moduleFiles = new HashMap<String, File>();
     	this.plugin = plugin;
     	dir = new File(plugin.getDataFolder(), "modules");
     	dir.mkdir();
@@ -39,16 +37,18 @@ public class AddonsFileManager {
     		if (reqFile.contains(".jar")) {
     			File file = new File(dir, reqFile);
     			String name = reqFile.toLowerCase().replace(".jar", "").replace("Requirement", "");
-    			if (requirementFiles.containsKey(name)) {
-    				WAddonCore.Log.severe("Duplicate jar found! Please remove " + reqFile + " or " + requirementFiles.get(name).getName());
+    			if (moduleFiles.containsKey(name)) {
+    				WAddonCore.Log.severe("Duplicate jar found! Please remove " + reqFile + " or " + moduleFiles.get(name).getName());
     				continue;
     			}
-    			requirementFiles.put(name, file);
+    			moduleFiles.put(name, file);
     			try {
     				urls.add(file.toURI().toURL());
     			} catch (MalformedURLException e) {
     				e.printStackTrace();
     			}
+    		} else {
+                WAddonCore.Log.info("[WHeroesAddon] Requirement" + reqFile + "has been loaded");
     		}
     	}
     	ClassLoader cl = plugin.getClass().getClassLoader();
@@ -60,23 +60,23 @@ public class AddonsFileManager {
     		return null;
     	}
    	    // Only attempt to load files that exist
-        else if (!isLoaded(name) && requirementFiles.containsKey(name.toLowerCase())) {
-        	loadRequirement(name);
+        else if (!isLoaded(name) && moduleFiles.containsKey(name.toLowerCase())) {
+        	loadModule(name);
         }
-        return requirements.get(name.toLowerCase());
+        return modules.get(name.toLowerCase());
     }
     
     public Collection<Requirement> getRequirements() {
-        return Collections.unmodifiableCollection(requirements.values());
+        return Collections.unmodifiableCollection(modules.values());
     }
     
     public boolean isLoaded(String name) {
-        return requirements.containsKey(name.toLowerCase());
+        return modules.containsKey(name.toLowerCase());
     }
     
-    public Requirement loadRequirement(File file) {
+    public Requirement loadModule(File file) {
         try {
-            @SuppressWarnings("resource")
+			@SuppressWarnings("resource")
 			JarFile jarFile = new JarFile(file);
             Enumeration<JarEntry> entries = jarFile.entries();
 
@@ -86,6 +86,7 @@ public class AddonsFileManager {
                 if (element.getName().equalsIgnoreCase("addon.info")) {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(jarFile.getInputStream(element)));
                     mainClass = reader.readLine().substring(12);
+                    WAddonCore.Log.info("[WHeroesAddon] Requirement" + mainClass + "has been loaded");
                     break;
                 }
             }
@@ -95,8 +96,8 @@ public class AddonsFileManager {
                 Class<? extends Requirement> reqClass = clazz.asSubclass(Requirement.class);
                 java.lang.reflect.Constructor<? extends Requirement> ctor = reqClass.getConstructor(plugin.getClass());
                 Requirement req = ctor.newInstance(plugin);
-                req.init();
                 WAddonCore.Log.info("[WHeroesAddon] Requirement" + req.getName() + "has been loaded");
+                req.init();
                 return req;
             } else {
                 throw new Exception();
@@ -108,29 +109,29 @@ public class AddonsFileManager {
         }
     }
 
-    public void loadRequirements() {
-        for (Entry<String, File> entry : requirementFiles.entrySet()) {
+    public void loadModules() {
+        for (Entry<String, File> entry : moduleFiles.entrySet()) {
             // if the Requirement is already loaded, skip it
             if (isLoaded(entry.getKey())) {
                 continue;
             }
 
-            Requirement req = loadRequirement(entry.getValue());
+            Requirement req = loadModule(entry.getValue());
             if (req != null) {
                 addRequirement(req);
-                WAddonCore.Log.info("Requirement " + req.getName() + " Loaded");
+                WAddonCore.Log.info("Module " + req.getClass().getName() + " Loaded");
             }
         }
     }
     
-    private boolean loadRequirement(String name) {
+    private boolean loadModule(String name) {
         // If the Requirement is already loaded, don't try to load it
         if (isLoaded(name)) {
             return true;
         }
 
         // Lets try loading the Requirement file
-        Requirement req = loadRequirement(requirementFiles.get(name.toLowerCase()));
+        Requirement req = loadModule(moduleFiles.get(name.toLowerCase()));
         if (req == null) {
             return false;
         }
@@ -140,9 +141,6 @@ public class AddonsFileManager {
     }
     
     public void addRequirement(Requirement req) {
-    	requirements.put(req.getName().toLowerCase().replace("requirement", ""), req);
-    	for (String ident : req.getIdentifiers()) {
-   	        identifiers.put(ident.toLowerCase(), req);
-    	}
+    	modules.put(req.getName().toLowerCase().replace("Requirement", ""), req);
     }
 }

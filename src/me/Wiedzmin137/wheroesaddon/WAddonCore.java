@@ -33,7 +33,7 @@ public class WAddonCore extends JavaPlugin {
 	private static WAddonCore instance;
 	private ManaPotion manaPotion;
 	private ItemGUI IGUI;
-	private AddonsFileManager skillManager;
+	private Module moduleManager;
 	private final WEventListener WEventListener = new WEventListener();
 	private final ManaPotion WManaPotion = new ManaPotion();
 	private final HeroesSkillTree instanceHST = new HeroesSkillTree();
@@ -106,7 +106,8 @@ public class WAddonCore extends JavaPlugin {
 				hst.recalcPlayerPoints(hero, hero.getHeroClass());
 			}
 			getCommand("skilltree").setExecutor(new CommandManager(instanceHST));
-	        setSkillManager(new AddonsFileManager(this));
+			moduleManager = new Module(this);
+			moduleManager.loadModules();
 		}
 		
 		if ((getConfig().getBoolean("useManaPotion", true)) ) {
@@ -280,6 +281,5 @@ public class WAddonCore extends JavaPlugin {
 	public boolean isUsingSkillTree() { return useSkillTree; }
 	public static WAddonCore getInstance() { return instance; }
 
-	public AddonsFileManager getSkillManager() { return skillManager; }
-	private void setSkillManager(AddonsFileManager skillManager) { this.skillManager = skillManager; }
+	public Module getModuleManager() { return moduleManager; }
 }
