@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -24,6 +25,8 @@ public class Module {
     private final WAddonCore plugin;
     private final File dir;
     private final ClassLoader classLoader;
+    
+    public final List<Requirement> customRequirements = new LinkedList<Requirement>();
 
     public Module(WAddonCore plugin) {
     	modules = new LinkedHashMap<String, Requirement>();
@@ -48,14 +51,14 @@ public class Module {
     				e.printStackTrace();
     			}
     		} else {
-                WAddonCore.Log.info("[WHeroesAddon] Requirement" + reqFile + "has been loaded");
+                WAddonCore.Log.info("[WHeroesAddon] Requirement" + reqFile + "has not been loaded");
     		}
     	}
     	ClassLoader cl = plugin.getClass().getClassLoader();
     	classLoader = URLClassLoader.newInstance(urls.toArray(new URL[urls.size()]), cl);
     }
     
-    public Requirement getRequirement(String name) {
+    public Requirement getModules(String name) {
     	if (name == null) {
     		return null;
     	}
@@ -66,7 +69,7 @@ public class Module {
         return modules.get(name.toLowerCase());
     }
     
-    public Collection<Requirement> getRequirements() {
+    public Collection<Requirement> getModules() {
         return Collections.unmodifiableCollection(modules.values());
     }
     
@@ -86,7 +89,6 @@ public class Module {
                 if (element.getName().equalsIgnoreCase("addon.info")) {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(jarFile.getInputStream(element)));
                     mainClass = reader.readLine().substring(12);
-                    WAddonCore.Log.info("[WHeroesAddon] Requirement" + mainClass + "has been loaded");
                     break;
                 }
             }
@@ -96,7 +98,7 @@ public class Module {
                 Class<? extends Requirement> reqClass = clazz.asSubclass(Requirement.class);
                 java.lang.reflect.Constructor<? extends Requirement> ctor = reqClass.getConstructor(plugin.getClass());
                 Requirement req = ctor.newInstance(plugin);
-                WAddonCore.Log.info("[WHeroesAddon] Requirement" + req.getName() + "has been loaded");
+                customRequirements.add(req);
                 req.init();
                 return req;
             } else {
@@ -119,7 +121,6 @@ public class Module {
             Requirement req = loadModule(entry.getValue());
             if (req != null) {
                 addRequirement(req);
-                WAddonCore.Log.info("Module " + req.getClass().getName() + " Loaded");
             }
         }
     }

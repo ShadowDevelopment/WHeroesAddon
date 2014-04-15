@@ -28,5 +28,5 @@ public abstract class Requirement {
 	public void setAuthor(String author) { this.reqAuthor = author; }
 	
 	public void addData(String name) { datamap.put(name, null); }
-	
+
 }

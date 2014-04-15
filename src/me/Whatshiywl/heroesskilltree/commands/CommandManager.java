@@ -1,8 +1,12 @@
 package me.Whatshiywl.heroesskilltree.commands;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
 import me.Wiedzmin137.wheroesaddon.Module;
 import me.Wiedzmin137.wheroesaddon.Lang;
+import me.Wiedzmin137.wheroesaddon.Requirement;
 import me.Wiedzmin137.wheroesaddon.WAddonCore;
 import me.Wiedzmin137.wheroesaddon.addons.ItemGUI;
 
@@ -36,6 +40,7 @@ public class CommandManager implements CommandExecutor {
 							case "admin": SkillAdminCommand.skillAdmin(HST, sender, args); break;
 							case "save": WAddonCore.getInstance().savePlayerConfig(sender.getName()); break;
 							case "try": tryModules(sender); break;
+							case "req": tryRequirement(sender); break;
 							default: showInfoList(sender); break;
 						} 
 					} else if (args.length == 0) {
@@ -71,8 +76,30 @@ public class CommandManager implements CommandExecutor {
 	}
 	
 	private void tryModules(CommandSender sender) {
-		Module AFM = new Module(WAddonCore.getInstance());
-		String requirements = AFM.getRequirements().toString();
+		String requirements = WAddonCore.getInstance().getModuleManager().getModules().toString();
 		sender.sendMessage(requirements);
+	}
+	
+	private void tryRequirement(CommandSender sender) {
+	    Map<String, Map<String, Object>> customRequirements = new HashMap<String, Map<String, Object>>();
+		
+        for (String s : customRequirements.keySet()){
+        	Module module = WAddonCore.getInstance().getModuleManager();
+        	Requirement found = null;
+        	for (Requirement cr : module.customRequirements){
+        		if(cr.getName().equalsIgnoreCase(s)){
+        			found = cr;
+        			break;
+        		}
+        	}
+        	
+        	if(found != null){
+        		if(found.isRequirementPassed((Player)sender, customRequirements.get(s)) == false)
+        			WAddonCore.Log.warning("Nope! ;(");
+        			return;
+        	} else {
+        		WAddonCore.Log.warning("[WHeroesAddon] Player " + sender + " attempted to upgrade SkillTree but the Requirement could not be found. Does it still exist?");
+        	}
+        }
 	}
 }
