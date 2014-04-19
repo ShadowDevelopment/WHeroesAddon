@@ -1,13 +1,21 @@
-Things to added:
-	Add support for "#" character in config.yml & lang.yml
-	Add comments and documentation to all classes
-	(HARD) clean up to speed up plugin
+Add:
++ [InProgress] RequirementAPI for upgrading & unlocking skills
+* SkillTreeAPI (modules) for creating skills to anothers plugins
++ AddonsAPI (modules) for new external things (needs ideas)
+	
++ New layout of skilltrees (need ideas!)
+	
++ /skills command GUI (for LordKaizo)
++ Usage ChestCommands instead of ScrollingMenuSigns
++ New addons introducing Heroes to new technologies
    
-	(HARD) make API class instead of huge main class
-	Try to make main class WHereosAddon in Wiedzmin137 package
-	Remade HeroesSkillTree.class to be ONLY HereosSkillTree, not main class
-	Create me.Wiedzmin137.wheroesaddon.Core
-   
-	Trough-tier SkillTrees
-	Skills needing class level to upgrade
-	Support BHereosStamina
++ Through-tier SkillTrees
++ Support BHereosStamina (or BMMedievalFight)
+	
++ Add comments and documentation to all classes
++ (HARD) Clean up to speed up plugin
+	
+Fix:
+* Saving of player.yml
+* Not done RequirementAPI
+	
