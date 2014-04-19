@@ -15,6 +15,7 @@ import java.util.logging.Logger;
 
 import me.Wiedzmin137.wheroesaddon.Lang;
 import me.Wiedzmin137.wheroesaddon.WAddonCore;
+
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Listener;
@@ -25,6 +26,9 @@ public class HeroesSkillTree implements Listener {
   	= new LinkedHashMap<String, HashMap<String, HashMap<String, Integer>>>();
    private HashMap<String, HashMap<String, Integer>> playerClasses = new LinkedHashMap<String, HashMap<String, Integer>>();
    private final static Logger Log = Logger.getLogger("Minecraft");
+   
+   //public Map<String, Map<String, Object>> customRequirements = new HashMap<String, Map<String, Object>>();
+   //public final List<Requirement> customRequirements = new LinkedList<Requirement>();
 
    public List<Skill> SkillStrongParents = new ArrayList<Skill>();
    public List<Skill> SkillWeakParents = new ArrayList<Skill>();

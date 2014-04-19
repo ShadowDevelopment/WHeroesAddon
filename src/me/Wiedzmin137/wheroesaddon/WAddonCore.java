@@ -79,7 +79,7 @@ public class WAddonCore extends JavaPlugin {
 	      
 		if (IGUI != null) { IGUI.setAutosave(true); }
 	      
-		Logger.info("[WHeroesAddon] vA0.1.3 has been enabled!");
+		Logger.info("[WHeroesAddon] vA0.2 has been enabled!");
 	}
 	   
 	public void onDisable() {
@@ -207,13 +207,11 @@ public class WAddonCore extends JavaPlugin {
 			playerDataFolder.mkdir();
 		}
 		File playerFile = new File(getDataFolder() + "/data", name + ".yml");
-		String message;
 		if(!playerFile.exists()) {
 			try {
 				playerFile.createNewFile();
 			} catch (IOException ioe) {
-				message = "[HeroesSkillTree] failed to save " + name + ".yml (1)";
-				Log.severe(message);
+				ioe.printStackTrace();
 				return;
 			}
 		}
@@ -221,27 +219,36 @@ public class WAddonCore extends JavaPlugin {
 			playerConfig.load(playerFile);
 			//FIXME this is not working again...
 			
-			Iterator<String> message1 = instanceHST.getPlayerClasses().get(name).keySet().iterator();
+			if(!instanceHST.getPlayerClasses().containsKey(name)) {
+				instanceHST.getPlayerClasses().put(name, new HashMap<String, Integer>());
+			}
+			
+			WAddonCore.Log.info(playerConfig.toString());
+			
+			Iterator<String> pName = instanceHST
+					.getPlayerClasses()
+					.get(name)
+					.keySet()
+					.iterator();
 			
 			//TODO clean up those Iterator and HashMaps
 			//TODO rename var, message and e
-			while(message1.hasNext()) {
-				String e = message1.next();
-				playerConfig.set(e + ".points", instanceHST.getPlayerClasses().get(name).get(e));
-				if(instanceHST.getPlayerSkills().containsKey(name) && instanceHST.getPlayerSkills().get(name).containsKey(e)) {
-					Iterator<?> var8 = ((HashMap<?, ?>)instanceHST.getPlayerSkills().get(name).get(e)).keySet().iterator();
+			while(pName.hasNext()) {
+				String pClass = pName.next();
+				playerConfig.set(pClass + ".points", instanceHST.getPlayerClasses().get(name).get(pClass));
+				if(instanceHST.getPlayerSkills().containsKey(name) && instanceHST.getPlayerSkills().get(name).containsKey(pClass)) {
+					Iterator<?> pSkills = ((HashMap<?, ?>)instanceHST.getPlayerSkills().get(name).get(pClass)).keySet().iterator();
 
-					while(var8.hasNext()) {
-						String skillName = (String)var8.next();
-						playerConfig.set(e + ".skills." + skillName, ((HashMap<?, ?>)instanceHST.getPlayerSkills().get(name).get(e)).get(skillName));
-						Log.info(e + ".skills." + skillName);
+					while(pSkills.hasNext()) {
+						String skillName = (String)pSkills.next();
+						playerConfig.set(pClass + ".skills." + skillName, ((HashMap<?, ?>)instanceHST.getPlayerSkills().get(name).get(pClass)).get(skillName));
+						Log.info(pClass + ".skills." + skillName);
 					}
 				}
 			}
 			playerConfig.save(playerFile);
 		} catch (Exception e) {
-			message = "[HeroesSkillTree] failed to save " + name + ".yml (2)";
-			Log.severe(message);
+			e.printStackTrace();;
 		}
 	}
 	   

@@ -1,8 +1,5 @@
 package me.Whatshiywl.heroesskilltree.commands;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
 import me.Wiedzmin137.wheroesaddon.Module;
 import me.Wiedzmin137.wheroesaddon.Lang;
@@ -26,9 +23,9 @@ public class CommandManager implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-		if (sender instanceof Player) {
+//		if (sender instanceof Player) {
 			if (cmd.getName().equalsIgnoreCase("skilltree")) {
-				if (sender instanceof Player) {
+//				if (sender instanceof Player) {
 					if (args.length > 0) {
 						switch (args[0]) {
 							case "up": SkillUpCommand.skillUp(HST, sender, args); break;
@@ -40,7 +37,7 @@ public class CommandManager implements CommandExecutor {
 							case "admin": SkillAdminCommand.skillAdmin(HST, sender, args); break;
 							case "save": WAddonCore.getInstance().savePlayerConfig(sender.getName()); break;
 							case "try": tryModules(sender); break;
-							case "req": tryRequirement(sender); break;
+							//case "req": tryRequirement(sender); break;
 							default: showInfoList(sender); break;
 						} 
 					} else if (args.length == 0) {
@@ -48,15 +45,15 @@ public class CommandManager implements CommandExecutor {
 							return true;
 					}
 				}
-				return true;
-			} else if (cmd.getName().equalsIgnoreCase("choose")) {
-				ItemGUI.createClassChoose((Player)sender);
-				return true;
-			}
-		} else {
-			sender.sendMessage("There is some problem with colors in console, use that command IN game, sorry.");
-			return true;
-		}
+//				return true;
+//			} else if (cmd.getName().equalsIgnoreCase("choose")) {
+//				ItemGUI.createClassChoose((Player)sender);
+//				return true;
+//			}
+//		} else {
+//			sender.sendMessage("There is some problem with colors in console, use that command IN game, sorry.");
+//			return true;
+//		}
 		return false;
 	}
 
@@ -80,26 +77,24 @@ public class CommandManager implements CommandExecutor {
 		sender.sendMessage(requirements);
 	}
 	
-	private void tryRequirement(CommandSender sender) {
-	    Map<String, Map<String, Object>> customRequirements = new HashMap<String, Map<String, Object>>();
-		
-        for (String s : customRequirements.keySet()){
-        	Module module = WAddonCore.getInstance().getModuleManager();
-        	Requirement found = null;
-        	for (Requirement cr : module.customRequirements){
-        		if(cr.getName().equalsIgnoreCase(s)){
-        			found = cr;
-        			break;
-        		}
-        	}
-        	
-        	if(found != null){
-        		if(found.isRequirementPassed((Player)sender, customRequirements.get(s)) == false)
-        			WAddonCore.Log.warning("Nope! ;(");
-        			return;
-        	} else {
-        		WAddonCore.Log.warning("[WHeroesAddon] Player " + sender + " attempted to upgrade SkillTree but the Requirement could not be found. Does it still exist?");
-        	}
-        }
-	}
+//	private void tryRequirement(CommandSender sender) {
+//        for (String s : HST.customRequirements.keySet()){
+//        	Module module = WAddonCore.getInstance().getModuleManager();
+//        	Requirement found = null;
+//        	for (Requirement cr : module.customRequirements){
+//        		if(cr.getName().equalsIgnoreCase(s)){
+//        			found = cr;
+//        			break;
+//        		}
+//        	}
+//        	
+//        	if(found != null){
+//        		if(found.isRequirementPassed((Player)sender, HST.customRequirements.get(s)) == false)
+//        			WAddonCore.Log.warning("Nope! ;(");
+//        			return;
+//        	} else {
+//        		WAddonCore.Log.warning("[WHeroesAddon] Player " + sender + " attempted to upgrade SkillTree but the Requirement could not be found. Does it still exist?");
+//        	}
+//        }
+//	}
 }

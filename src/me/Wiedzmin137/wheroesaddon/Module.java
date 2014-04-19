@@ -26,7 +26,9 @@ public class Module {
     private final File dir;
     private final ClassLoader classLoader;
     
-    public final List<Requirement> customRequirements = new LinkedList<Requirement>();
+    //public final List<Requirement> customRequirements = new LinkedList<Requirement>();
+    public List<String> customRequirements = new LinkedList<String>();
+    public Map<String, Map<String, Object>> customRequirementsHM = new HashMap<String, Map<String, Object>>();
 
     public Module(WAddonCore plugin) {
     	modules = new LinkedHashMap<String, Requirement>();
@@ -98,7 +100,7 @@ public class Module {
                 Class<? extends Requirement> reqClass = clazz.asSubclass(Requirement.class);
                 java.lang.reflect.Constructor<? extends Requirement> ctor = reqClass.getConstructor(plugin.getClass());
                 Requirement req = ctor.newInstance(plugin);
-                customRequirements.add(req);
+                customRequirements.add(req.getName());
                 req.init();
                 return req;
             } else {
