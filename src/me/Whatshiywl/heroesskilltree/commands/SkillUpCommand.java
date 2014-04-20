@@ -120,7 +120,7 @@ public class SkillUpCommand {
 	   ConfigurationSection sec = conf.getConfigurationSection("permitted-skills." + skill + ".requirements");
 	   WAddonCore.Log.warning(file.toString());
 	   WAddonCore.Log.warning(conf.toString());
-	   WAddonCore.Log.warning(sec.toString());
+	   //WAddonCore.Log.warning(sec.toString());
 	   for (String path : sec.getKeys(false)){
 		   ConfigurationSection sec2 = sec.getConfigurationSection(path + ".data");
 		   if (sec2 != null){

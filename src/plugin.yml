@@ -2,9 +2,9 @@ name: WHeroesAddon
 main: me.Wiedzmin137.wheroesaddon.WAddonCore
 version: A0.2
 authors: [Wiedzmin137, Whatshiywl, Bednar12]
-website: https://github.com/wiedzmin137/HeroesSkillTree
+website: https://github.com/RPGDevTeam/WHeroesAddon
 description: Brings skill trees to the Heroes plugin.
-softdepend: [Heroes, ScrollingMenuSign, AuthMe]
+softdepend: [Heroes, ScrollingMenuSign, AuthMe, HolographicDisplays]
 commands:
   skilltree:
     aliases: [hst, st, wha]

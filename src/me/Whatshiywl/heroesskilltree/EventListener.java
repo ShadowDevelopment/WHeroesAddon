@@ -1,19 +1,5 @@
 package me.Whatshiywl.heroesskilltree;
 
-import com.gmail.filoghost.holograms.api.Hologram;
-import com.gmail.filoghost.holograms.api.HolographicDisplaysAPI;
-import com.herocraftonline.heroes.Heroes;
-import com.herocraftonline.heroes.api.events.ClassChangeEvent;
-import com.herocraftonline.heroes.api.events.ExperienceChangeEvent;
-import com.herocraftonline.heroes.api.events.HeroChangeLevelEvent;
-import com.herocraftonline.heroes.api.events.SkillUseEvent;
-import com.herocraftonline.heroes.characters.Hero;
-import com.herocraftonline.heroes.characters.classes.HeroClass;
-import com.herocraftonline.heroes.characters.effects.Effect;
-import com.herocraftonline.heroes.characters.skill.Skill;
-import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
-import com.herocraftonline.heroes.util.Properties;
-
 import me.Wiedzmin137.wheroesaddon.Lang;
 import me.Wiedzmin137.wheroesaddon.WAddonCore;
 
@@ -27,6 +13,20 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+
+import com.gmail.filoghost.holograms.api.Hologram;
+import com.gmail.filoghost.holograms.api.HolographicDisplaysAPI;
+import com.herocraftonline.heroes.Heroes;
+import com.herocraftonline.heroes.api.events.ClassChangeEvent;
+import com.herocraftonline.heroes.api.events.ExperienceChangeEvent;
+import com.herocraftonline.heroes.api.events.HeroChangeLevelEvent;
+import com.herocraftonline.heroes.api.events.SkillUseEvent;
+import com.herocraftonline.heroes.characters.Hero;
+import com.herocraftonline.heroes.characters.classes.HeroClass;
+import com.herocraftonline.heroes.characters.effects.Effect;
+import com.herocraftonline.heroes.characters.skill.Skill;
+import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
+import com.herocraftonline.heroes.util.Properties;
 
 public class EventListener implements Listener {
 	//TODO speed up this class
@@ -54,7 +54,7 @@ public class EventListener implements Listener {
 	  
 	@EventHandler(priority=EventPriority.LOW)
 	public void onEntityKill(ExperienceChangeEvent e) {
-	  if (plugin.areHologramsEnabled()) {
+	  if (plugin.areHologramsEnabled() && plugin.isUsingHolographicDisplays()) {
 	      Hero hero = e.getHero();
 	      Player player = hero.getPlayer();
 	      HeroClass heroClass = e.getHeroClass();
@@ -67,7 +67,7 @@ public class EventListener implements Listener {
 			  int level = Properties.getLevel(exp);
 			  double maxExperiation = Properties.getTotalExp(level + 1) - Properties.getTotalExp(level);
 			  
-			  expMessage(player, e.getLocation().subtract(0.0D, 0.5D, 0.0D), 
+			  expMessage(player, e.getLocation().subtract(0.0D, -0.5D, 0.0D), 
 					  change, maxExperiation, Math.round(current) + change);
 		  }
 	  }
@@ -80,17 +80,17 @@ public class EventListener implements Listener {
 		  final Hero hero = WAddonCore.heroes.getCharacterManager().getHero(player);
 		  HST.loadPlayerConfig(player.getName());
 		  HST.recalcPlayerPoints(hero, hero.getHeroClass());
-		  Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-			  public void run() {
-				  for (Effect effect : hero.getEffects()) {
-					  Skill skill = WAddonCore.heroes.getSkillManager().getSkill(effect.getName());
-					  if (skill != null) {
-						  if (HST.isLocked(hero, skill))
-							  hero.removeEffect(effect);
-					  }
-				  }
-			  }
-		  }, 1L);
+//		  Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+//			  public void run() {
+//				  for (Effect effect : hero.getEffects()) {
+//					  Skill skill = WAddonCore.heroes.getSkillManager().getSkill(effect.getName());
+//					  if (skill != null) {
+//						  if (HST.isLocked(hero, skill))
+//							  hero.removeEffect(effect);
+//					  }
+//				  }
+//			  }
+//		  }, 1L);
 	  }
   }
   
@@ -104,17 +104,17 @@ public class EventListener implements Listener {
 		  if (hero.getHeroClass() != event.getHeroClass()) return;
 		  hero.getPlayer().sendMessage(org.bukkit.ChatColor.GOLD + "[HST] " + org.bukkit.ChatColor.AQUA + "SkillPoints: " + HST.getPlayerPoints(hero));
     
-		  Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
-			  public void run() {
-				  for (Effect effect : hero.getEffects()) {
-					  Skill skill = WAddonCore.heroes.getSkillManager().getSkill(effect.getName());
-					  if (skill != null) {
-						  if (HST.isLocked(hero, skill))
-							  hero.removeEffect(effect);
-					  }
-				  }
-			  }
-		  }, 1L);
+//		  Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+//			  public void run() {
+//				  for (Effect effect : hero.getEffects()) {
+//					  Skill skill = WAddonCore.heroes.getSkillManager().getSkill(effect.getName());
+//					  if (skill != null) {
+//						  if (HST.isLocked(hero, skill))
+//							  hero.removeEffect(effect);
+//					  }
+//				  }
+//			  }
+//		  }, 1L);
 	  }
   }
 
@@ -129,12 +129,12 @@ public class EventListener implements Listener {
 				  boolean reset = false;
 				  if (evt.getTo().isDefault()) {
 					  reset = true;
-					  for (HeroClass hClass : WAddonCore.heroes.getClassManager().getClasses()) {
-						  if (hero.getExperience(hClass) != 0.0D) {
-							  reset = false;
-							  break;
-						  }
-					  }
+//					  for (HeroClass hClass : WAddonCore.heroes.getClassManager().getClasses()) {
+//						  if (hero.getExperience(hClass) != 0.0D) {
+//							  reset = false;
+//							  break;
+//						  }
+//					  }
 				  }
 				  if (reset) {
 					  plugin.resetPlayer(hero.getPlayer());
@@ -142,13 +142,13 @@ public class EventListener implements Listener {
 					  HST.recalcPlayerPoints(hero, evt.getTo());
 				  }
 				  
-				  for (Effect effect : hero.getEffects()) {
-					  Skill skill = WAddonCore.heroes.getSkillManager().getSkill(effect.getName());
-					  if (skill != null) {
-						  if (HST.isLocked(hero, skill))
-							  hero.removeEffect(effect);
-					  }
-				  }
+//				  for (Effect effect : hero.getEffects()) {
+//					  Skill skill = WAddonCore.heroes.getSkillManager().getSkill(effect.getName());
+//					  if (skill != null) {
+//						  if (HST.isLocked(hero, skill))
+//							  hero.removeEffect(effect);
+//					  }
+//				  }
 			  }
 		  }, 1L);
 	  }
