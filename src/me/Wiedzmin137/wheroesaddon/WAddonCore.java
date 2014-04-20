@@ -46,6 +46,7 @@ public class WAddonCore extends JavaPlugin {
 	private boolean useManaPotion = true;
 	private boolean useSkillTree = true;
 	
+	private boolean useHolographicDisplays;
     private boolean HeroesEnabled = false;
 	public static Heroes heroes = (Heroes)Bukkit.getServer().getPluginManager().getPlugin("Heroes");
 	   
@@ -76,6 +77,8 @@ public class WAddonCore extends JavaPlugin {
 		registerEvents(pm);
 		setupSMS(pm);
 		setupManaPotion();
+		
+	    useHolographicDisplays = Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays");
 	      
 		if (IGUI != null) { IGUI.setAutosave(true); }
 	      
@@ -217,22 +220,12 @@ public class WAddonCore extends JavaPlugin {
 		}
 		try {
 			playerConfig.load(playerFile);
-			//FIXME this is not working again...
 			
 			if(!instanceHST.getPlayerClasses().containsKey(name)) {
 				instanceHST.getPlayerClasses().put(name, new HashMap<String, Integer>());
 			}
-			
-			WAddonCore.Log.info(playerConfig.toString());
-			
-			Iterator<String> pName = instanceHST
-					.getPlayerClasses()
-					.get(name)
-					.keySet()
-					.iterator();
-			
-			//TODO clean up those Iterator and HashMaps
-			//TODO rename var, message and e
+
+			Iterator<String> pName = instanceHST.getPlayerClasses().get(name).keySet().iterator();
 			while(pName.hasNext()) {
 				String pClass = pName.next();
 				playerConfig.set(pClass + ".points", instanceHST.getPlayerClasses().get(name).get(pClass));
@@ -286,6 +279,7 @@ public class WAddonCore extends JavaPlugin {
 	public boolean isUsingJoinChoose() { return useJoinChoose; }
 	public boolean isUsingManaPotion() { return useManaPotion; }
 	public boolean isUsingSkillTree() { return useSkillTree; }
+	public boolean isUsingHolographicDisplays() { return useHolographicDisplays; }
 	public static WAddonCore getInstance() { return instance; }
 
 	public Module getModuleManager() { return moduleManager; }

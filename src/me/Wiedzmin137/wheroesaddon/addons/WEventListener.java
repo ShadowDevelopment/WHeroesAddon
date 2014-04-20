@@ -1,6 +1,7 @@
 package me.Wiedzmin137.wheroesaddon.addons;
 
 import me.Wiedzmin137.wheroesaddon.WAddonCore;
+import me.Wiedzmin137.wheroesaddon.addons.ItemGUI;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

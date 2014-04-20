@@ -1,5 +1,7 @@
 package me.Whatshiywl.heroesskilltree;
 
+import com.gmail.filoghost.holograms.api.Hologram;
+import com.gmail.filoghost.holograms.api.HolographicDisplaysAPI;
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.events.ClassChangeEvent;
 import com.herocraftonline.heroes.api.events.ExperienceChangeEvent;
@@ -14,7 +16,6 @@ import com.herocraftonline.heroes.util.Properties;
 
 import me.Wiedzmin137.wheroesaddon.Lang;
 import me.Wiedzmin137.wheroesaddon.WAddonCore;
-import me.Wiedzmin137.wheroesaddon.addons.Hologram;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -140,6 +141,7 @@ public class EventListener implements Listener {
 				  } else {
 					  HST.recalcPlayerPoints(hero, evt.getTo());
 				  }
+				  
 				  for (Effect effect : hero.getEffects()) {
 					  Skill skill = WAddonCore.heroes.getSkillManager().getSkill(effect.getName());
 					  if (skill != null) {
@@ -211,16 +213,16 @@ public class EventListener implements Listener {
   
   public static void expMessage(Player p, Location loc, double gained, double needed, double current) {
 	   if(gained == 0) { return; }
-	   final Hologram holo = new Hologram(
-		 Lang.HOLOGRAM_MESSAGE_EXP_GAINED.toString().replace("%gained%", String.valueOf(gained)),
-		 Lang.HOLOGRAM_MESSAGE_EXP_MAX.toString()
-		   .replace("%current%", String.valueOf(current))
-		   .replace("%needed%", String.valueOf(needed)));
-	   holo.show(p, loc);
+	   final Hologram hologram = HolographicDisplaysAPI.createHologram(WAddonCore.getInstance(), loc, 
+			Lang.HOLOGRAM_MESSAGE_EXP_GAINED.toString().replace("%gained%", String.valueOf(gained)),
+			Lang.HOLOGRAM_MESSAGE_EXP_MAX.toString()
+				   .replace("%current%", String.valueOf(current))
+				   .replace("%needed%", String.valueOf(needed)));
+
 	   Bukkit.getScheduler().scheduleSyncDelayedTask(WAddonCore.getInstance(), new BukkitRunnable() {
 		   @Override
 		   public void run() {
-			   holo.destroy();
+			   hologram.delete();
 		   }
 	   }, WAddonCore.getInstance().getHologramTime());
   }
