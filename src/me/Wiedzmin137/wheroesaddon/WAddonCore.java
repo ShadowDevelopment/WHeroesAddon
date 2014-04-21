@@ -165,8 +165,8 @@ public class WAddonCore extends JavaPlugin {
 				}
 			} catch(IOException e) {
 				e.printStackTrace();
-				Log.severe("[HeroesSkillTree] Couldn't create language file.");
-				Log.severe("[HeroesSkillTree] This is a fatal error. Now disabling");
+				Log.severe("[WHeroesAddon] Couldn't create language file.");
+				Log.severe("[WHeroesAddon] This is a fatal error. Now disabling");
 				setEnabled(false);
 			}
 		}
@@ -182,8 +182,8 @@ public class WAddonCore extends JavaPlugin {
 		try {
 			   conf.save(getLangFile());
 		   } catch(IOException e) {
-			   Log.warning("HeroesSkillTree: Failed to save lang.yml.");
-			   Log.warning("HeroesSkillTree: Report this stack trace to Wiedzmin137.");
+			   Log.warning("[WHeroesAddon] Failed to save lang.yml.");
+			   Log.warning("[WHeroesAddon] Report this stack trace to Wiedzmin137.");
 			   e.printStackTrace();
 		   }
 	   }
@@ -251,7 +251,7 @@ public class WAddonCore extends JavaPlugin {
 			try {
 				configFile.createNewFile();
 			} catch (IOException ioe) {
-				Log.severe("[HeroesSkillTree] failed to create new config.yml");
+				Log.severe("[WHeroesAddon] failed to create new config.yml");
 				return;
 			}
 		}
@@ -265,7 +265,7 @@ public class WAddonCore extends JavaPlugin {
 			useManaPotion = config.getBoolean("ManaPotion.Enabled");
 			useSkillTree = config.getBoolean("SkillTree.Enabled");
 		} catch (Exception e) {
-			Log.severe("[HeroesSkillTree] failed to load config.yml");
+			Log.severe("[WHeroesAddon] failed to load config.yml");
 		}
 	}
 	public boolean isHeroesEnabled() { return HeroesEnabled; }

@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -23,7 +24,6 @@ import com.herocraftonline.heroes.api.events.HeroChangeLevelEvent;
 import com.herocraftonline.heroes.api.events.SkillUseEvent;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.classes.HeroClass;
-import com.herocraftonline.heroes.characters.effects.Effect;
 import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 import com.herocraftonline.heroes.util.Properties;
@@ -46,7 +46,7 @@ public class EventListener implements Listener {
 	}
 	  
 	@EventHandler
-	public void onPluginDisable(org.bukkit.event.server.PluginDisableEvent event) {
+	public void onPluginDisable(PluginDisableEvent event) {
 		if (event.getPlugin().getDescription().getName().equals("Heroes")) {
 			Bukkit.getPluginManager().disablePlugin(plugin);
 		}
@@ -119,17 +119,18 @@ public class EventListener implements Listener {
   }
 
   @EventHandler(priority=EventPriority.MONITOR)
-  public void onClassChangeEvent(ClassChangeEvent event) {
+  public void onClassChangeEvent(final ClassChangeEvent event) {
 	  if (plugin.isUsingSkillTree()) {
 		  final Hero hero = event.getHero();
 		  final ClassChangeEvent evt = event;
 
+		  //FIXME error on /Hero reset
 		  Bukkit.getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
 			  public void run() {
 				  boolean reset = false;
-				  if (evt.getTo().isDefault()) {
+				  if (event.getTo().isDefault()) {
 					  reset = true;
-//					  for (HeroClass hClass : WAddonCore.heroes.getClassManager().getClasses()) {
+//					  for (HeroClass hClass : plugin.heroes.getClassManager().getClasses()) {
 //						  if (hero.getExperience(hClass) != 0.0D) {
 //							  reset = false;
 //							  break;

@@ -11,6 +11,7 @@ import com.herocraftonline.heroes.characters.effects.Effect;
 import com.herocraftonline.heroes.characters.skill.Skill;
 
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
+import me.Wiedzmin137.wheroesaddon.Lang;
 import me.Wiedzmin137.wheroesaddon.Module;
 import me.Wiedzmin137.wheroesaddon.Requirement;
 import me.Wiedzmin137.wheroesaddon.WAddonCore;
@@ -28,7 +29,7 @@ public class SkillUpCommand {
 
    public static void skillUp(HeroesSkillTree hst, CommandSender sender, String[] args) {
       if(!sender.hasPermission("skilltree.up")) {
-         sender.sendMessage(ChatColor.RED + "You don\'t have enough permissions!");
+         sender.sendMessage(Lang.ERROR_PERMISSION_DENIED.toString());
       } else if(args.length < 2) {
          sender.sendMessage(ChatColor.RED + "No skill given: /skillup (skill) [amount]");
       } else if(!(sender instanceof Player)) {
@@ -59,6 +60,11 @@ public class SkillUpCommand {
                   if(!sender.hasPermission("skilltree.override.usepoints") && testRequirements(sender)) {
                      hst.setPlayerPoints(hero, hst.getPlayerPoints(hero) - pointsToIncrease);
                   }
+                  
+//                  for (Requirement module : WAddonCore.getInstance().getModuleManager().getModules()) {
+//                	  module.executeRequirement();
+//                  }
+                  
                   hst.setSkillLevel(hero, skill, hst.getSkillLevel(hero, skill) + pointsToIncrease);
                   WAddonCore.getInstance().savePlayerConfig(sender.getName());
                   hero.addEffect(new Effect(skill, skill.getName()));
@@ -117,18 +123,22 @@ public class SkillUpCommand {
 		   e.printStackTrace();
 	   }
 	   
-	   ConfigurationSection sec = conf.getConfigurationSection("permitted-skills." + skill + ".requirements");
+	   ConfigurationSection sec = conf.getConfigurationSection("permitted-skills." + skill.getName() + ".requirements");
 	   WAddonCore.Log.warning(file.toString());
 	   WAddonCore.Log.warning(conf.toString());
-	   //WAddonCore.Log.warning(sec.toString());
-	   for (String path : sec.getKeys(false)){
-		   ConfigurationSection sec2 = sec.getConfigurationSection(path + ".data");
-		   if (sec2 != null){
-			   for (String dataPath : sec2.getKeys(false)){
-				   data.put(dataPath, sec2.get(dataPath));                  
+	   WAddonCore.Log.warning(sec.toString());
+//	   try {
+		   for (String path : sec.getKeys(false)){
+			   ConfigurationSection sec2 = sec.getConfigurationSection(path + ".data");
+			   if (sec2 != null){
+				   for (String dataPath : sec2.getKeys(false)){
+					   data.put(dataPath, sec2.get(dataPath));                  
+				   }
 			   }
+			   module.customRequirementsHM.put(name.getName(), data);                          
 		   }
-		   module.customRequirementsHM.put(name.getName(), data);                          
-	   }
+//	   } catch (NullPointerException e) {
+//		   conf.createSection("permitted-skills." + skill + ".requirements");
+//	   }
    }
 }

@@ -1,9 +1,7 @@
 package me.Whatshiywl.heroesskilltree.commands;
 
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
-import me.Wiedzmin137.wheroesaddon.Module;
 import me.Wiedzmin137.wheroesaddon.Lang;
-import me.Wiedzmin137.wheroesaddon.Requirement;
 import me.Wiedzmin137.wheroesaddon.WAddonCore;
 import me.Wiedzmin137.wheroesaddon.addons.ItemGUI;
 
@@ -23,9 +21,8 @@ public class CommandManager implements CommandExecutor {
 	
 	@Override
 	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
-//		if (sender instanceof Player) {
+		if (sender instanceof Player) {
 			if (cmd.getName().equalsIgnoreCase("skilltree")) {
-//				if (sender instanceof Player) {
 					if (args.length > 0) {
 						switch (args[0]) {
 							case "up": SkillUpCommand.skillUp(HST, sender, args); break;
@@ -44,16 +41,14 @@ public class CommandManager implements CommandExecutor {
 							showInfoList(sender);
 							return true;
 					}
+				} else if (cmd.getName().equalsIgnoreCase("choose")) {
+					ItemGUI.createClassChoose((Player)sender);
+					return true;
 				}
-//				return true;
-//			} else if (cmd.getName().equalsIgnoreCase("choose")) {
-//				ItemGUI.createClassChoose((Player)sender);
-//				return true;
-//			}
-//		} else {
-//			sender.sendMessage("There is some problem with colors in console, use that command IN game, sorry.");
-//			return true;
-//		}
+		} else {
+			sender.sendMessage("There is some problem with colors in console, use that command IN game, sorry.");
+			return true;
+		}
 		return false;
 	}
 

@@ -30,7 +30,7 @@ public class SkillAdminCommand {
                   hst.setPlayerPoints(hero, 0);
                } else {
                   if(!(sender instanceof Player)) {
-                	 sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_CONSOLE_DENIED);
+                	 sender.sendMessage("[WHeroesAddon] You must be in game to use this command!");
                      return;
                   }
                   hero = WAddonCore.heroes.getCharacterManager().getHero((Player)sender);
@@ -51,7 +51,7 @@ public class SkillAdminCommand {
                   }
                } else {
                   if(!(sender instanceof Player)) {
-                     sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_CONSOLE_DENIED.toString().replace("%player%", args[2]));
+                     sender.sendMessage("[WHeroesAddon] You must be in game to use this command!");
                      return;
                   }
                   WAddonCore.getInstance().resetPlayer((Player)sender);
@@ -74,7 +74,7 @@ public class SkillAdminCommand {
                   }
                } else {
             	   if(!(sender instanceof Player)) {
-            		   sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_CONSOLE_DENIED);
+            		   sender.sendMessage("[WHeroesAddon] You must be in game to use this command!");
             		   return;
             	   }
             	   hero = WAddonCore.heroes.getCharacterManager().getHero((Player)sender);
@@ -90,18 +90,22 @@ public class SkillAdminCommand {
                   if(Bukkit.getPlayer(args[3]) != null) {
                      hero = WAddonCore.heroes.getCharacterManager().getHero(Bukkit.getPlayer(args[3]));
                      hst.setPlayerPoints(hero, hst.getPlayerPoints(hero) + Integer.parseInt(args[2]));
-                     sender.sendMessage(Lang.TITLE.toString()+ Lang.ADMIN_SKILLPOINTS_ADD_SUCCESS.toString().replace("%player%", args[3]) + Integer.parseInt(args[2]) + ".");
+                     sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_SKILLPOINTS_ADD_SUCCESS.toString().replace("%player%", args[3]).replace("%skillpoints%", args[2]));
                   } else {
                      sender.sendMessage(Lang.ERROR_PLAYER_OFFLINE.toString().replace("%player%", args[2]));
                   }
                } else {
                   if(!(sender instanceof Player)) {
-                     sender.sendMessage(Lang.ERROR_CONSOLE_DENIED.toString());
+                     sender.sendMessage("[WHeroesAddon] You must be in game to use this command!");
                      return;
                   }
-                  hero = WAddonCore.heroes.getCharacterManager().getHero((Player)sender);
-                  hst.setPlayerPoints(hero, hst.getPlayerPoints(hero) + Integer.parseInt(args[2]));
-                  sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_SKILLPOINTS_REMOVE_SUCCESS.toString().replace("%player%", "your").replace("%skillpoints%", args[2]));
+                  try {
+                      hero = WAddonCore.heroes.getCharacterManager().getHero((Player)sender);
+                	  hst.setPlayerPoints(hero, hst.getPlayerPoints(hero) + Integer.parseInt(args[2]));
+                      sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_SKILLPOINTS_ADD_SUCCESS.toString().replace("%player%", "your").replace("%skillpoints%", args[2]));
+                  } catch (NumberFormatException e) {
+                	  sender.sendMessage("The last argument must be number!");
+                  }
                }
 
             }
@@ -121,7 +125,7 @@ public class SkillAdminCommand {
                   }
                } else {
                   if(!(sender instanceof Player)) {
-                     sender.sendMessage(Lang.ERROR_CONSOLE_DENIED.toString());
+                     sender.sendMessage("[WHeroesAddon] You must be in game to use this command!");
                      return;
                   }
                   hero = WAddonCore.heroes.getCharacterManager().getHero((Player)sender);

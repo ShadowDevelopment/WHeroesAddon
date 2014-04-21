@@ -101,7 +101,6 @@ public class Module {
                 java.lang.reflect.Constructor<? extends Requirement> ctor = reqClass.getConstructor(plugin.getClass());
                 Requirement req = ctor.newInstance(plugin);
                 customRequirements.add(req.getName());
-                req.init();
                 return req;
             } else {
                 throw new Exception();

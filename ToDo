@@ -42,6 +42,7 @@ Add:
 + (HARD) Clean up to speed up plugin
 	As clean up may be easy, speed up no. I'll try to make it as speed
 	as it really possible. Advanced skilltrees will not be so expansive.
++ Take care about encapsulation SkillTree HashMaps.
 	
 + New UUID support;
 	I don't know how it will be looks like.
@@ -52,8 +53,8 @@ Add:
 + Move pom.xml somewhere, delete .settings and .project
 
 Fix:
-* Saving of player.yml
-	New problem, need to quick resolve it.
+* Loading of player.yml
+	New problem, created on separation HST, need to quick resolve it.
 * Not done RequirementAPI
 	There's a problem with usage it in SkillUpCommand.java. A FileConfigurations,
 	YamlConfigurations and ConfigurationSections kill me. I'm fixing this for about
