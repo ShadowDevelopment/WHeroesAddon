@@ -18,7 +18,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 
 public class ManaPotion implements Listener {
-   //FIXME it is probably not work
+   //FIXME it is not work
    //TODO add more functions for potions
    //TODO clean up
 

@@ -64,7 +64,7 @@ public class WAddonCore extends JavaPlugin {
         setupHeroes();
 
         if (!isHeroesEnabled()) {
-            Log.warning("[WHeroesAddon] Requires Heroes to run, please download it");
+            Log.warning("[WHeroesAddon] Requires Heroes to run for now, please download it");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
@@ -82,7 +82,7 @@ public class WAddonCore extends JavaPlugin {
 	      
 		if (IGUI != null) { IGUI.setAutosave(true); }
 	      
-		Logger.info("[WHeroesAddon] vA0.2 has been enabled!");
+		Logger.info("[WHeroesAddon] vA0.2.1 has been enabled!");
 	}
 	   
 	public void onDisable() {
