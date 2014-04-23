@@ -55,9 +55,13 @@ Add:
 Fix:
 * Loading of player.yml
 	New problem, created on separation HST, need to quick resolve it.
+	It may be bug with HashMaps (setting it).
 * Not done RequirementAPI
 	There's a problem with usage it in SkillUpCommand.java. A FileConfigurations,
 	YamlConfigurations and ConfigurationSections kill me. I'm fixing this for about
 	3 days. If you know output, please tell me.
 * Problems created by update to 1.7.5
 	HeroesAPI was changed a bit, try to fix EventListener.
+* Fix getPlayerPoints method;
+	It is loading only player points and doesn't subtract used points
+	It may be bug with HashMaps (setting it).

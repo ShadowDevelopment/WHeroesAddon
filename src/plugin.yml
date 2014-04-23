@@ -1,6 +1,6 @@
 name: WHeroesAddon
 main: me.Wiedzmin137.wheroesaddon.WAddonCore
-version: A0.2
+version: A0.2.1
 authors: [Wiedzmin137, Whatshiywl, Bednar12]
 website: https://github.com/RPGDevTeam/WHeroesAddon
 description: Brings skill trees to the Heroes plugin.

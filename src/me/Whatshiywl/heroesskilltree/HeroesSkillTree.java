@@ -47,11 +47,11 @@ public class HeroesSkillTree implements Listener {
 	   }
 	   try {
 		   playerConfig.load(playerConfigFile);
-		   if (!getPlayerClasses().containsKey(name)) {
-			   getPlayerClasses().put(name, new HashMap<String, Integer>());
+		   if (!playerClasses.containsKey(name)) {
+			   playerClasses.put(name, new HashMap<String, Integer>());
 		   }
 		   for (String s : playerConfig.getKeys(false)) {
-			   getPlayerClasses().get(name).put(s, Integer.valueOf(playerConfig.getInt(s + ".points", 0)));
+			   playerClasses.get(name).put(s, Integer.valueOf(playerConfig.getInt(s + ".points", 0)));
 			   if (!playerSkills.containsKey(s)) {
 				   playerSkills.put(name, new HashMap<String, HashMap<String, Integer>>());
 			   }
@@ -60,8 +60,7 @@ public class HeroesSkillTree implements Listener {
 	    	    }
 	    	    if (playerConfig.getConfigurationSection(s + ".skills") != null) {
 	    	    	for (String st : playerConfig.getConfigurationSection(s + ".skills").getKeys(false)) {
-	      	      ((HashMap<String, Integer>)playerSkills.get(name).get(s))
-	      	      	.put(st, Integer.valueOf(playerConfig.getInt(s + ".skills." + st, 0)));
+	    	    		playerSkills.get(name).get(s).put(st, Integer.valueOf(playerConfig.getInt(s + ".skills." + st, 0)));
 	    	    	}
 	    	    }
 		   }
@@ -93,15 +92,15 @@ public class HeroesSkillTree implements Listener {
 	   String name = hero.getPlayer().getName();
 	   String className = hClass.getName();
 	   int points = hero.getLevel(hClass) * WAddonCore.getInstance().getPointsPerLevel();
-	   if (getPlayerClasses().get(name) == null) {
-		   getPlayerClasses().put(name, new HashMap<String, Integer>());
+	   if (playerClasses.get(name) == null) {
+		   playerClasses.put(name, new HashMap<String, Integer>());
 	   }
 	   if (hero.getPlayer().hasPermission("skilltree.override.usepoints")) {
-		   getPlayerClasses().get(name).put(className, Integer.valueOf(points));
+		   playerClasses.get(name).put(className, Integer.valueOf(points));
 		   return;
 	   	}
-	   if (getPlayerClasses().get(name).get(className) == null) {
-		   getPlayerClasses().get(name).put(className, Integer.valueOf(0));
+	   if (playerClasses.get(name).get(className) == null) {
+		   playerClasses.get(name).put(className, Integer.valueOf(0));
 		   return;
 	   }
 	   if (playerSkills.get(name) == null) {
@@ -115,30 +114,14 @@ public class HeroesSkillTree implements Listener {
 	   for (Skill skill : WAddonCore.heroes.getSkillManager().getSkills()) {
 		   String skillName = skill.getName();
 		   if (playerSkills.get(name).get(className).get(skillName) != null) {
-			   points -= (Integer)playerSkills.get(name).get(className).get(skillName).intValue();
+			   points -= playerSkills.get(name).get(className).get(skillName).intValue();
 			   if (points < 0) {
 				   WAddonCore.Log.warning("[HeroesSkillTree] " + name + "'s skills are at a too high level!");
 				   points = 0;
 			   }
 		   }
 	   }
-	   getPlayerClasses().get(name).put(className, Integer.valueOf(points));
-   }
-
-   //TODO clean up this mess
-   public int getSkillLevel(Hero hero, Skill skill) {
-	   return playerSkills.get(hero.getPlayer().getName())
-    		  != null && playerSkills
-    		  	      .get(hero.getPlayer().getName())
-    		  		  .get(hero.getHeroClass().getName())
-    		  != null && playerSkills
-    				  .get(hero.getPlayer().getName())
-    				  .get(hero.getHeroClass().getName())
-    				  .get(skill.getName())
-    	      != null ? (Integer)playerSkills
-    	    		  .get(hero.getPlayer().getName())
-    	    		  .get(hero.getHeroClass().getName())
-    	    		  .get(skill.getName()).intValue() : 0;
+	   playerClasses.get(name).put(className, Integer.valueOf(points));
    }
 
    public boolean isLocked(Hero hero, Skill skill) {
@@ -203,24 +186,40 @@ public class HeroesSkillTree implements Listener {
    }
    
    public void setPlayerPoints(Hero hero, int i) {
-	   if(getPlayerClasses().get(hero.getPlayer().getName()) == null) {
-		   getPlayerClasses().put(hero.getPlayer().getName(), new HashMap<String, Integer>());
+	   if(playerClasses.get(hero.getPlayer().getName()) == null) {
+		   playerClasses.put(hero.getPlayer().getName(), new HashMap<String, Integer>());
 	   }
-	   getPlayerClasses().get(hero.getPlayer().getName())
+	   playerClasses.get(hero.getPlayer().getName())
 	   		.put(hero.getHeroClass().getName(), Integer.valueOf(i));
    }
    
    public void setPlayerPoints(Hero hero, HeroClass hClass, int i) {
-	   if(getPlayerClasses().get(hero.getPlayer().getName()) == null) {
-		   getPlayerClasses().put(hero.getPlayer().getName(), new HashMap<String, Integer>());
+	   if(playerClasses.get(hero.getPlayer().getName()) == null) {
+		   playerClasses.put(hero.getPlayer().getName(), new HashMap<String, Integer>());
 	   }
-	   getPlayerClasses().get(hero.getPlayer().getName()).put(hClass.getName(), Integer.valueOf(i));
+	   playerClasses.get(hero.getPlayer().getName()).put(hClass.getName(), Integer.valueOf(i));
+   }
+   
+   //TODO clean up this mess
+   public int getSkillLevel(Hero hero, Skill skill) {
+	   return playerSkills.get(hero.getPlayer().getName())
+    		  != null && playerSkills
+    		  	      .get(hero.getPlayer().getName())
+    		  		  .get(hero.getHeroClass().getName())
+    		  != null && playerSkills
+    				  .get(hero.getPlayer().getName())
+    				  .get(hero.getHeroClass().getName())
+    				  .get(skill.getName())
+    	      != null ? (Integer)playerSkills
+    	    		  .get(hero.getPlayer().getName())
+    	    		  .get(hero.getHeroClass().getName())
+    	    		  .get(skill.getName()).intValue() : 0;
    }
    
    public int getPlayerPoints(Hero hero) {
-	   return getPlayerClasses().get(hero.getPlayer().getName()) != null && getPlayerClasses()
+	   return playerClasses.get(hero.getPlayer().getName()) != null && playerClasses
 			   .get(hero.getPlayer().getName())
-			   .get(hero.getHeroClass().getName()) != null ? ((Integer)getPlayerClasses()
+			   .get(hero.getHeroClass().getName()) != null ? ((Integer)playerClasses
 					   .get(hero.getPlayer().getName())
 					   .get(hero.getHeroClass().getName())).intValue() : 0;
    }
@@ -269,14 +268,5 @@ public class HeroesSkillTree implements Listener {
 		   }
 	   }
 	   return null;
-   }
-
-   //TODO fix encapsulation by using more those methods.
-   public HashMap<String, HashMap<String, Integer>> getPlayerClasses() { return playerClasses; }
-   public void setPlayerClasses(HashMap<String, HashMap<String, Integer>> playerClasses) { this.playerClasses = playerClasses;  }
-
-   public HashMap<String, HashMap<String, HashMap<String, Integer>>> getPlayerSkills() { return playerSkills; }
-   public void setPlayerSkills(HashMap<String, HashMap<String, HashMap<String, Integer>>> playerSkills) { 
-	   this.playerSkills = playerSkills; 
    }
 }

@@ -56,8 +56,8 @@ public class SkillUpCommand {
                } else if(hst.isLocked(hero, skill) && !hst.canUnlock(hero, skill)) {
                   sender.sendMessage(ChatColor.RED + "You can\'t unlock this skill! /skillinfo (skill) to see requirements.");
                } else {
-            	  getCustomRequirements(sender, args);
-                  if(!sender.hasPermission("skilltree.override.usepoints") && testRequirements(sender)) {
+            	  //getCustomRequirements(sender, args);
+                  if(!sender.hasPermission("skilltree.override.usepoints") /*&& testRequirements(sender)*/) {
                      hst.setPlayerPoints(hero, hst.getPlayerPoints(hero) - pointsToIncrease);
                   }
                   
@@ -126,7 +126,7 @@ public class SkillUpCommand {
 	   ConfigurationSection sec = conf.getConfigurationSection("permitted-skills." + skill.getName() + ".requirements");
 	   WAddonCore.Log.warning(file.toString());
 	   WAddonCore.Log.warning(conf.toString());
-	   WAddonCore.Log.warning(sec.toString());
+	   //WAddonCore.Log.warning(sec.toString());
 //	   try {
 		   for (String path : sec.getKeys(false)){
 			   ConfigurationSection sec2 = sec.getConfigurationSection(path + ".data");

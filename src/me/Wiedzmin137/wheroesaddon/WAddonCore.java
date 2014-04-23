@@ -99,24 +99,23 @@ public class WAddonCore extends JavaPlugin {
 	}
 	
 	private void registerEvents(PluginManager pm) {
-		Plugin p = pm.getPlugin("AuthMe");
-		
 		if (isUsingSkillTree()) {
 			pm.registerEvents(HEventListener, this);
 			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+				WAddonCore.Log.info(player.toString());
 				Hero hero = heroes.getCharacterManager().getHero(player);
 				HeroesSkillTree hst = new HeroesSkillTree();
 				hst.recalcPlayerPoints(hero, hero.getHeroClass());
 			}
 			getCommand("skilltree").setExecutor(new CommandManager(instanceHST));
-			moduleManager = new Module(this);
-			moduleManager.loadModules();
+			//moduleManager = new Module(this);
+			//moduleManager.loadModules();
 		}
 		
-		if ((getConfig().getBoolean("useManaPotion", true)) ) {
+		if (getConfig().getBoolean("useManaPotion", true)) {
 			pm.registerEvents(WManaPotion, this);
 		}
-		if ((getConfig().getBoolean("useJoinChoose", true)) && (p.isEnabled())) {	   
+		if (getConfig().getBoolean("useJoinChoose", true) && pm.getPlugin("AuthMe").isEnabled()) {	   
 			pm.registerEvents(WEventListener, this);
 			getCommand("choose").setExecutor(new CommandManager(instanceHST));
 		}
@@ -180,16 +179,16 @@ public class WAddonCore extends JavaPlugin {
 		WAddonCore.LANG = conf;
 		WAddonCore.LANG_FILE = lang;
 		try {
-			   conf.save(getLangFile());
-		   } catch(IOException e) {
-			   Log.warning("[WHeroesAddon] Failed to save lang.yml.");
-			   Log.warning("[WHeroesAddon] Report this stack trace to Wiedzmin137.");
-			   e.printStackTrace();
-		   }
-	   }
+			conf.save(getLangFile());
+		} catch(IOException e) {
+			Log.warning("[WHeroesAddon] Failed to save lang.yml.");
+			Log.warning("[WHeroesAddon] Report this stack trace to Wiedzmin137.");
+			e.printStackTrace();
+		}
+	}
 	   
 	private void saveAll() {
-		for (String s : instanceHST.getPlayerClasses().keySet()) {
+		for (String s : instanceHST.playerClasses.keySet()) {
 			savePlayerConfig(s);
 		}
 	}
@@ -197,8 +196,8 @@ public class WAddonCore extends JavaPlugin {
 	public void resetPlayer(Player player) {
 		//FIXME error on /Hero reset
 		String name = player.getName();
-		instanceHST.getPlayerSkills().put(name, instanceHST.getPlayerClasses());
-		instanceHST.getPlayerClasses().put(name, new HashMap<String, Integer>());
+		instanceHST.playerSkills.put(name, instanceHST.playerClasses);
+		instanceHST.playerClasses.put(name, new HashMap<String, Integer>());
 		instanceHST.resetPlayerSkillTree(name);
 	} 
 	   
@@ -220,21 +219,19 @@ public class WAddonCore extends JavaPlugin {
 		}
 		try {
 			playerConfig.load(playerFile);
-			
-			if(!instanceHST.getPlayerClasses().containsKey(name)) {
-				instanceHST.getPlayerClasses().put(name, new HashMap<String, Integer>());
+			if (!instanceHST.playerClasses.containsKey(name)) {
+				instanceHST.playerClasses.put(name, new HashMap<String, Integer>());
 			}
 
-			Iterator<String> pName = instanceHST.getPlayerClasses().get(name).keySet().iterator();
-			while(pName.hasNext()) {
+			Iterator<String> pName = instanceHST.playerClasses.get(name).keySet().iterator();
+			while (pName.hasNext()) {
 				String pClass = pName.next();
-				playerConfig.set(pClass + ".points", instanceHST.getPlayerClasses().get(name).get(pClass));
-				if(instanceHST.getPlayerSkills().containsKey(name) && instanceHST.getPlayerSkills().get(name).containsKey(pClass)) {
-					Iterator<?> pSkills = ((HashMap<?, ?>)instanceHST.getPlayerSkills().get(name).get(pClass)).keySet().iterator();
-
-					while(pSkills.hasNext()) {
-						String skillName = (String)pSkills.next();
-						playerConfig.set(pClass + ".skills." + skillName, ((HashMap<?, ?>)instanceHST.getPlayerSkills().get(name).get(pClass)).get(skillName));
+				playerConfig.set(pClass + ".points", instanceHST.playerClasses.get(name).get(pClass));
+				if (instanceHST.playerSkills.containsKey(name) && instanceHST.playerSkills.get(name).containsKey(pClass)) {
+					Iterator<String> pSkills = instanceHST.playerSkills.get(name).get(pClass).keySet().iterator();
+					while (pSkills.hasNext()) {
+						String skillName = pSkills.next();
+						playerConfig.set(pClass + ".skills." + skillName, instanceHST.playerSkills.get(name).get(pClass).get(skillName));
 						Log.info(pClass + ".skills." + skillName);
 					}
 				}
