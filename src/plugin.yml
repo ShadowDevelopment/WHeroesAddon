@@ -18,7 +18,6 @@ permissions:
     default: op
     children:
       skilladmin.*: true
-      skilltree.override.*: true
       skilltree.up: true
       skilltree.down: true
       skilltree.lock: true

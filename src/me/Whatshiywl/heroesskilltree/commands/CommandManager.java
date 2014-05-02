@@ -37,6 +37,7 @@ public class CommandManager implements CommandExecutor {
 											HST.recalcPlayerPoints(WAddonCore.heroes.getCharacterManager().getHero((Player)sender), 
 													WAddonCore.heroes.getCharacterManager().getHero((Player)sender).getHeroClass());
 											sender.sendMessage(HST.playerSkills.values().toString()); 
+											sender.sendMessage(HST.playerSkills.toString());
 											sender.sendMessage(HST.playerClasses.values().toString()); break;
 							//case "try": tryModules(sender); break;
 							//case "req": tryRequirement(sender); break;
@@ -72,10 +73,10 @@ public class CommandManager implements CommandExecutor {
 		sender.sendMessage(Lang.INFO_SKILLPOINTS.toString().replace("%points%", skillPoints));
 	}
 	
-	private void tryModules(CommandSender sender) {
-		String requirements = WAddonCore.getInstance().getModuleManager().getModules().toString();
-		sender.sendMessage(requirements);
-	}
+//	private void tryModules(CommandSender sender) {
+//		String requirements = WAddonCore.getInstance().getModuleManager().getModules().toString();
+//		sender.sendMessage(requirements);
+//	}
 	
 //	private void tryRequirement(CommandSender sender) {
 //        for (String s : HST.customRequirements.keySet()){

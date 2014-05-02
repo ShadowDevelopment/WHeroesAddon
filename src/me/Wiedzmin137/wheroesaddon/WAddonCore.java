@@ -53,6 +53,8 @@ public class WAddonCore extends JavaPlugin {
     public final static Logger Log = Logger.getLogger("Minecraft");
 	public static YamlConfiguration LANG;
 	public static File LANG_FILE;
+	
+	public static FileConfiguration config = new YamlConfiguration();
 
 	@Override
 	public void onEnable() {
@@ -61,7 +63,7 @@ public class WAddonCore extends JavaPlugin {
 		PluginManager pm = getServer().getPluginManager();
 		Logger Logger = getServer().getLogger();
 		
-        setupHeroes();
+        HeroesEnabled = getServer().getPluginManager().isPluginEnabled("Heroes");
 
         if (!isHeroesEnabled()) {
             Log.warning("[WHeroesAddon] Requires Heroes to run for now, please download it");
@@ -78,13 +80,18 @@ public class WAddonCore extends JavaPlugin {
 		setupSMS(pm);
 		setupManaPotion();
 		
+		prepareSkillTree(pm);
+		
 	    useHolographicDisplays = Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays");
 	      
 		if (IGUI != null) { IGUI.setAutosave(true); }
+		
+		//IGUI.getSkillPosition();
+		//IGUI.moveIntoClassFile("Wojownik");
 	      
 		Logger.info("[WHeroesAddon] vA0.2.1 has been enabled!");
 	}
-	   
+
 	public void onDisable() {
 		if (isHeroesEnabled()) {
 			if (isUsingSkillTree()) {
@@ -98,20 +105,23 @@ public class WAddonCore extends JavaPlugin {
 		instance = null;
 	}
 	
-	private void registerEvents(PluginManager pm) {
+	private void prepareSkillTree(PluginManager pm) {
 		if (isUsingSkillTree()) {
 			pm.registerEvents(HEventListener, this);
+			//FIXME this NOT work proper
 			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-				WAddonCore.Log.info(player.toString());
 				Hero hero = heroes.getCharacterManager().getHero(player);
 				HeroesSkillTree hst = new HeroesSkillTree();
+				hst.loadPlayerConfig(player.getName());
 				hst.recalcPlayerPoints(hero, hero.getHeroClass());
 			}
 			getCommand("skilltree").setExecutor(new CommandManager(instanceHST));
 			//moduleManager = new Module(this);
 			//moduleManager.loadModules();
 		}
-		
+	}
+	
+	private void registerEvents(PluginManager pm) {
 		if (getConfig().getBoolean("useManaPotion", true)) {
 			pm.registerEvents(WManaPotion, this);
 		}
@@ -128,12 +138,6 @@ public class WAddonCore extends JavaPlugin {
 			Log.info("[WHeroesAddon] ScrollingMenuSign integration is enabled; menus created");
 		} else {/*Plugin is not available*/}
 	}
-	
-    private void setupHeroes() {
-        if (getServer().getPluginManager().isPluginEnabled("Heroes")) {
-            HeroesEnabled = true;
-        }
-    }
 	
 	private void setupManaPotion() {
 		manaPotion = new ManaPotion();
@@ -193,23 +197,15 @@ public class WAddonCore extends JavaPlugin {
 		}
 	}
 	   
-	public void resetPlayer(Player player) {
-		//FIXME error on /Hero reset
-		String name = player.getName();
-		instanceHST.playerSkills.put(name, instanceHST.playerClasses);
-		instanceHST.playerClasses.put(name, new HashMap<String, Integer>());
-		instanceHST.resetPlayerSkillTree(name);
-	} 
-	   
 	
 	public void savePlayerConfig(String name) {
 		FileConfiguration playerConfig = new YamlConfiguration();
 		File playerDataFolder = new File(getDataFolder(), "data");
-		if(!playerDataFolder.exists()) {
+		if (!playerDataFolder.exists()) {
 			playerDataFolder.mkdir();
 		}
 		File playerFile = new File(getDataFolder() + "/data", name + ".yml");
-		if(!playerFile.exists()) {
+		if (!playerFile.exists()) {
 			try {
 				playerFile.createNewFile();
 			} catch (IOException ioe) {
@@ -252,7 +248,6 @@ public class WAddonCore extends JavaPlugin {
 				return;
 			}
 		}
-		FileConfiguration config = new YamlConfiguration();
 		try {
 			config.load(configFile);
 			pointsPerLevel = config.getInt("SkillTree.PointsPerLevel", 1);

@@ -44,8 +44,8 @@ public class SkillAdminCommand {
             } else {
                if(args.length == 3) {
                   if(Bukkit.getPlayer(args[2]) != null) {
-                	 WAddonCore.getInstance().resetPlayer(Bukkit.getPlayer(args[2]));
-                     sender.sendMessage(Lang.TITLE.toString() +  Lang.ADMIN_PLAYER_RESET_SUCCESS.toString().replace("%player%", args[2]));
+                	  hst.resetPlayer(Bukkit.getPlayer(args[2]));
+                	  sender.sendMessage(Lang.TITLE.toString() +  Lang.ADMIN_PLAYER_RESET_SUCCESS.toString().replace("%player%", args[2]));
                   } else {
                      sender.sendMessage(Lang.TITLE.toString() + Lang.ERROR_PLAYER_OFFLINE.toString().replace("%player", args[2]));
                   }
@@ -54,7 +54,7 @@ public class SkillAdminCommand {
                      sender.sendMessage("[WHeroesAddon] You must be in game to use this command!");
                      return;
                   }
-                  WAddonCore.getInstance().resetPlayer((Player)sender);
+                  hst.resetPlayer((Player)sender);
                   sender.sendMessage(Lang.TITLE.toString() + Lang.ADMIN_SELF_RESET_SUCCESS);
                }
             }

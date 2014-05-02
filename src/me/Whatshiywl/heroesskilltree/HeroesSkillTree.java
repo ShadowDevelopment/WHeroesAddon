@@ -11,6 +11,7 @@ import me.Wiedzmin137.wheroesaddon.WAddonCore;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
 import com.herocraftonline.heroes.characters.Hero;
@@ -20,6 +21,7 @@ import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 
 public class HeroesSkillTree implements Listener {
    public HashMap<String, FileConfiguration> hConfigs = new LinkedHashMap<String, FileConfiguration>();
+   
    public HashMap<String, HashMap<String, HashMap<String, Integer>>> playerSkills 
   	= new LinkedHashMap<String, HashMap<String, HashMap<String, Integer>>>();
    public HashMap<String, HashMap<String, Integer>> playerClasses = new LinkedHashMap<String, HashMap<String, Integer>>();
@@ -55,14 +57,15 @@ public class HeroesSkillTree implements Listener {
 			   if (!playerSkills.containsKey(s)) {
 				   playerSkills.put(name, new HashMap<String, HashMap<String, Integer>>());
 			   }
-	    	    if (!playerSkills.get(name).containsKey(s)) {
+			   if (!playerSkills.get(name).containsKey(s)) {
 	    	    	playerSkills.get(name).put(s, new HashMap<String, Integer>());
-	    	    }
-	    	    if (playerConfig.getConfigurationSection(s + ".skills") != null) {
-	    	    	for (String st : playerConfig.getConfigurationSection(s + ".skills").getKeys(false)) {
-	    	    		playerSkills.get(name).get(s).put(st, Integer.valueOf(playerConfig.getInt(s + ".skills." + st, 0)));
-	    	    	}
-	    	    }
+			   }
+			   if (playerConfig.getConfigurationSection(s + ".skills") != null) {
+				   for (String st : playerConfig.getConfigurationSection(s + ".skills").getKeys(false)) {
+					   playerSkills.get(name).get(s).put(st, Integer.valueOf(playerConfig.getInt(s + ".skills." + st, 0)));
+					   WAddonCore.Log.info("This 2 " + playerSkills + "");
+				   }
+			   }
 		   }
 	   }
 	   catch (Exception e) {
@@ -76,7 +79,7 @@ public class HeroesSkillTree implements Listener {
 		   playerFolder.mkdir();
 	   }
 	   File playerFile = new File(playerFolder, name + ".yml");
-	   if ((playerFolder.exists()) && (!playerFolder.delete())) {
+	   if (playerFolder.exists() && !playerFolder.delete()) {
 		   WAddonCore.Log.severe("[WHeroesAddon] Failed to delete new" + name + ".yml");
 		   return;
 	   }
@@ -89,6 +92,7 @@ public class HeroesSkillTree implements Listener {
    
    //TODO finish cleaning it
    public void recalcPlayerPoints(Hero hero, HeroClass hClass) {
+	   WAddonCore.Log.info("Tyy... Oszukles mnie!");
 	   String name = hero.getPlayer().getName();
 	   String className = hClass.getName();
 	   int points = hero.getLevel(hClass) * WAddonCore.getInstance().getPointsPerLevel();
@@ -97,18 +101,22 @@ public class HeroesSkillTree implements Listener {
 	   }
 	   if (hero.getPlayer().hasPermission("skilltree.override.usepoints")) {
 		   playerClasses.get(name).put(className, Integer.valueOf(points));
+		   WAddonCore.Log.info(playerClasses.values().toString() + 1);
 		   return;
-	   	}
+	   }
 	   if (playerClasses.get(name).get(className) == null) {
 		   playerClasses.get(name).put(className, Integer.valueOf(0));
+		   WAddonCore.Log.info(playerClasses.values().toString() + 2);
 		   return;
 	   }
 	   if (playerSkills.get(name) == null) {
 		   playerSkills.put(name, new HashMap<String, HashMap<String, Integer>>());
+		   WAddonCore.Log.info(playerSkills.values().toString() + 3);
 		   return;
 	   }
 	   if (playerSkills.get(name).get(className) == null) {
 		   playerSkills.get(name).put(className, new HashMap<String, Integer>());
+		   WAddonCore.Log.info(playerSkills.values().toString() + 4);
 		   return;
 	   }
 	   for (Skill skill : WAddonCore.heroes.getSkillManager().getSkills()) {
@@ -122,17 +130,26 @@ public class HeroesSkillTree implements Listener {
 		   }
 	   }
 	   playerClasses.get(name).put(className, Integer.valueOf(points));
+	   WAddonCore.Log.info("This " + playerClasses.values().toString() + "5");
    }
+   
+	public void resetPlayer(Player player) {
+		//FIXME error on /Hero reset
+		String name = player.getName();
+		playerSkills.put(name, playerClasses);
+		playerClasses.put(name, new HashMap<String, Integer>());
+		resetPlayerSkillTree(name);
+	} 
 
    public boolean isLocked(Hero hero, Skill skill) {
-	   if(skill != null && hero.canUseSkill(skill)) {
+	   if (skill != null && hero.canUseSkill(skill)) {
 		   List<String> strongParents = getStrongParentSkills(hero, skill);
 		   List<String> weakParents = getWeakParentSkills(hero, skill);
 		   boolean skillLevel = getSkillLevel(hero, skill) < 1;
 		   boolean hasStrongParents = strongParents != null && !strongParents.isEmpty();
 		   boolean hasWeakParents = weakParents != null && !weakParents.isEmpty();
 		   
-		   return skillLevel && (hasStrongParents || hasWeakParents);
+		   return skillLevel && hasStrongParents || hasWeakParents;
 	   } else {
 		   return true;
 	   }
@@ -144,14 +161,14 @@ public class HeroesSkillTree implements Listener {
    }
    
    public boolean canUnlock(Hero hero, Skill skill) {
-	   if ((!hero.hasAccessToSkill(skill)) || (!hero.canUseSkill(skill))) {
+	   if (!hero.hasAccessToSkill(skill) || !hero.canUseSkill(skill)) {
 		   return false;
 	   }
 	   List<String> strongParents = getStrongParentSkills(hero, skill);
 	   boolean hasStrongParents = (strongParents != null) && (!strongParents.isEmpty());
 	   List<String> weakParents = getWeakParentSkills(hero, skill);
 	   boolean hasWeakParents = (weakParents != null) && (!weakParents.isEmpty());
-	   if ((!hasStrongParents) && (!hasWeakParents)) {
+	   if (!hasStrongParents && !hasWeakParents) {
 		   return true;
 	   }
 	   if (hasStrongParents) {
@@ -210,7 +227,7 @@ public class HeroesSkillTree implements Listener {
     				  .get(hero.getPlayer().getName())
     				  .get(hero.getHeroClass().getName())
     				  .get(skill.getName())
-    	      != null ? (Integer)playerSkills
+    	      != null ? playerSkills
     	    		  .get(hero.getPlayer().getName())
     	    		  .get(hero.getHeroClass().getName())
     	    		  .get(skill.getName()).intValue() : 0;
@@ -219,9 +236,9 @@ public class HeroesSkillTree implements Listener {
    public int getPlayerPoints(Hero hero) {
 	   return playerClasses.get(hero.getPlayer().getName()) != null && playerClasses
 			   .get(hero.getPlayer().getName())
-			   .get(hero.getHeroClass().getName()) != null ? ((Integer)playerClasses
+			   .get(hero.getHeroClass().getName()) != null ? playerClasses
 					   .get(hero.getPlayer().getName())
-					   .get(hero.getHeroClass().getName())).intValue() : 0;
+					   .get(hero.getHeroClass().getName()).intValue() : 0;
    }
    
    public int getSkillMaxLevel(Hero hero, Skill skill) {

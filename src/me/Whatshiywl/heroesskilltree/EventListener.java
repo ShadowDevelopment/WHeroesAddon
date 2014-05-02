@@ -138,7 +138,7 @@ public class EventListener implements Listener {
 //					  }
 				  }
 				  if (reset) {
-					  plugin.resetPlayer(hero.getPlayer());
+					  HST.resetPlayer(hero.getPlayer());
 				  } else {
 					  HST.recalcPlayerPoints(hero, evt.getTo());
 				  }

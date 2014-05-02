@@ -47,3 +47,7 @@ ManaPotion:
   #Range for random mana regain amount (if regain-static is false)
   RegainMin: 1
   RegainMax: 100
+
+SkillList:
+  "1": [N, N, S, N, N, N, S, N, N]
+  "2": [N, S, N, N, N, N, N, S, N]

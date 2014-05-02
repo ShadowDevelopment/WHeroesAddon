@@ -1,5 +1,13 @@
 package me.Wiedzmin137.wheroesaddon.addons;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
 import me.Wiedzmin137.wheroesaddon.Lang;
 import me.Wiedzmin137.wheroesaddon.WAddonCore;
@@ -13,6 +21,10 @@ import me.desht.scrollingmenusign.views.SMSInventoryView;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.InvalidConfigurationException;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
 
@@ -25,6 +37,10 @@ import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 
 public class ItemGUI implements Listener {
 	public static SMSHandler smsHandler;
+	public static String[][] configTable;
+	public static ConfigurationSection something;
+	public static List<HashMap<Integer, Integer>> hashMap = new ArrayList<HashMap<Integer, Integer>>();
+	public static YamlConfiguration config;
 //	private int skillAmount;
 //	private IconMenu SkillList;
     
@@ -60,7 +76,80 @@ public class ItemGUI implements Listener {
 //        //int lineAmount = skillAmount % 9;
 //        return skillAmount;
 //	}
+	
 
+	
+	public void getSkillPosition() {
+		Set<String> cs = WAddonCore.config.getConfigurationSection("SkillList").getKeys(false);
+		for (String s : cs) {
+			WAddonCore.Log.info(s);
+			String string = "";
+			for (String scc : WAddonCore.config.getStringList("SkillList." + s)) {
+				string += scc;
+				if (scc.equals("S")) {
+					WAddonCore.Log.info(s + " " + scc);
+				} else {
+					WAddonCore.Log.info(scc);
+				}
+			}
+			int m = 0;
+			for (int i = -1; (i = string.indexOf("S", i + 1)) != -1; ) {
+				m = i + 1;
+				WAddonCore.Log.info(String.valueOf(m + " " + string));
+				HashMap<Integer, Integer> whatever = new HashMap<Integer, Integer>();
+				whatever.put(Integer.parseInt(s), m);
+				hashMap.add(whatever);
+				WAddonCore.Log.info(whatever.toString());
+				WAddonCore.Log.info(hashMap.toString());
+			}
+		}
+	}
+	
+	public void moveIntoClassFile(String hClass) {
+		File playerDataFolder = new File(WAddonCore.getInstance().getDataFolder(), "skillsExamples");
+		if(!playerDataFolder.exists()) {
+			playerDataFolder.mkdir();
+		}
+		int increase = 0; 
+		String name = String.valueOf(increase);
+		File file = new File(WAddonCore.getInstance().getDataFolder() + "/skillsExamples", hClass + ".yml");
+
+		while (file.exists()) {
+			increase++;
+			name = String.valueOf(increase);
+			file = new File(WAddonCore.getInstance().getDataFolder() + "/skillsExamples", hClass + "-" + name + ".yml");
+		}
+		if (!file.exists()) {
+			try {
+				file.createNewFile();
+				copyText(hClass, file);
+				WAddonCore.Log.info("Done");
+				return;
+
+			} catch (IOException e){
+				e.printStackTrace();
+				return;
+			}
+		}
+	}
+	
+	public void copyText(String hClass, File file) {
+			FileConfiguration exampleFile = new YamlConfiguration();
+			try {
+				exampleFile.load(file);
+			} catch (IOException | InvalidConfigurationException e) {
+				e.printStackTrace();
+			}
+			
+			File configFile = new File(WAddonCore.getInstance().getDataFolder() + "/config.yml");
+			ConfigurationSection mms = YamlConfiguration.loadConfiguration(configFile);
+			YamlConfiguration ces = config;
+			WAddonCore.Log.info("test");
+			exampleFile.setDefaults(ces);
+			exampleFile.options().copyDefaults();
+			
+	}
+	
 	public static void createSkillTree(CommandSender sender, Heroes plugin, HeroesSkillTree hst) {
     	//TODO cleanup. Some things and change some names
         SMSMenu menu = null;
