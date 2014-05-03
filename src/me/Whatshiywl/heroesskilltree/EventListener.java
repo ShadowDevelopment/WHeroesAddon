@@ -31,6 +31,7 @@ import com.herocraftonline.heroes.util.Properties;
 public class EventListener implements Listener {
 	//TODO speed up this class
 	//TODO translate messages
+	//FIXME "for" structures
 	
 	private static WAddonCore plugin;
 	private final HeroesSkillTree HST = new HeroesSkillTree();

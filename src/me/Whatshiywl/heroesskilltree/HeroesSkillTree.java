@@ -92,7 +92,8 @@ public class HeroesSkillTree implements Listener {
    
    //TODO finish cleaning it
    public void recalcPlayerPoints(Hero hero, HeroClass hClass) {
-	   WAddonCore.Log.info("Tyy... Oszukles mnie!");
+	   WAddonCore.Log.info(playerSkills.values().toString());
+	   WAddonCore.Log.info(playerClasses.values().toString());
 	   String name = hero.getPlayer().getName();
 	   String className = hClass.getName();
 	   int points = hero.getLevel(hClass) * WAddonCore.getInstance().getPointsPerLevel();
@@ -131,6 +132,8 @@ public class HeroesSkillTree implements Listener {
 	   }
 	   playerClasses.get(name).put(className, Integer.valueOf(points));
 	   WAddonCore.Log.info("This " + playerClasses.values().toString() + "5");
+	   WAddonCore.Log.info("This " + playerSkills.values().toString() + "5");
+	   //TODO timer
    }
    
 	public void resetPlayer(Player player) {

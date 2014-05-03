@@ -1,27 +1,15 @@
 package me.Whatshiywl.heroesskilltree.commands;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
 import com.herocraftonline.heroes.characters.Hero;
-import com.herocraftonline.heroes.characters.classes.HeroClass;
 import com.herocraftonline.heroes.characters.effects.Effect;
 import com.herocraftonline.heroes.characters.skill.Skill;
 
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
 import me.Wiedzmin137.wheroesaddon.Lang;
-import me.Wiedzmin137.wheroesaddon.Module;
-import me.Wiedzmin137.wheroesaddon.Requirement;
 import me.Wiedzmin137.wheroesaddon.WAddonCore;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
 public class SkillUpCommand {
@@ -83,62 +71,62 @@ public class SkillUpCommand {
       }
    }
    
-   private static boolean testRequirements(CommandSender sender) {
- 	  Module module = WAddonCore.getInstance().getModuleManager();
- 	  for (String req : module.customRequirementsHM.keySet()){
- 		  Requirement found = null;              
- 		  for (Requirement cr : module.getModules()){
- 			  if (cr.getName().equalsIgnoreCase(req)){
- 				  found = cr;
- 				  break;
- 			  }
- 		  }
-          if(found != null){
-  			 if(found.isRequirementPassed((Player)sender, module.customRequirementsHM.get(req)) == false) {
-  				 return false;
-  			 }
-          } else {
- 			  WAddonCore.Log.warning("[WAddonCore] Player " + sender + " attempted to upgrade SkillTree but the Requirement could not be found. Does it still exist?");
- 			  continue;
- 		  }
- 	  }
- 	  return true;
-   }
-   
-   private static void getCustomRequirements(CommandSender name, String[] args) {
-	   Module module = WAddonCore.getInstance().getModuleManager();
-	   Hero hero = WAddonCore.heroes.getCharacterManager().getHero((Player)name);
-	   HeroClass gc = hero.getHeroClass();
-       Skill skill = WAddonCore.heroes.getSkillManager().getSkill(args[1]);
-	   Map<String, Object> data = new HashMap<String, Object>();
-	   
-	   
-	   File file = new File(WAddonCore.heroes.getDataFolder() + "/classes/", gc.toString() + ".yml");
-	   //FileConfiguration conf = YamlConfiguration.loadConfiguration(file);
-	   
-	   FileConfiguration conf = new YamlConfiguration();
-	   try {
-		   conf.load(file);
-	   } catch (IOException | InvalidConfigurationException e) {
-		   e.printStackTrace();
-	   }
-	   
-	   ConfigurationSection sec = conf.getConfigurationSection("permitted-skills." + skill.getName() + ".requirements");
-	   WAddonCore.Log.warning(file.toString());
-	   WAddonCore.Log.warning(conf.toString());
-	   //WAddonCore.Log.warning(sec.toString());
+//   private static boolean testRequirements(CommandSender sender) {
+// 	  Module module = WAddonCore.getInstance().getModuleManager();
+// 	  for (String req : module.customRequirementsHM.keySet()){
+// 		  Requirement found = null;              
+// 		  for (Requirement cr : module.getModules()){
+// 			  if (cr.getName().equalsIgnoreCase(req)){
+// 				  found = cr;
+// 				  break;
+// 			  }
+// 		  }
+//          if(found != null){
+//  			 if(found.isRequirementPassed((Player)sender, module.customRequirementsHM.get(req)) == false) {
+//  				 return false;
+//  			 }
+//          } else {
+// 			  WAddonCore.Log.warning("[WAddonCore] Player " + sender + " attempted to upgrade SkillTree but the Requirement could not be found. Does it still exist?");
+// 			  continue;
+// 		  }
+// 	  }
+// 	  return true;
+//   }
+//   
+//   private static void getCustomRequirements(CommandSender name, String[] args) {
+//	   Module module = WAddonCore.getInstance().getModuleManager();
+//	   Hero hero = WAddonCore.heroes.getCharacterManager().getHero((Player)name);
+//	   HeroClass gc = hero.getHeroClass();
+//       Skill skill = WAddonCore.heroes.getSkillManager().getSkill(args[1]);
+//	   Map<String, Object> data = new HashMap<String, Object>();
+//	   
+//	   
+//	   File file = new File(WAddonCore.heroes.getDataFolder() + "/classes/", gc.toString() + ".yml");
+//	   //FileConfiguration conf = YamlConfiguration.loadConfiguration(file);
+//	   
+//	   FileConfiguration conf = new YamlConfiguration();
 //	   try {
-		   for (String path : sec.getKeys(false)){
-			   ConfigurationSection sec2 = sec.getConfigurationSection(path + ".data");
-			   if (sec2 != null){
-				   for (String dataPath : sec2.getKeys(false)){
-					   data.put(dataPath, sec2.get(dataPath));                  
-				   }
-			   }
-			   module.customRequirementsHM.put(name.getName(), data);                          
-		   }
-//	   } catch (NullPointerException e) {
-//		   conf.createSection("permitted-skills." + skill + ".requirements");
+//		   conf.load(file);
+//	   } catch (IOException | InvalidConfigurationException e) {
+//		   e.printStackTrace();
 //	   }
-   }
+//	   
+//	   ConfigurationSection sec = conf.getConfigurationSection("permitted-skills." + skill.getName() + ".requirements");
+//	   WAddonCore.Log.warning(file.toString());
+//	   WAddonCore.Log.warning(conf.toString());
+//	   //WAddonCore.Log.warning(sec.toString());
+////	   try {
+//		   for (String path : sec.getKeys(false)){
+//			   ConfigurationSection sec2 = sec.getConfigurationSection(path + ".data");
+//			   if (sec2 != null){
+//				   for (String dataPath : sec2.getKeys(false)){
+//					   data.put(dataPath, sec2.get(dataPath));                  
+//				   }
+//			   }
+//			   module.customRequirementsHM.put(name.getName(), data);                          
+//		   }
+////	   } catch (NullPointerException e) {
+////		   conf.createSection("permitted-skills." + skill + ".requirements");
+////	   }
+//   }
 }

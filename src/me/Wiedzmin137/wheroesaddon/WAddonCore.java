@@ -77,10 +77,10 @@ public class WAddonCore extends JavaPlugin {
 		loadLang();
 	      
 		registerEvents(pm);
+		prepareSkillTree(pm);
+		
 		setupSMS(pm);
 		setupManaPotion();
-		
-		prepareSkillTree(pm);
 		
 	    useHolographicDisplays = Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays");
 	      
@@ -111,13 +111,13 @@ public class WAddonCore extends JavaPlugin {
 			//FIXME this NOT work proper
 			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
 				Hero hero = heroes.getCharacterManager().getHero(player);
-				HeroesSkillTree hst = new HeroesSkillTree();
-				hst.loadPlayerConfig(player.getName());
-				hst.recalcPlayerPoints(hero, hero.getHeroClass());
+				instanceHST.loadPlayerConfig(player.getName());
+				instanceHST.recalcPlayerPoints(hero, hero.getHeroClass());
 			}
 			getCommand("skilltree").setExecutor(new CommandManager(instanceHST));
 			//moduleManager = new Module(this);
 			//moduleManager.loadModules();
+
 		}
 	}
 	
