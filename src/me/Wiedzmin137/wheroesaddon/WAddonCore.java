@@ -31,12 +31,12 @@ import com.herocraftonline.heroes.characters.Hero;
 public class WAddonCore extends JavaPlugin {
 	
 	private static WAddonCore instance;
-	private ManaPotion manaPotion;
+	private ManaPotion manaPotion; 
 	private ItemGUI IGUI;
 	private Module moduleManager;
+	private final static HeroesSkillTree instanceHST = new HeroesSkillTree();
 	private final WEventListener WEventListener = new WEventListener();
 	private final ManaPotion WManaPotion = new ManaPotion();
-	private final HeroesSkillTree instanceHST = new HeroesSkillTree();
 	private final EventListener HEventListener = new EventListener(this);
 	   
 	private int pointsPerLevel = 1;
@@ -70,7 +70,7 @@ public class WAddonCore extends JavaPlugin {
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
-	      
+        
 		getConfig().options().copyDefaults(true).copyHeader(true);
 		saveConfig();
 		loadConfig();
@@ -105,6 +105,16 @@ public class WAddonCore extends JavaPlugin {
 		instance = null;
 	}
 	
+	private void registerEvents(PluginManager pm) {
+		if (getConfig().getBoolean("useManaPotion", true)) {
+			pm.registerEvents(WManaPotion, this);
+		}
+		if (getConfig().getBoolean("useJoinChoose", true) && pm.getPlugin("AuthMe").isEnabled()) {	   
+			pm.registerEvents(WEventListener, this);
+			getCommand("choose").setExecutor(new CommandManager(instanceHST));
+		}
+	}
+	
 	private void prepareSkillTree(PluginManager pm) {
 		if (isUsingSkillTree()) {
 			pm.registerEvents(HEventListener, this);
@@ -118,16 +128,6 @@ public class WAddonCore extends JavaPlugin {
 			//moduleManager = new Module(this);
 			//moduleManager.loadModules();
 
-		}
-	}
-	
-	private void registerEvents(PluginManager pm) {
-		if (getConfig().getBoolean("useManaPotion", true)) {
-			pm.registerEvents(WManaPotion, this);
-		}
-		if (getConfig().getBoolean("useJoinChoose", true) && pm.getPlugin("AuthMe").isEnabled()) {	   
-			pm.registerEvents(WEventListener, this);
-			getCommand("choose").setExecutor(new CommandManager(instanceHST));
 		}
 	}
 	   
@@ -275,4 +275,5 @@ public class WAddonCore extends JavaPlugin {
 	public static WAddonCore getInstance() { return instance; }
 
 	public Module getModuleManager() { return moduleManager; }
+	public static HeroesSkillTree getSkillTree() { return instanceHST; }
 }

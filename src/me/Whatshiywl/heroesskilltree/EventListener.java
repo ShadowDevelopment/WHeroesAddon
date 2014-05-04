@@ -34,7 +34,7 @@ public class EventListener implements Listener {
 	//FIXME "for" structures
 	
 	private static WAddonCore plugin;
-	private final HeroesSkillTree HST = new HeroesSkillTree();
+	private HeroesSkillTree HST = WAddonCore.getSkillTree();
 	public EventListener(WAddonCore instance) {
 		plugin = instance;
 	}

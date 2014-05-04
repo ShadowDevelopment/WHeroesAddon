@@ -24,7 +24,7 @@ ToDo
 	 `aAPI` - Doesn't use Heroes for Holograms, ItemGUI and other goodness?
 	 No problem. `aAPI` gives you power to manipulate those WAddon systems
 	 to compatible this with your environment. Use `stAPI` for skilltrees.<br><br>
-- [ ] [*InProgress*] `/skills` *command GUI* (for @Kainzo);<br>
+- [ ] {*InProgress*} `/skills` *command GUI* (for @Kainzo);<br>
 	 Using ChestCommands. A `/skills` commands with skill list. It
 	 will be contain optional support to using by Left click.
 	 Right click will be bind this skill (in future).
@@ -67,7 +67,7 @@ ToDo
 	 add to WHA but skilltrees will use that Stamina.
 	 - [ ] Wait for done this plugin<br><br>
 	 
-- [ ] [*HARD*] *Clean up to speed up plugin*;<br>
+- [ ] {*HARD*} *Clean up to speed up plugin*;<br>
 	 As clean up may be easy, speed up no. I'll try to make it as speed
 	 as it really possible. Advanced skilltrees will not be so expansive.
 - [ ] *New UUID support*;<br>
@@ -81,5 +81,13 @@ ___
 	 There's a problem with usage it in `SkillUpCommand.java`. A FileConfigurations,
 	 YamlConfigurations and ConfigurationSections killing me. I'm fixing this for about
 	 3 days. If you know output, please tell me.
+- [ ] *Getting PlayerPoints with OP permissions*;<br>
+	 When player type `/st` with OP permission then he have
+	 PP = his level, even if he have some points spent in skills
+	 - [ ] Find the cause
+	 
 - [ ] **Problems created by update to 1.7.5** (Heroes Effects);<br>
 	 HeroesAPI was changed a bit, try to fix `EventListener.java`.
+	 
+	 
+	 
