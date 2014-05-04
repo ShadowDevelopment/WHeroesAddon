@@ -89,7 +89,7 @@ public class WAddonCore extends JavaPlugin {
 		//IGUI.getSkillPosition();
 		//IGUI.moveIntoClassFile("Wojownik");
 	      
-		Logger.info("[WHeroesAddon] vA0.2.1 has been enabled!");
+		Logger.info("[WHeroesAddon] vA0.1.3 has been enabled!");
 	}
 
 	public void onDisable() {
