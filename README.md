@@ -81,11 +81,13 @@ ___
 	 There's a problem with usage it in `SkillUpCommand.java`. A FileConfigurations,
 	 YamlConfigurations and ConfigurationSections killing me. I'm fixing this for about
 	 3 days. If you know output, please tell me.
-- [ ] *Getting PlayerPoints with OP permissions*;<br>
+- [x] *Getting PlayerPoints with OP permissions*;<br>
 	 When player type `/st` with OP permission then he have
 	 PP = his level, even if he have some points spent in skills
-	 - [ ] Find the cause
+	 - [x] Find the cause
 	 
+- [ ] *De-levels skill to 0 gives "locked message" if player class allows to use it*
+- [ ] *Fix console* `/st` *command execution*
 - [ ] **Problems created by update to 1.7.5** (Heroes Effects);<br>
 	 HeroesAPI was changed a bit, try to fix `EventListener.java`.
 	 

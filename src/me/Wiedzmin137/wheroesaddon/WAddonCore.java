@@ -228,7 +228,6 @@ public class WAddonCore extends JavaPlugin {
 					while (pSkills.hasNext()) {
 						String skillName = pSkills.next();
 						playerConfig.set(pClass + ".skills." + skillName, instanceHST.playerSkills.get(name).get(pClass).get(skillName));
-						Log.info(pClass + ".skills." + skillName);
 					}
 				}
 			}

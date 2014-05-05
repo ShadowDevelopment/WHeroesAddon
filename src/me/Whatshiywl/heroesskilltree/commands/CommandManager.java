@@ -13,6 +13,8 @@ import org.bukkit.entity.Player;
 import com.herocraftonline.heroes.characters.Hero;
 
 public class CommandManager implements CommandExecutor {
+	//TODO TryModule
+	//TODO Support for console
 	private HeroesSkillTree HST;
 	 
 	public CommandManager(HeroesSkillTree hst) { 

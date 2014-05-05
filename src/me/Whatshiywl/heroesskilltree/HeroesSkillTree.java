@@ -63,7 +63,6 @@ public class HeroesSkillTree implements Listener {
 			   if (playerConfig.getConfigurationSection(s + ".skills") != null) {
 				   for (String st : playerConfig.getConfigurationSection(s + ".skills").getKeys(false)) {
 					   playerSkills.get(name).get(s).put(st, Integer.valueOf(playerConfig.getInt(s + ".skills." + st, 0)));
-					   WAddonCore.Log.info("This 2 " + playerSkills + "");
 				   }
 			   }
 		   }
@@ -92,8 +91,6 @@ public class HeroesSkillTree implements Listener {
    
    //TODO finish cleaning it
    public void recalcPlayerPoints(Hero hero, HeroClass hClass) {
-	   WAddonCore.Log.info(playerSkills.values().toString());
-	   WAddonCore.Log.info(playerClasses.values().toString());
 	   String name = hero.getPlayer().getName();
 	   String className = hClass.getName();
 	   int points = hero.getLevel(hClass) * WAddonCore.getInstance().getPointsPerLevel();
@@ -102,22 +99,18 @@ public class HeroesSkillTree implements Listener {
 	   }
 	   if (hero.getPlayer().hasPermission("skilltree.override.usepoints")) {
 		   playerClasses.get(name).put(className, Integer.valueOf(points));
-		   WAddonCore.Log.info(playerClasses.values().toString() + 1);
 		   return;
 	   }
 	   if (playerClasses.get(name).get(className) == null) {
 		   playerClasses.get(name).put(className, Integer.valueOf(0));
-		   WAddonCore.Log.info(playerClasses.values().toString() + 2);
 		   return;
 	   }
 	   if (playerSkills.get(name) == null) {
 		   playerSkills.put(name, new HashMap<String, HashMap<String, Integer>>());
-		   WAddonCore.Log.info(playerSkills.values().toString() + 3);
 		   return;
 	   }
 	   if (playerSkills.get(name).get(className) == null) {
 		   playerSkills.get(name).put(className, new HashMap<String, Integer>());
-		   WAddonCore.Log.info(playerSkills.values().toString() + 4);
 		   return;
 	   }
 	   for (Skill skill : WAddonCore.heroes.getSkillManager().getSkills()) {
@@ -131,9 +124,6 @@ public class HeroesSkillTree implements Listener {
 		   }
 	   }
 	   playerClasses.get(name).put(className, Integer.valueOf(points));
-	   WAddonCore.Log.info("This " + playerClasses.values().toString() + "5");
-	   WAddonCore.Log.info("This " + playerSkills.values().toString() + "5");
-	   //TODO timer
    }
    
 	public void resetPlayer(Player player) {
@@ -237,11 +227,15 @@ public class HeroesSkillTree implements Listener {
    }
    
    public int getPlayerPoints(Hero hero) {
-	   return playerClasses.get(hero.getPlayer().getName()) != null && playerClasses
-			   .get(hero.getPlayer().getName())
-			   .get(hero.getHeroClass().getName()) != null ? playerClasses
-					   .get(hero.getPlayer().getName())
-					   .get(hero.getHeroClass().getName()).intValue() : 0;
+	   if (hero.getPlayer().hasPermission("skilltree.override.usepoints")) {
+		   return -1;
+	   } else {
+		   return playerClasses.get(hero.getPlayer().getName()) != null && playerClasses
+				   .get(hero.getPlayer().getName())
+				   .get(hero.getHeroClass().getName()) != null ? playerClasses
+						   .get(hero.getPlayer().getName())
+						   .get(hero.getHeroClass().getName()).intValue() : 0;
+	   }
    }
    
    public int getSkillMaxLevel(Hero hero, Skill skill) {

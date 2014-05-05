@@ -37,11 +37,13 @@ public class SkillUpCommand {
                   return;
                }
 
-               if(hst.getPlayerPoints(hero) < pointsToIncrease) {
+               if (hst.getPlayerPoints(hero) < pointsToIncrease && !sender.hasPermission("skilltree.override.usepoints")) {
+            	  //ma punkty i nie ma uprawnienia - true
+            	  //nie ma punktow/ma uprawnienie
                   sender.sendMessage(ChatColor.RED + "You don\'t have enough SkillPoints.");
-               } else if(hst.getSkillMaxLevel(hero, skill) < hst.getSkillLevel(hero, skill) + pointsToIncrease) {
+               } else if (hst.getSkillMaxLevel(hero, skill) < hst.getSkillLevel(hero, skill) + pointsToIncrease) {
                   sender.sendMessage(ChatColor.RED + "This skill has already been mastered.");
-               } else if(hst.isLocked(hero, skill) && !hst.canUnlock(hero, skill)) {
+               } else if (hst.isLocked(hero, skill) && !hst.canUnlock(hero, skill)) {
                   sender.sendMessage(ChatColor.RED + "You can\'t unlock this skill! /skillinfo (skill) to see requirements.");
                } else {
             	  //getCustomRequirements(sender, args);
@@ -56,7 +58,7 @@ public class SkillUpCommand {
                   hst.setSkillLevel(hero, skill, hst.getSkillLevel(hero, skill) + pointsToIncrease);
                   WAddonCore.getInstance().savePlayerConfig(sender.getName());
                   hero.addEffect(new Effect(skill, skill.getName()));
-                  if(hst.isLocked(hero, skill)) {
+                  if (hst.isLocked(hero, skill)) {
                 	  sender.sendMessage(ChatColor.GOLD + "[HST] " + ChatColor.AQUA + "You have unlocked " + skill.getName() + "! Level: " + hst.getSkillLevel(hero, skill));
                   } else if(hst.isMastered(hero, skill)) {
                 	  sender.sendMessage(ChatColor.GOLD + "[HST] " + ChatColor.GREEN + "You have mastered " + skill.getName() + " at level " + hst.getSkillLevel(hero, skill) + "!");
