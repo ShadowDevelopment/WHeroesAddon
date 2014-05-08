@@ -1,5 +1,6 @@
-# Go to WHeroesAddon.jar/config.yml for info
-# Configs for WHeroesAddon
+# WHeroesAddon config by Wiedzmin137
+
+# Configs for SkillTrees
 SkillTree:
   #Are the SkillTree enabled [WARNING: Need tests!]?
   Enabled: true
@@ -30,7 +31,7 @@ Hologram:
 # If is class choosing on login is enabled (menu definied by SMS)?
 UseJoinChoose: true
 
-# Configs for ManaPotions [WARNING: It's NOT work]
+# Configs for ManaPotions [WARNING: It DOESN'T work]
 ManaPotion:
   #Are the ManaPotions enabled?
   Enabled: false

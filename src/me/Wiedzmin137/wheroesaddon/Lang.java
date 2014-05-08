@@ -31,13 +31,13 @@ public enum Lang {
     ADMIN_SKILLPOINTS_ADD_SUCCESS("Admin.SkillPointsAddSuccess", "You have added %player% %skillpoints% skillpoint(s)."),
     ADMIN_SKILLPOINTS_REMOVE_SUCCESS("Admin.SkillPointsRemoveSuccess", "You have removed %skillpoints% skillpoint(s) from %player%."),
     HELP_1("Help.1", "&9&l=._______==&1[&b&oSkillTree&1]&9&l==_______.="),
-    HELP_2("Help.2", "&9/ST Up &b<&oskill&b&b> [&oamount&b] &r- level up a skill"),
-    HELP_3("Help.3", "&9/ST Down &b<&oskill&b> [&oamount&b] &r- de-levels a skill"),
-    HELP_4("Help.4", "&9/ST List &r- list of all unlocked skills"),
-    HELP_5("Help.5", "&9/ST Unlocks &r- lists all adjacent unlockable skills"),
-    HELP_6("Help.6", "&9/ST Info &b<&oskill&b> &r- all info on a skill"),
-    HELP_7("Help.7", "&9/ST GUI &r- show upgrading skills GUI (DEV)"),
-    HELP_8("Help.8", "&9/ST Admin &b<&ocommand&b> (&oamount&b) [&oplayer&b]");
+    HELP_2("Help.2", "&b/&9ST Up &b<&oskill&b&b> [&oamount&b] &r- level up a skill"),
+    HELP_3("Help.3", "&b/&9ST Down &b<&oskill&b> [&oamount&b] &r- de-levels a skill"),
+    HELP_4("Help.4", "&b/&9ST List &r- list of all unlocked skills"),
+    HELP_5("Help.5", "&b/&9ST Unlocks &r- lists all adjacent unlockable skills"),
+    HELP_6("Help.6", "&b/&9ST Info &b<&oskill&b> &r- all info on a skill"),
+    HELP_7("Help.7", "&b/&9ST GUI &r- show upgrading skills GUI (DEV)"),
+    HELP_8("Help.8", "&b/&9ST Admin &b<&ocommand&b> (&oamount&b) [&oplayer&b]");
 
     private String path;
     private String def;

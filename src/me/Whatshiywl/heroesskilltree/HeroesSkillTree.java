@@ -4,7 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import me.Wiedzmin137.wheroesaddon.WAddonCore;
@@ -20,16 +20,36 @@ import com.herocraftonline.heroes.characters.skill.Skill;
 import com.herocraftonline.heroes.characters.skill.SkillConfigManager;
 
 public class HeroesSkillTree implements Listener {
-   public HashMap<String, FileConfiguration> hConfigs = new LinkedHashMap<String, FileConfiguration>();
+   public HashMap<String, FileConfiguration> hConfigs = new HashMap<String, FileConfiguration>();
    
    public HashMap<String, HashMap<String, HashMap<String, Integer>>> playerSkills 
-  	= new LinkedHashMap<String, HashMap<String, HashMap<String, Integer>>>();
-   public HashMap<String, HashMap<String, Integer>> playerClasses = new LinkedHashMap<String, HashMap<String, Integer>>();
+  	= new HashMap<String, HashMap<String, HashMap<String, Integer>>>();
+   
+   public HashMap<String, HashMap<String, Integer>> playerClasses = new HashMap<String, HashMap<String, Integer>>();
 
    public List<Skill> SkillStrongParents = new ArrayList<Skill>();
    public List<Skill> SkillWeakParents = new ArrayList<Skill>();
    
    //FIXME error on /hero reset (can't delete player.yml by WHA)
+   
+   public void saveSkillTree(FileConfiguration playerConfig, String name) {
+		if (!playerClasses.containsKey(name)) {
+			playerClasses.put(name, new HashMap<String, Integer>());
+		}
+
+		Iterator<String> pName = playerClasses.get(name).keySet().iterator();
+		while (pName.hasNext()) {
+			String pClass = pName.next();
+			playerConfig.set(pClass + ".points", playerClasses.get(name).get(pClass));
+			if (playerSkills.containsKey(name) && playerSkills.get(name).containsKey(pClass)) {
+				Iterator<String> pSkills = playerSkills.get(name).get(pClass).keySet().iterator();
+				while (pSkills.hasNext()) {
+					String skillName = pSkills.next();
+					playerConfig.set(pClass + ".skills." + skillName, playerSkills.get(name).get(pClass).get(skillName));
+				}
+			}
+		}
+   }
    
    public void loadPlayerConfig(String name) {
 	   FileConfiguration playerConfig = new YamlConfiguration();
@@ -63,8 +83,10 @@ public class HeroesSkillTree implements Listener {
 			   if (playerConfig.getConfigurationSection(s + ".skills") != null) {
 				   for (String st : playerConfig.getConfigurationSection(s + ".skills").getKeys(false)) {
 					   playerSkills.get(name).get(s).put(st, Integer.valueOf(playerConfig.getInt(s + ".skills." + st, 0)));
+					   return;
 				   }
 			   }
+			   return;
 		   }
 	   }
 	   catch (Exception e) {
@@ -93,7 +115,7 @@ public class HeroesSkillTree implements Listener {
    public void recalcPlayerPoints(Hero hero, HeroClass hClass) {
 	   String name = hero.getPlayer().getName();
 	   String className = hClass.getName();
-	   int points = hero.getLevel(hClass) * WAddonCore.getInstance().getPointsPerLevel();
+	   int points = hero.getLevel(hClass) * WAddonCore.getInstance().getConf().getPointsPerLevel();
 	   if (playerClasses.get(name) == null) {
 		   playerClasses.put(name, new HashMap<String, Integer>());
 	   }

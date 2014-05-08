@@ -1,0 +1,8 @@
+NAME:
+  COMMAND: 'skill: NAME'
+  NAME: '&9[+] Skill Name [+]'
+  LORE:
+    - 'This skill is awesome!'
+  ID: lava_bucket
+  POSITION-X: 1
+  POSITION-Y: 1

@@ -34,7 +34,7 @@ public class CommandManager implements CommandExecutor {
 							case "info": SkillInfoCommand.skillInfo(HST, sender, args); ; break;
 							case "gui": ItemGUI.createSkillTree(sender, WAddonCore.heroes, HST); break;
 							case "admin": SkillAdminCommand.skillAdmin(HST, sender, args); break;
-							case "save": WAddonCore.getInstance().savePlayerConfig(sender.getName()); break;
+							case "save": WAddonCore.getInstance().getConf().savePlayerConfig(sender.getName()); break;
 //							case "hashmap": HST.loadPlayerConfig(sender.getName());
 //											HST.recalcPlayerPoints(WAddonCore.heroes.getCharacterManager().getHero((Player)sender), 
 //													WAddonCore.heroes.getCharacterManager().getHero((Player)sender).getHeroClass());

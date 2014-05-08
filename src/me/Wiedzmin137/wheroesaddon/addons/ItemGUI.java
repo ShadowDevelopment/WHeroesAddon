@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
+import me.Wiedzmin137.wheroesaddon.Config;
 import me.Wiedzmin137.wheroesaddon.Lang;
 import me.Wiedzmin137.wheroesaddon.WAddonCore;
 import me.desht.scrollingmenusign.SMSException;
@@ -78,12 +79,12 @@ public class ItemGUI implements Listener {
 	
 
 	
-	public void getSkillPosition() {
-		Set<String> cs = WAddonCore.config.getConfigurationSection("SkillList").getKeys(false);
+	public void setupSkillPosition() {
+		Set<String> cs = Config.getFConfig().getConfigurationSection("SkillList").getKeys(false);
 		for (String s : cs) {
 			WAddonCore.Log.info(s);
 			String string = "";
-			for (String scc : WAddonCore.config.getStringList("SkillList." + s)) {
+			for (String scc : Config.getFConfig().getStringList("SkillList." + s)) {
 				string += scc;
 				if (scc.equals("S")) {
 					WAddonCore.Log.info(s + " " + scc);
@@ -146,7 +147,13 @@ public class ItemGUI implements Listener {
 			WAddonCore.Log.info("test");
 			exampleFile.setDefaults(ces);
 			exampleFile.options().copyDefaults();
-			
+	}
+	
+	public void getSkillPositions() {
+		for (HashMap<Integer, Integer> hMap : hashMap) {
+			config.createSection("NAME").addDefault("NAME.X", hMap.values());
+			config.createSection("NAME").addDefault("NAME.Y", hMap.keySet());
+		}
 	}
 	
 	public static void createSkillTree(CommandSender sender, Heroes plugin, HeroesSkillTree hst) {

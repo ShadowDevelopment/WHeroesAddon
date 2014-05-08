@@ -34,9 +34,10 @@ public class EventListener implements Listener {
 	//FIXME "for" structures
 	
 	private static WAddonCore plugin;
-	private HeroesSkillTree HST = WAddonCore.getSkillTree();
-	public EventListener(WAddonCore instance) {
+	private static HeroesSkillTree HST = new HeroesSkillTree();
+	public EventListener(WAddonCore instance/*, HeroesSkillTree instanceHST*/) {
 		plugin = instance;
+		//HST = instanceHST;
 	}
 	  
 	@EventHandler
@@ -55,7 +56,7 @@ public class EventListener implements Listener {
 	  
 	@EventHandler(priority=EventPriority.LOW)
 	public void onEntityKill(ExperienceChangeEvent e) {
-	  if (plugin.areHologramsEnabled() && plugin.isUsingHolographicDisplays()) {
+	  if (plugin.getConf().areHologramsEnabled() && plugin.isUsingHolographicDisplays()) {
 	      Hero hero = e.getHero();
 	      Player player = hero.getPlayer();
 	      HeroClass heroClass = e.getHeroClass();
@@ -76,7 +77,7 @@ public class EventListener implements Listener {
   
   @EventHandler
   public void onPlayerJoin(PlayerJoinEvent event) {
-	  if (plugin.isUsingSkillTree()) {
+	  if (plugin.getConf().isUsingSkillTree()) {
 		  Player player = event.getPlayer();
 		  final Hero hero = WAddonCore.heroes.getCharacterManager().getHero(player);
 		  HST.loadPlayerConfig(player.getName());
@@ -97,11 +98,11 @@ public class EventListener implements Listener {
   
   @EventHandler(priority=EventPriority.MONITOR)
   public void onLevelChangeEvent(HeroChangeLevelEvent event) {
-	  if (plugin.isUsingSkillTree()) {
+	  if (plugin.getConf().isUsingSkillTree()) {
 		  final Hero hero = event.getHero();
 		  HST.setPlayerPoints(hero, event.getHeroClass(), 
-				  HST.getPlayerPoints(hero) + (event.getTo() - event.getFrom()) * plugin.getPointsPerLevel());
-		  plugin.savePlayerConfig(hero.getPlayer().getName());
+				  HST.getPlayerPoints(hero) + (event.getTo() - event.getFrom()) * plugin.getConf().getPointsPerLevel());
+		  plugin.getConf().savePlayerConfig(hero.getPlayer().getName());
 		  if (hero.getHeroClass() != event.getHeroClass()) return;
 		  hero.getPlayer().sendMessage(org.bukkit.ChatColor.GOLD + "[HST] " + org.bukkit.ChatColor.AQUA + "SkillPoints: " + HST.getPlayerPoints(hero));
     
@@ -121,7 +122,7 @@ public class EventListener implements Listener {
 
   @EventHandler(priority=EventPriority.MONITOR)
   public void onClassChangeEvent(final ClassChangeEvent event) {
-	  if (plugin.isUsingSkillTree()) {
+	  if (plugin.getConf().isUsingSkillTree()) {
 		  final Hero hero = event.getHero();
 		  final ClassChangeEvent evt = event;
 
@@ -158,7 +159,7 @@ public class EventListener implements Listener {
   
   @EventHandler(priority=EventPriority.MONITOR)
   public void onPlayerUseSkill(SkillUseEvent event) {
-	  if (plugin.isUsingSkillTree()) {
+	  if (plugin.getConf().isUsingSkillTree()) {
 		  Hero hero = event.getHero();
 		  Skill skill = event.getSkill();
 		  if ((HST.isLocked(event.getHero(), event.getSkill())) && (!event.getPlayer().hasPermission("skilltree.override.locked"))) {
@@ -226,6 +227,10 @@ public class EventListener implements Listener {
 		   public void run() {
 			   hologram.delete();
 		   }
-	   }, WAddonCore.getInstance().getHologramTime());
+	   }, WAddonCore.getInstance().getConf().getHologramTime());
+  }
+  
+  public HeroesSkillTree getST() {
+	  return HST;
   }
 }

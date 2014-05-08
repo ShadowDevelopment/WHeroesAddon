@@ -48,7 +48,7 @@ public class SkillDownCommand {
 
                   hst.setSkillLevel(hero, skill, hst.getSkillLevel(hero, skill) - pointsDecrease);
                   hero.removeEffect(hero.getEffect(skill.getName()));
-                  WAddonCore.getInstance().savePlayerConfig(sender.getName());
+                  WAddonCore.getInstance().getConf().savePlayerConfig(sender.getName());
                   sender.sendMessage(ChatColor.GOLD + "[HST] " + ChatColor.AQUA + "You have locked " + skill.getName() + "!");
                } else {
                   if(!sender.hasPermission("skilltree.down")) {
@@ -61,7 +61,7 @@ public class SkillDownCommand {
                   }
 
                   hst.setSkillLevel(hero, skill, hst.getSkillLevel(hero, skill) - pointsDecrease);
-                  WAddonCore.getInstance().savePlayerConfig(sender.getName());
+                  WAddonCore.getInstance().getConf().savePlayerConfig(sender.getName());
                   sender.sendMessage(ChatColor.GOLD + "[HST] " + ChatColor.AQUA + skill.getName() + "leveled down: " + hst.getSkillLevel(hero, skill) + "/" + hst.getSkillMaxLevel(hero, skill));
                }
 

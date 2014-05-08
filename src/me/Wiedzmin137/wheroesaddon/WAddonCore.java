@@ -1,10 +1,6 @@
 package me.Wiedzmin137.wheroesaddon;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.logging.Logger;
 
 import me.Whatshiywl.heroesskilltree.EventListener;
@@ -17,7 +13,6 @@ import me.desht.scrollingmenusign.ScrollingMenuSign;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -29,76 +24,78 @@ import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.characters.Hero;
 
 public class WAddonCore extends JavaPlugin {
-	
 	private static WAddonCore instance;
+	
 	private ManaPotion manaPotion; 
 	private ItemGUI IGUI;
 	private Module moduleManager;
-	private final static HeroesSkillTree instanceHST = new HeroesSkillTree();
-	private final WEventListener WEventListener = new WEventListener();
-	private final ManaPotion WManaPotion = new ManaPotion();
-	private final EventListener HEventListener = new EventListener(this);
-	   
-	private int pointsPerLevel = 1;
-	private int hologram_time = 2500;
-	private boolean holograms = false;
-	private boolean useJoinChoose = false;
-	private boolean useManaPotion = true;
-	private boolean useSkillTree = true;
+    private Config configManager;
+	private HeroesSkillTree skillTree;
 	
-	private boolean useHolographicDisplays;
+	private WEventListener WEventListener = new WEventListener();
+	private ManaPotion WManaPotion = new ManaPotion();
+	private EventListener HEventListener = new EventListener(this/*, getSkillTree()*/);
+	
+	private boolean useHolographicDisplays = false;
+	private boolean useAuthMe = false;
     private boolean HeroesEnabled = false;
+    
 	public static Heroes heroes = (Heroes)Bukkit.getServer().getPluginManager().getPlugin("Heroes");
 	   
     public final static Logger Log = Logger.getLogger("Minecraft");
-	public static YamlConfiguration LANG;
-	public static File LANG_FILE;
-	
-	public static FileConfiguration config = new YamlConfiguration();
 
 	@Override
 	public void onEnable() {
 		instance = this;
-	      
 		PluginManager pm = getServer().getPluginManager();
-		Logger Logger = getServer().getLogger();
 		
         HeroesEnabled = getServer().getPluginManager().isPluginEnabled("Heroes");
-
         if (!isHeroesEnabled()) {
             Log.warning("[WHeroesAddon] Requires Heroes to run for now, please download it");
             getServer().getPluginManager().disablePlugin(this);
             return;
         }
         
-		getConfig().options().copyDefaults(true).copyHeader(true);
-		saveConfig();
-		loadConfig();
-		loadLang();
+        configManager = new Config(this);
+        try {
+            configManager.load();
+        } catch (Exception e) {
+            e.printStackTrace();
+            Log.severe("[WAddonCore] Critical config error encountered while loading. Disabling...");
+            getServer().getPluginManager().disablePlugin(this);
+            return;
+        }
+        
+        skillTree = HEventListener.getST();
+        
+		configManager.loadConfig();
+		configManager.loadLang();
+		
+	    useHolographicDisplays = Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays");
+	    useAuthMe = Bukkit.getPluginManager().isPluginEnabled("AuthMe");
 	      
 		registerEvents(pm);
 		prepareSkillTree(pm);
 		
 		setupSMS(pm);
 		setupManaPotion();
-		
-	    useHolographicDisplays = Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays");
 	      
 		if (IGUI != null) { IGUI.setAutosave(true); }
 		
 		//IGUI.getSkillPosition();
 		//IGUI.moveIntoClassFile("Wojownik");
 	      
-		Logger.info("[WHeroesAddon] vA0.1.3 has been enabled!");
+		Log.info("[WHeroesAddon] vA0.1.4 has been enabled!");
 	}
 
+	@Override
 	public void onDisable() {
 		if (isHeroesEnabled()) {
-			if (isUsingSkillTree()) {
-				saveAll();
+			if (getConf().isUsingSkillTree()) {
+				getConf().saveAll();
 			}	      
-			LANG = null;
-			LANG_FILE = null;
+			Config.langConfig = null;
+			Config.langFile = null;
 			HandlerList.unregisterAll(HEventListener);
 			HandlerList.unregisterAll(WEventListener);
 		}
@@ -109,22 +106,22 @@ public class WAddonCore extends JavaPlugin {
 		if (getConfig().getBoolean("useManaPotion", true)) {
 			pm.registerEvents(WManaPotion, this);
 		}
-		if (getConfig().getBoolean("useJoinChoose", true) && pm.getPlugin("AuthMe").isEnabled()) {	   
+		if (getConfig().getBoolean("useJoinChoose", true) && pm.isPluginEnabled("AuthMe")) {
 			pm.registerEvents(WEventListener, this);
-			getCommand("choose").setExecutor(new CommandManager(instanceHST));
+			getCommand("choose").setExecutor(new CommandManager(skillTree));
 		}
 	}
 	
 	private void prepareSkillTree(PluginManager pm) {
-		if (isUsingSkillTree()) {
+		if (getConf().isUsingSkillTree()) {
 			pm.registerEvents(HEventListener, this);
 			//FIXME this NOT work proper
 			for (Player player : Bukkit.getServer().getOnlinePlayers()) {
 				Hero hero = heroes.getCharacterManager().getHero(player);
-				instanceHST.loadPlayerConfig(player.getName());
-				instanceHST.recalcPlayerPoints(hero, hero.getHeroClass());
+				skillTree.loadPlayerConfig(player.getName());
+				skillTree.recalcPlayerPoints(hero, hero.getHeroClass());
 			}
-			getCommand("skilltree").setExecutor(new CommandManager(instanceHST));
+			getCommand("skilltree").setExecutor(new CommandManager(skillTree));
 			//moduleManager = new Module(this);
 			//moduleManager.loadModules();
 
@@ -152,127 +149,17 @@ public class WAddonCore extends JavaPlugin {
 		manaPotion.setPotion(Material.POTION);
 		manaPotion.setPotionData(id);
 	}
-	   
-	private void loadLang() {
-		File lang = new File(getDataFolder(), "lang.yml");
-		if (!lang.exists()) {
-			try {
-				getDataFolder().mkdir();
-				lang.createNewFile();
-				InputStream defConfigStream = getResource("lang.yml");
-				if (defConfigStream != null) {
-					YamlConfiguration defConfig = YamlConfiguration.loadConfiguration(defConfigStream);
-					defConfig.save(lang);
-					Lang.setFile(defConfig);
-					return;
-				}
-			} catch(IOException e) {
-				e.printStackTrace();
-				Log.severe("[WHeroesAddon] Couldn't create language file.");
-				Log.severe("[WHeroesAddon] This is a fatal error. Now disabling");
-				setEnabled(false);
-			}
-		}
-		YamlConfiguration conf = YamlConfiguration.loadConfiguration(lang);
-		for(Lang item:Lang.values()) {
-			if (conf.getString(item.getPath()) == null) {
-				conf.set(item.getPath(), item.getDefault());
-			}
-		}
-		Lang.setFile(conf);
-		WAddonCore.LANG = conf;
-		WAddonCore.LANG_FILE = lang;
-		try {
-			conf.save(getLangFile());
-		} catch(IOException e) {
-			Log.warning("[WHeroesAddon] Failed to save lang.yml.");
-			Log.warning("[WHeroesAddon] Report this stack trace to Wiedzmin137.");
-			e.printStackTrace();
-		}
-	}
-	   
-	private void saveAll() {
-		for (String s : instanceHST.playerClasses.keySet()) {
-			savePlayerConfig(s);
-		}
-	}
-	   
 	
-	public void savePlayerConfig(String name) {
-		FileConfiguration playerConfig = new YamlConfiguration();
-		File playerDataFolder = new File(getDataFolder(), "data");
-		if (!playerDataFolder.exists()) {
-			playerDataFolder.mkdir();
-		}
-		File playerFile = new File(getDataFolder() + "/data", name + ".yml");
-		if (!playerFile.exists()) {
-			try {
-				playerFile.createNewFile();
-			} catch (IOException ioe) {
-				ioe.printStackTrace();
-				return;
-			}
-		}
-		try {
-			playerConfig.load(playerFile);
-			if (!instanceHST.playerClasses.containsKey(name)) {
-				instanceHST.playerClasses.put(name, new HashMap<String, Integer>());
-			}
-
-			Iterator<String> pName = instanceHST.playerClasses.get(name).keySet().iterator();
-			while (pName.hasNext()) {
-				String pClass = pName.next();
-				playerConfig.set(pClass + ".points", instanceHST.playerClasses.get(name).get(pClass));
-				if (instanceHST.playerSkills.containsKey(name) && instanceHST.playerSkills.get(name).containsKey(pClass)) {
-					Iterator<String> pSkills = instanceHST.playerSkills.get(name).get(pClass).keySet().iterator();
-					while (pSkills.hasNext()) {
-						String skillName = pSkills.next();
-						playerConfig.set(pClass + ".skills." + skillName, instanceHST.playerSkills.get(name).get(pClass).get(skillName));
-					}
-				}
-			}
-			playerConfig.save(playerFile);
-		} catch (Exception e) {
-			e.printStackTrace();;
-		}
-	}
-	   
-	private void loadConfig() {
-		File configFile = new File(getDataFolder(), "config.yml");
-		if(!configFile.exists()) {
-			try {
-				configFile.createNewFile();
-			} catch (IOException ioe) {
-				Log.severe("[WHeroesAddon] failed to create new config.yml");
-				return;
-			}
-		}
-		try {
-			config.load(configFile);
-			pointsPerLevel = config.getInt("SkillTree.PointsPerLevel", 1);
-			hologram_time = config.getInt("Hologram.Time");
-			holograms = config.getBoolean("Hologram.Enabled");
-			useJoinChoose = config.getBoolean("UseJoinChoose");
-			useManaPotion = config.getBoolean("ManaPotion.Enabled");
-			useSkillTree = config.getBoolean("SkillTree.Enabled");
-		} catch (Exception e) {
-			Log.severe("[WHeroesAddon] failed to load config.yml");
-		}
-	}
 	public boolean isHeroesEnabled() { return HeroesEnabled; }
-	      
-	public YamlConfiguration getLang() { return LANG; }
-	public File getLangFile() { return LANG_FILE; }
-	   
-	public int getPointsPerLevel() { return pointsPerLevel; } 
-	public int getHologramTime() { return hologram_time; }
-	public boolean areHologramsEnabled() { return holograms; }
-	public boolean isUsingJoinChoose() { return useJoinChoose; }
-	public boolean isUsingManaPotion() { return useManaPotion; }
-	public boolean isUsingSkillTree() { return useSkillTree; }
 	public boolean isUsingHolographicDisplays() { return useHolographicDisplays; }
+	public boolean isUsingAuthMe() { return useAuthMe; }
+	
 	public static WAddonCore getInstance() { return instance; }
-
+	
+    public Config getConf() { return configManager; }
 	public Module getModuleManager() { return moduleManager; }
-	public static HeroesSkillTree getSkillTree() { return instanceHST; }
+	public HeroesSkillTree getSkillTree() { return skillTree; }
+	
+	public YamlConfiguration getLang() { return Config.langConfig; }
+	public File getLangFile() { return Config.langFile; }
 }

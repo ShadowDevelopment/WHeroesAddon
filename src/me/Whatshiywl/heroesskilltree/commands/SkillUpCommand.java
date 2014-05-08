@@ -56,7 +56,7 @@ public class SkillUpCommand {
 //                  }
                   
                   hst.setSkillLevel(hero, skill, hst.getSkillLevel(hero, skill) + pointsToIncrease);
-                  WAddonCore.getInstance().savePlayerConfig(sender.getName());
+                  WAddonCore.getInstance().getConf().savePlayerConfig(sender.getName());
                   hero.addEffect(new Effect(skill, skill.getName()));
                   if (hst.isLocked(hero, skill)) {
                 	  sender.sendMessage(ChatColor.GOLD + "[HST] " + ChatColor.AQUA + "You have unlocked " + skill.getName() + "! Level: " + hst.getSkillLevel(hero, skill));
