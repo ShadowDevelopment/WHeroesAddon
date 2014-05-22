@@ -1,8 +1,5 @@
 package me.Whatshiywl.heroesskilltree.commands;
 
-import com.herocraftonline.heroes.characters.Hero;
-import com.herocraftonline.heroes.characters.skill.Skill;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -13,6 +10,9 @@ import me.Wiedzmin137.wheroesaddon.WAddonCore;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import com.herocraftonline.heroes.characters.Hero;
+import com.herocraftonline.heroes.characters.skill.Skill;
 
 public class SkillListCommand {
 	//TODO create lanugage support

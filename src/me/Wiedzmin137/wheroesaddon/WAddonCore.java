@@ -6,13 +6,11 @@ import java.util.logging.Logger;
 import me.Whatshiywl.heroesskilltree.EventListener;
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
 import me.Whatshiywl.heroesskilltree.commands.CommandManager;
-import me.Wiedzmin137.wheroesaddon.addons.ItemGUI;
-import me.Wiedzmin137.wheroesaddon.addons.ManaPotion;
+import me.Wiedzmin137.wheroesaddon.addons.SMSAddon;
 import me.Wiedzmin137.wheroesaddon.addons.WEventListener;
 import me.desht.scrollingmenusign.ScrollingMenuSign;
 
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
@@ -26,17 +24,16 @@ import com.herocraftonline.heroes.characters.Hero;
 public class WAddonCore extends JavaPlugin {
 	private static WAddonCore instance;
 	
-	private ManaPotion manaPotion; 
-	private ItemGUI IGUI;
+	private SMSAddon IGUI;
 	private Module moduleManager;
     private Config configManager;
 	private HeroesSkillTree skillTree;
 	
 	private WEventListener WEventListener = new WEventListener();
-	private ManaPotion WManaPotion = new ManaPotion();
-	private EventListener HEventListener = new EventListener(this/*, getSkillTree()*/);
+	private EventListener HEventListener = new EventListener(this);
 	
 	private boolean useHolographicDisplays = false;
+	private boolean useHoloAPI = false;
 	private boolean useAuthMe = false;
     private boolean HeroesEnabled = false;
     
@@ -71,6 +68,7 @@ public class WAddonCore extends JavaPlugin {
 		configManager.loadConfig();
 		configManager.loadLang();
 		
+		useHoloAPI = Bukkit.getPluginManager().isPluginEnabled("HoloAPI");
 	    useHolographicDisplays = Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays");
 	    useAuthMe = Bukkit.getPluginManager().isPluginEnabled("AuthMe");
 	      
@@ -78,14 +76,13 @@ public class WAddonCore extends JavaPlugin {
 		prepareSkillTree(pm);
 		
 		setupSMS(pm);
-		setupManaPotion();
 	      
 		if (IGUI != null) { IGUI.setAutosave(true); }
 		
 		//IGUI.getSkillPosition();
 		//IGUI.moveIntoClassFile("Wojownik");
 	      
-		Log.info("[WHeroesAddon] vA0.1.4 has been enabled!");
+		Log.info("[WHeroesAddon] vA0.1.5 has been enabled!");
 	}
 
 	@Override
@@ -103,9 +100,6 @@ public class WAddonCore extends JavaPlugin {
 	}
 	
 	private void registerEvents(PluginManager pm) {
-		if (getConfig().getBoolean("useManaPotion", true)) {
-			pm.registerEvents(WManaPotion, this);
-		}
 		if (getConfig().getBoolean("useJoinChoose", true) && pm.isPluginEnabled("AuthMe")) {
 			pm.registerEvents(WEventListener, this);
 			getCommand("choose").setExecutor(new CommandManager(skillTree));
@@ -131,27 +125,14 @@ public class WAddonCore extends JavaPlugin {
 	private void setupSMS(PluginManager pm) {
 		Plugin p = pm.getPlugin("ScrollingMenuSign");
 		if (p instanceof ScrollingMenuSign && p.isEnabled()) {
-			IGUI = new ItemGUI((ScrollingMenuSign) p);
+			IGUI = new SMSAddon((ScrollingMenuSign) p);
 			Log.info("[WHeroesAddon] ScrollingMenuSign integration is enabled; menus created");
 		} else {/*Plugin is not available*/}
 	}
-	
-	private void setupManaPotion() {
-		manaPotion = new ManaPotion();
-		if(!getConfig().getBoolean("ManaPotion.StaticRegain")) {
-			manaPotion.setRegainRand(true);
-			manaPotion.setRegains(getConfig().getInt("ManaPotion.RegainMin"), getConfig().getInt("ManaPotion.RegainMax"));
-		} else {
-			manaPotion.setRegainRand(false);
-			manaPotion.setRegain(getConfig().getInt("ManaPotion.Regain"));
-		}
-		short id = (short)getConfig().getInt("ManaPotion.Potion-ID");
-		manaPotion.setPotion(Material.POTION);
-		manaPotion.setPotionData(id);
-	}
-	
+
 	public boolean isHeroesEnabled() { return HeroesEnabled; }
 	public boolean isUsingHolographicDisplays() { return useHolographicDisplays; }
+	public boolean isUsingHoloAPI() { return useHoloAPI; }
 	public boolean isUsingAuthMe() { return useAuthMe; }
 	
 	public static WAddonCore getInstance() { return instance; }

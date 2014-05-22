@@ -1,7 +1,6 @@
 package me.Wiedzmin137.wheroesaddon.addons;
 
 import me.Wiedzmin137.wheroesaddon.WAddonCore;
-import me.Wiedzmin137.wheroesaddon.addons.ItemGUI;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -17,7 +16,7 @@ public class WEventListener implements Listener {
 		Player player = e.getPlayer();
 		Hero hero = WAddonCore.heroes.getCharacterManager().getHero(player);
 		if (hero.getHeroClass().isDefault()) {
-			ItemGUI.createClassChoose(e.getPlayer());
+			SMSAddon.showClassChoose(e.getPlayer());
 		}
 	}
 }

@@ -1,7 +1,5 @@
 package me.Whatshiywl.heroesskilltree.commands;
 
-import com.herocraftonline.heroes.characters.Hero;
-
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
 import me.Wiedzmin137.wheroesaddon.Lang;
 import me.Wiedzmin137.wheroesaddon.WAddonCore;
@@ -9,6 +7,8 @@ import me.Wiedzmin137.wheroesaddon.WAddonCore;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import com.herocraftonline.heroes.characters.Hero;
 
 public class SkillAdminCommand {
    //TODO check language support - need testers!

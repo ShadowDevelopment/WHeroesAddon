@@ -1,9 +1,5 @@
 package me.Whatshiywl.heroesskilltree.commands;
 
-import com.herocraftonline.heroes.characters.Hero;
-import com.herocraftonline.heroes.characters.effects.Effect;
-import com.herocraftonline.heroes.characters.skill.Skill;
-
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
 import me.Wiedzmin137.wheroesaddon.Lang;
 import me.Wiedzmin137.wheroesaddon.WAddonCore;
@@ -11,6 +7,10 @@ import me.Wiedzmin137.wheroesaddon.WAddonCore;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import com.herocraftonline.heroes.characters.Hero;
+import com.herocraftonline.heroes.characters.effects.Effect;
+import com.herocraftonline.heroes.characters.skill.Skill;
 
 public class SkillUpCommand {
    //TODO translate messages

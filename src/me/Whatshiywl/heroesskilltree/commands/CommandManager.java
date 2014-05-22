@@ -3,7 +3,7 @@ package me.Whatshiywl.heroesskilltree.commands;
 import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
 import me.Wiedzmin137.wheroesaddon.Lang;
 import me.Wiedzmin137.wheroesaddon.WAddonCore;
-import me.Wiedzmin137.wheroesaddon.addons.ItemGUI;
+import me.Wiedzmin137.wheroesaddon.addons.SMSAddon;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -32,7 +32,7 @@ public class CommandManager implements CommandExecutor {
 							case "list": SkillListCommand.skillList(HST, sender, args); break;
 							case "unlocks": SkillLockedCommand.skillList(HST, sender, args); break;
 							case "info": SkillInfoCommand.skillInfo(HST, sender, args); ; break;
-							case "gui": ItemGUI.createSkillTree(sender, WAddonCore.heroes, HST); break;
+							case "gui": SMSAddon.createSkillTree(sender, HST); break;
 							case "admin": SkillAdminCommand.skillAdmin(HST, sender, args); break;
 							case "save": WAddonCore.getInstance().getConf().savePlayerConfig(sender.getName()); break;
 //							case "hashmap": HST.loadPlayerConfig(sender.getName());
@@ -53,7 +53,7 @@ public class CommandManager implements CommandExecutor {
 						return true;
 					}
 			} else if (cmd.getName().equalsIgnoreCase("choose")) {
-				ItemGUI.createClassChoose((Player)sender);
+				SMSAddon.showClassChoose((Player)sender);
 				return true;
 			}
 		} else {

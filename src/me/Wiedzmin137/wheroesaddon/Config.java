@@ -55,7 +55,7 @@ public class Config {
     			while ((i = fis.read(buf)) != -1) {
     				fos.write(buf, 0, i);
     			}
-    		} catch (Exception  e) {
+    		} catch (Exception e) {
  	          throw e;
     		} finally {
     			if (fis != null) {
@@ -79,7 +79,7 @@ public class Config {
 		langConfig = conf;
 		try {
 			conf.save(plugin.getLangFile());
-		} catch(IOException e) {
+		} catch (IOException e) {
 			WAddonCore.Log.warning("[WHeroesAddon] Failed to save lang.yml.");
 			WAddonCore.Log.warning("[WHeroesAddon] Report this stack trace to Wiedzmin137.");
 			e.printStackTrace();
@@ -131,7 +131,7 @@ public class Config {
 		}
 	}
 	
-	public static FileConfiguration getFConfig() { return config; }
+	public static FileConfiguration getFileConfig() { return config; }
 	
 	public int getPointsPerLevel() { return pointsPerLevel; } 
 	public int getHologramTime() { return hologram_time; }

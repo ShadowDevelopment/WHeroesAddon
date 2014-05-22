@@ -25,30 +25,13 @@ Hologram:
   #Are the Holograms enabled?
   Enabled: true
 
-  #How much holograms should be
-  Time: 250
+  #How much holograms should be (seconds)
+  Time: 2.5
 
 # If is class choosing on login is enabled (menu definied by SMS)?
 UseJoinChoose: true
 
-# Configs for ManaPotions [WARNING: It DOESN'T work]
-ManaPotion:
-  #Are the ManaPotions enabled?
-  Enabled: false
-
-  #Mana potion data value
-  Potion-ID: 8197
-
-  #Should players regain a flat amount of mana (false) or a random amount (true)
-  RegainStatic: false
-
-  #Flat mana regain amount (if regain-static is true)
-  Regain: 50
-
-  #Range for random mana regain amount (if regain-static is false)
-  RegainMin: 1
-  RegainMax: 100
-
+#SkillList for support GUI plugins (PLANNED)
 SkillList:
   "1": [N, N, S, N, N, N, S, N, N]
   "2": [N, S, N, N, N, N, N, S, N]

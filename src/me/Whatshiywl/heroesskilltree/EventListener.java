@@ -13,14 +13,13 @@ import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.scheduler.BukkitRunnable;
 
-import com.gmail.filoghost.holograms.api.Hologram;
-import com.gmail.filoghost.holograms.api.HolographicDisplaysAPI;
+import com.dsh105.holoapi.HoloAPI;
 import com.herocraftonline.heroes.Heroes;
 import com.herocraftonline.heroes.api.events.ClassChangeEvent;
 import com.herocraftonline.heroes.api.events.ExperienceChangeEvent;
 import com.herocraftonline.heroes.api.events.HeroChangeLevelEvent;
+import com.herocraftonline.heroes.api.events.SkillDamageEvent;
 import com.herocraftonline.heroes.api.events.SkillUseEvent;
 import com.herocraftonline.heroes.characters.Hero;
 import com.herocraftonline.heroes.characters.classes.HeroClass;
@@ -194,18 +193,21 @@ public class EventListener implements Listener {
   }
   
   //TODO test "hst-damage" feature
-//  @EventHandler
-//  public void onSkillDamage(SkillDamageEvent event) {
-//	  Hero hero = HeroesSkillTree.heroes.getCharacterManager().getHero((Player)event.getDamager());  
-//	  Skill skill = event.getSkill();
-//	  
-//	  double damage = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-damage", 0.0D, false) 
-//			  * plugin.getSkillLevel(hero, skill);
-//	    int firstDamage = (int)SkillConfigManager.getUseSetting(hero, skill, "damage", 0.0D, false);
-//	    damage = (damage > 0) ? damage : 0;
-//	    
-//	  event.setDamage(firstDamage + damage);
-//  }
+  @EventHandler
+  public void onSkillDamage(SkillDamageEvent event) {
+	  Hero hero = WAddonCore.heroes.getCharacterManager().getHero((Player)event.getDamager());  
+	  Skill skill = event.getSkill();
+	  
+	  double damage = (int)SkillConfigManager.getUseSetting(hero, skill, "hst-damage", 0.0D, false) 
+			  * HST.getSkillLevel(hero, skill);
+	    int firstDamage = (int)SkillConfigManager.getUseSetting(hero, skill, "damage", 0.0D, false);
+	    damage = (damage > 0) ? damage : 0;
+	    
+	  event.setDamage(firstDamage + damage);
+	  WAddonCore.Log.info("SkillDamageEvent - " + firstDamage + " " + damage);
+  }
+  
+  
   
     //TODO do that!
 //  @EventHandler
@@ -215,22 +217,13 @@ public class EventListener implements Listener {
 //  }
   
   public static void expMessage(Player p, Location loc, double gained, double needed, double current) {
-	   if(gained == 0) { return; }
-	   final Hologram hologram = HolographicDisplaysAPI.createHologram(WAddonCore.getInstance(), loc, 
-			Lang.HOLOGRAM_MESSAGE_EXP_GAINED.toString().replace("%gained%", String.valueOf(gained)),
-			Lang.HOLOGRAM_MESSAGE_EXP_MAX.toString()
+	   if (gained == 0) { return; }
+	   HoloAPI.getManager().createSimpleHologram(loc, WAddonCore.getInstance().getConf().getHologramTime(), 
+			   Lang.HOLOGRAM_MESSAGE_EXP_GAINED.toString().replace("%gained%", String.valueOf(gained)),
+			   Lang.HOLOGRAM_MESSAGE_EXP_MAX.toString()
 				   .replace("%current%", String.valueOf(current))
 				   .replace("%needed%", String.valueOf(needed)));
-
-	   Bukkit.getScheduler().scheduleSyncDelayedTask(WAddonCore.getInstance(), new BukkitRunnable() {
-		   @Override
-		   public void run() {
-			   hologram.delete();
-		   }
-	   }, WAddonCore.getInstance().getConf().getHologramTime());
   }
   
-  public HeroesSkillTree getST() {
-	  return HST;
-  }
+  public HeroesSkillTree getST() {  return HST; }
 }
