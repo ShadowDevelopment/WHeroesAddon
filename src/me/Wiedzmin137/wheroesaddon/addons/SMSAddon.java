@@ -1,6 +1,5 @@
 package me.Wiedzmin137.wheroesaddon.addons;
 
-import me.Whatshiywl.heroesskilltree.HeroesSkillTree;
 import me.Wiedzmin137.wheroesaddon.Lang;
 import me.Wiedzmin137.wheroesaddon.WAddonCore;
 import me.desht.scrollingmenusign.SMSException;
@@ -39,27 +38,30 @@ public class SMSAddon implements Listener {
 	//TODO SkillGUI
 	//Create 1 long string with all letters and use for and if
 	
-	public static void createSkillTree(CommandSender sender, HeroesSkillTree hst) {
-    	//TODO cleanup. Some things and change some names
+	public static void createSkillTree(CommandSender sender) {
         SMSMenu menu = null;
-        
         Hero commandSendingHero = WAddonCore.heroes.getCharacterManager().getHero((Player) sender);
-        HeroClass hc = commandSendingHero.getHeroClass();
-        String name = hc.getName();
+        String hClass = commandSendingHero.getHeroClass().getName();
 
         if (smsHandler == null) {
           return;
         }
         
         try {
-          menu = smsHandler.getMenu(name + " SkillTree");
+          menu = smsHandler.getMenu(hClass + " SkillTree");
         } catch (SMSException e) {
-          menu = smsHandler.createMenu(name + " SkillTree", Lang.TITLE_ITEM_GUI.toString().replace("%class%", name), (Player)sender);
+          menu = smsHandler.createMenu(hClass + " SkillTree", Lang.TITLE_ITEM_GUI.toString().replace("%class%", hClass), (Player)sender);
         }
         menu.removeAllItems();
         
         menu.setAutosave(false);
         menu.setAutosort(false);
+    }
+	
+	public void bindSkillsToMenu(SMSMenu menu, Player sender) {
+		//TODO do it more specific for players
+        Hero commandSendingHero = WAddonCore.heroes.getCharacterManager().getHero(sender);
+        HeroClass hc = commandSendingHero.getHeroClass();
         
         for (String skillNames : hc.getSkillNames()) {
         	Skill skill = WAddonCore.heroes.getSkillManager().getSkill(skillNames);
@@ -72,8 +74,8 @@ public class SMSAddon implements Listener {
         			//TODO add full language support
         			//TODO add e.g. .replace("{Level}", getSkillLevel(skill))
         			int skillLevel = WAddonCore.getInstance().getSkillTree().getSkillLevel(commandSendingHero, skill);
-        			int skillMaxLevel = hst.getSkillMaxLevel(commandSendingHero, skill);
-        			String indicator = (String)SkillConfigManager.getSetting(hc, skill, "hst-indicator");
+        			int skillMaxLevel = WAddonCore.getInstance().getSkillTree().getSkillMaxLevel(commandSendingHero, skill);
+        			String indicator = (String)SkillConfigManager.getSetting(hc, skill, "indicator");
               
         			SMSMenuItem skillClass = new SMSMenuItem.Builder(menu, 
         			  Lang.GUI_TITLE_SKILL.toString().replace("%skill%", skill.getName()))
@@ -91,9 +93,9 @@ public class SMSAddon implements Listener {
         }
         menu.setAutosave(true);
         menu.setAutosort(true);
-    }
+	}
 	
-	public static void showSkillTree(CommandSender sender, String hClass) {
+	public void showSkillTree(CommandSender sender, String hClass) {
 		SMSMenu menu = null;
 		try {
 			menu = smsHandler.getMenu(hClass + " SkillTree");
@@ -113,6 +115,46 @@ public class SMSAddon implements Listener {
 		
 		view.toggleGUI((Player)sender);
 	}
+	
+	public void showSkillList(HeroClass hClass) {
+        SMSMenu menu = null;
+        String hc = hClass.getName();
+
+        if (smsHandler == null) {
+          return;
+        }
+        
+        try {
+          menu = smsHandler.getMenu(hc + " SkillTree");
+        } catch (SMSException e) {
+          menu = smsHandler.createMenu(hc + " SkillTree", Lang.TITLE_ITEM_GUI.toString().replace("%class%", hc), WAddonCore.getInstance());
+        }
+        menu.removeAllItems();
+        
+        menu.setAutosave(false);
+        menu.setAutosort(false);
+        
+        for (String skillNames : hClass.getSkillNames()) {
+        	Skill skill = WAddonCore.heroes.getSkillManager().getSkill(skillNames);
+        	if (skill instanceof ActiveSkill) {
+        		if (skill.getIdentifiers().length == 0) {
+        			WAddonCore.Log.severe(Lang.GUI_INVAILD_SKILLS.toString().replace("%skill%", skillNames));
+        		} else {
+        			String indicator = (String)SkillConfigManager.getSetting(hClass, skill, "indicator");
+        			SMSMenuItem skillClass = new SMSMenuItem.Builder(menu, 
+        			  Lang.GUI_TITLE_SKILL.toString().replace("%skill%", skill.getName()))
+        				.withCommand("/st down " + skill.getName() + " 1")
+        				.withAltCommand("/st up " + skill.getName() + " 1")
+        				.withIcon(indicator)
+        				.withLore(Lang.GUI_LORE.toString(), "", skill.getDescription())
+        				.build();
+        			menu.addItem(skillClass);
+        		}
+        	}
+        }
+        menu.setAutosave(true);
+        menu.setAutosort(true);
+	}
     
     public static void showClassChoose(Player player) {
         SMSMenu menuChoose = null;
@@ -127,11 +169,14 @@ public class SMSAddon implements Listener {
         try { 
         	view = (SMSInventoryView)smsHandler.getViewManager().getView("ClassChoose"); 
         } catch (SMSException e) {
-          view = new SMSInventoryView("ClassChoose", menuChoose);
-          view.update(menuChoose, SMSMenuAction.REPAINT);
-          smsHandler.getViewManager().registerView(view);
+        	view = new SMSInventoryView("ClassChoose", menuChoose);
+        	view.update(menuChoose, SMSMenuAction.REPAINT);
+        	smsHandler.getViewManager().registerView(view);
         }
-
         view.toggleGUI(player);
     }
+    
+//    public void show(SMSInventoryView view, Player player) {
+//        view.toggleGUI(player);
+//    }
 }

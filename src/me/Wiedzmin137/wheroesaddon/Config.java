@@ -28,6 +28,10 @@ public class Config {
     public Config(WAddonCore plugin) {
     	this.plugin = plugin;
         File dataFolder = plugin.getDataFolder();
+        if (!dataFolder.exists()) {
+        	dataFolder.mkdir();
+        }
+        
         playerConfigFolder = new File(dataFolder + File.separator + "data");
         langFile = new File(dataFolder, "lang.yml");
         skillExampleFile = new File(dataFolder, "skillExample.yml");

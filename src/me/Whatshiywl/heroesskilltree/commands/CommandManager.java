@@ -32,7 +32,7 @@ public class CommandManager implements CommandExecutor {
 							case "list": SkillListCommand.skillList(HST, sender, args); break;
 							case "unlocks": SkillLockedCommand.skillList(HST, sender, args); break;
 							case "info": SkillInfoCommand.skillInfo(HST, sender, args); ; break;
-							case "gui": SMSAddon.createSkillTree(sender, HST); break;
+							case "gui": SMSAddon.createSkillTree(sender); break;
 							case "admin": SkillAdminCommand.skillAdmin(HST, sender, args); break;
 							case "save": WAddonCore.getInstance().getConf().savePlayerConfig(sender.getName()); break;
 //							case "hashmap": HST.loadPlayerConfig(sender.getName());
